@@ -34,11 +34,11 @@ export default async function PostPage({
       : undefined,
     author: {
       "@type": "Organization",
-      name: "آسان آز",
+      name: "فابریک مد",
     },
     publisher: {
       "@type": "Organization",
-      name: "آسان آز",
+      name: "فابریک مد",
     },
     mainEntityOfPage: {
       "@type": "WebPage",

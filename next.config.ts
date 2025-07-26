@@ -6,16 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "87.107.146.92",
-        port: "8080",
-      },
-      {
-        protocol: "http",
-        hostname: "asanaz.web-developers.shop",
-      },
-      {
-        protocol: "https",
-        hostname: "app.asanaz.com",
+        hostname: "fabric.web-developers.shop",
       },
     ],
   },

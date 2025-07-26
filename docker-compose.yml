@@ -1,7 +1,7 @@
 services:
   next-app:
-    container_name: asanaz_container
-    image: asanaz_image
+    container_name: fabricmod_container
+    image: fabricmod_image
     build:
       context: .
       dockerfile: Dockerfile
