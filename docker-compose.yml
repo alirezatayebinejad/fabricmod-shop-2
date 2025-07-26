@@ -1,0 +1,18 @@
+services:
+  next-app:
+    container_name: asanaz_container
+    image: asanaz_image
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CRYPTO_KEY: ${NEXT_PUBLIC_CRYPTO_KEY}
+        NEXT_PUBLIC_BACKEND_BASE: ${NEXT_PUBLIC_BACKEND_BASE}
+        NEXT_PUBLIC_BACKEND_API: ${NEXT_PUBLIC_BACKEND_API}
+        NEXT_PUBLIC_IMG_BASE: ${NEXT_PUBLIC_IMG_BASE}
+        NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH}
+    ports:
+      - "3000:3000"
+    restart: always
+    env_file:
+      - .env

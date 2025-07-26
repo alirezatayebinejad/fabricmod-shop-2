@@ -1,0 +1,221 @@
+{
+  "provinces": [
+    {
+      "id": 1,
+      "name": "آذربایجان شرقی",
+      "slug": "آذربایجان-شرقی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 2,
+      "name": "آذربایجان غربی",
+      "slug": "آذربایجان-غربی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 3,
+      "name": "اردبیل",
+      "slug": "اردبیل",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 4,
+      "name": "اصفهان",
+      "slug": "اصفهان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 5,
+      "name": "البرز",
+      "slug": "البرز",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 6,
+      "name": "ایلام",
+      "slug": "ایلام",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 7,
+      "name": "بوشهر",
+      "slug": "بوشهر",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 8,
+      "name": "تهران",
+      "slug": "تهران",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 9,
+      "name": "چهارمحال و بختیاری",
+      "slug": "چهارمحال-بختیاری",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 10,
+      "name": "خراسان جنوبی",
+      "slug": "خراسان-جنوبی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 11,
+      "name": "خراسان رضوی",
+      "slug": "خراسان-رضوی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 12,
+      "name": "خراسان شمالی",
+      "slug": "خراسان-شمالی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 13,
+      "name": "خوزستان",
+      "slug": "خوزستان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 14,
+      "name": "زنجان",
+      "slug": "زنجان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 15,
+      "name": "سمنان",
+      "slug": "سمنان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 16,
+      "name": "سیستان و بلوچستان",
+      "slug": "سیستان-بلوچستان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 17,
+      "name": "فارس",
+      "slug": "فارس",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 18,
+      "name": "قزوین",
+      "slug": "قزوین",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 19,
+      "name": "قم",
+      "slug": "قم",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 20,
+      "name": "کردستان",
+      "slug": "کردستان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 21,
+      "name": "کرمان",
+      "slug": "کرمان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 22,
+      "name": "کرمانشاه",
+      "slug": "کرمانشاه",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 23,
+      "name": "کهگیلویه و بویراحمد",
+      "slug": "کهگیلویه-بویراحمد",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 24,
+      "name": "گلستان",
+      "slug": "گلستان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 25,
+      "name": "لرستان",
+      "slug": "لرستان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 26,
+      "name": "گیلان",
+      "slug": "گیلان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 27,
+      "name": "مازندران",
+      "slug": "مازندران",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 28,
+      "name": "مرکزی",
+      "slug": "مرکزی",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 29,
+      "name": "هرمزگان",
+      "slug": "هرمزگان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 30,
+      "name": "همدان",
+      "slug": "همدان",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": 31,
+      "name": "یزد",
+      "slug": "یزد",
+      "created_at": null,
+      "updated_at": null
+    }
+  ]
+}

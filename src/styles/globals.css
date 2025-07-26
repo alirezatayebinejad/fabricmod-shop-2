@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* globals variables are in theme.ts file and setted in layout from backend api*/
+
+  * {
+    @apply m-0 box-border border-border p-0 selection:bg-primary selection:text-primary-foreground;
+  }
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-TextColor;
+  }
+  p {
+    @apply text-TextSize400 text-TextColor;
+  }
+  input {
+    @apply bg-transparent;
+  }
+  label {
+    @apply text-TextColor;
+  }
+}
+
+@layer components {
+  .pages_wrapper {
+    @apply scrollbar max-h-[83dvh] overflow-y-auto p-[10px] md:p-[24px];
+  }
+}
+
+.benefit_icon svg {
+  stroke: var(--TextLow);
+}
+.socials_icons svg {
+  width: 35px;
+  height: 35px;
+}
+.pages_content p,
+.pages_content span {
+  font-size: 16px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #00000024;
+}
+
+/* Hide the default number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-clear-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* next-ui table removing the invisible tr in thea */
+tr[tabindex="-1"][aria-hidden="true"].w-px.h-px.block {
+  display: none !important;
+}
+
+/* embla carousel */
+
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* froala editor */
+
+.fr-btn {
+  color: var(--TextColor) !important;
+  max-height: 30px !important;
+  float: left !important;
+}
+.fr-btn > svg {
+  margin: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+.fr-btn-grp {
+  margin: 0 8px !important;
+}
+
+.fr-second-toolbar > a {
+  display: none !important;
+}
+
+/* react multi date picker */
+.rmdp-calendar-container-mobile {
+  left: 40% !important;
+  top: 20% !important;
+}
+.rmdp-wrapper {
+  position: absolute !important;
+  left: 50% !important;
+  background-color: var(--boxBg200) !important;
+  color: var(--TextColor) !important;
+}
+.rmdp-container {
+  width: 100% !important;
+}
+.rmdp-input {
+  width: 100% !important;
+  height: 50px !important;
+  border-radius: 5px !important;
+  position: relative;
+  background-color: var(--boxBg300) !important;
+  border: 0px solid var(--border2) !important;
+}
+.rmdp-week-day {
+  color: var(--primary) !important;
+}
+.rmdp-day span {
+  color: var(--TextColor) !important;
+}
+.rmdp-arrow {
+  border-color: var(--primary) !important;
+}
+.fr-view {
+  min-height: 100px !important;
+}
+.rmdp-button {
+  color: var(--TextColor) !important;
+}
+.rmdp-header-values {
+  color: var(--TextColor) !important;
+}
+.rmdp-input::placeholder {
+  color: var(--TextColor) !important;
+  font-size: 14px;
+}
+.rmdp-container {
+  align-self: flex-end !important;
+}
+
+/* ckeditor change styles */
+.ck.ck-editor__editable_inline {
+  padding: 0 20px !important;
+}
+.ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  border-radius: 0 0 8px 8px !important;
+  min-height: 100px !important;
+}
+
+.ck {
+  max-width: 100%;
+}
+.ck .ck-toolbar {
+  background-color: transparent !important;
+}
+.ck.ck-editor__main > .ck-editor__editable {
+  background-color: transparent !important;
+  border-color: var(--border2) !important;
+}
+.ck.ck-toolbar .ck.ck-toolbar__separator {
+  background-color: var(--border2) !important;
+}
+.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+  border-color: var(--border2) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+.ck.ck-button:not(.ck-disabled):hover,
+a.ck.ck-button:not(.ck-disabled):hover {
+  background-color: var(--boxBg400) !important;
+}
+.ck-reset_all :not(.ck-reset_all-excluded *),
+.ck.ck-reset_all {
+  color: var(--textColor) !important;
+}
+.ck.ck-dropdown__panel {
+  background-color: var(--boxBg250) !important;
+  border-color: var(--border) !important;
+}
+.ck .ck-splitbutton .ck-dropdown__button:hover {
+  background-color: var(--boxBg400) !important;
+}
+.ck.ck-button.ck-on,
+a.ck.ck-button.ck-on {
+  background-color: var(--boxBg400) !important;
+}
+
+.ck.ck-balloon-panel {
+  z-index: 1300 !important;
+}

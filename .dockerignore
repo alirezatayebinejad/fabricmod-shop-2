@@ -1,0 +1,11 @@
+.git
+.idea
+.vscode
+node_modules
+node_modules.git.next;
+npm - debug.log;
+Dockerfile;
+Dockerfile.dev;
+README.md;
+docker-compose.yml;
+docker-compose-dev.yml;
