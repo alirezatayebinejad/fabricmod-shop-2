@@ -47,9 +47,9 @@ export default function Topbar({ openMobileMenu }: props) {
           </Link>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex h-5 items-center gap-1 rounded-md border-1 border-accent-1 bg-gradient-to-tl from-accent-3 to-accent-4 px-1 text-TextSize300 text-TextLow max-sm:hidden"
+            className="flex h-5 items-center gap-1 rounded-md border-1 border-accent-1 bg-gradient-to-tl from-accent-4 to-accent-3 px-1 text-TextSize300 text-accent-4-foreground max-sm:hidden"
           >
-            <DatabaseZap className="w-3 text-TextLow" />
+            <DatabaseZap className="w-3 text-accent-4-foreground" />
             حافظه پنهان
           </button>
         </div>

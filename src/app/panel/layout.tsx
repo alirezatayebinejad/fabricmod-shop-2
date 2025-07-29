@@ -21,11 +21,11 @@ export default function DashboardLayout({
 
   return (
     <>
-      <div className="flex h-dvh overflow-hidden bg-gradient-to-tl from-primary to-secondary p-2 md:p-5">
+      <div className="flex h-dvh overflow-hidden bg-gradient-to-tl from-primary to-secondary p-2 md:p-4">
         {/* if u change h or m in above div change h in dashboard navTab ScrollArea too*/}
         <div
           className={cn(
-            "relative hidden min-w-[297px] max-w-[297px] rounded-[12px] bg-boxBg100 transition-all lg:inline-block",
+            "relative hidden min-w-[297px] max-w-[297px] rounded-[0_12px_12px_0] bg-accent-3 transition-all lg:inline-block",
             !isMainSidebarOpen ? "min-w-[20px] max-w-[20px]" : null,
           )}
         >
@@ -44,8 +44,8 @@ export default function DashboardLayout({
           <Sidebar isMainSidebarOpen={isMainSidebarOpen} />
         </BurgerMenu>
 
-        <div className="w-full md:mr-5">
-          <div className="h-full overflow-hidden rounded-[12px] bg-boxBg100">
+        <div className="w-full">
+          <div className="h-full overflow-hidden rounded-[12px_0_0_12px] bg-boxBg100">
             <Topbar openMobileMenu={() => toggleMobileSidebar()} />
             <Providers>{children}</Providers>
           </div>

@@ -1,5 +1,4 @@
 import BannerCard from "@/app/(website)/(home)/_components/BannerCard";
-import CategoryCard from "@/app/(website)/(home)/_components/CategoryCard";
 import Features from "@/app/(website)/(home)/_components/Features";
 import NoticeBanner from "@/app/(website)/(home)/_components/NoticeBanner";
 import Slider from "@/app/(website)/(home)/_components/Slider";
@@ -87,14 +86,6 @@ export default async function HomePage() {
             </>
           )}
         </section>
-
-        <Carousel
-          title="دسته بندی ها"
-          cards={data?.categories?.map((c) => (
-            <CategoryCard key={c.slug} categ={c} />
-          ))}
-        />
-
         <Carousel
           title="جدید ترین ها"
           moreButton
@@ -215,7 +206,9 @@ export default async function HomePage() {
             />,
           ]}
         /> */}
-        <NoticeBanner data={data?.banners?.call_to_action?.[0]} />
+        {data?.banners?.call_to_action?.[0] && (
+          <NoticeBanner data={data.banners.call_to_action[0]} />
+        )}
 
         <Carousel
           title="وبلاگ و مجله ما"

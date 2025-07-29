@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "fabric.web-developers.shop",
       },
+      {
+        protocol: "https",
+        hostname: "trustseal.enamad.ir",
+      },
     ],
   },
   logging: {
