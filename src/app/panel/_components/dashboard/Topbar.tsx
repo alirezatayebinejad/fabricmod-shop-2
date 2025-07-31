@@ -62,9 +62,9 @@ export default function Topbar({ openMobileMenu }: props) {
             : "/images/imageplaceholder.png"
         }
         alt="logo"
-        width={70}
-        height={30}
-        className="h-[30px]"
+        width={50}
+        height={50}
+        className="h-auto w-[50px]"
       />
       <ModalWrapper
         modalBody={<CachesControllTab />}

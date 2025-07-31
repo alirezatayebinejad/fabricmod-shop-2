@@ -58,6 +58,7 @@ export default function HeaderCategories() {
               ? [{ id: 1, title: "والد" }]
               : undefined
           }
+          classNames={{ base: "min-w-[130px]" }}
         />
         <SelectSearchCustom
           options={[
@@ -73,6 +74,7 @@ export default function HeaderCategories() {
               deleteFilter("type");
             }
           }}
+          classNames={{ base: "min-w-[130px]" }}
           defaultValue={
             typeFilterValue
               ? [
@@ -88,6 +90,38 @@ export default function HeaderCategories() {
                 ]
               : undefined
           }
+        />
+        <SelectSearchCustom
+          options={[
+            { id: "0", title: "فقط ست ها" },
+            { id: "1", title: "فقط غیر ست ها" },
+          ]}
+          placeholder="نوع ست"
+          isSearchDisable
+          onChange={(selected) => {
+            if (selected.length > 0 && selected[0].id !== undefined) {
+              changeFilters("is_set=" + selected[0].id);
+            } else {
+              deleteFilter("is_set");
+            }
+          }}
+          showNoOneOption
+          defaultValue={
+            typeFilterValue
+              ? [
+                  {
+                    id: typeFilterValue,
+                    title:
+                      typeFilterValue === "post"
+                        ? "پست"
+                        : typeFilterValue === "product"
+                          ? "محصول"
+                          : "",
+                  },
+                ]
+              : undefined
+          }
+          classNames={{ base: "min-w-[100px]" }}
         />
       </div>
     </div>

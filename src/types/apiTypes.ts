@@ -41,21 +41,27 @@ export interface PaginateMeta {
 
 export interface UserIndex {
   id: number;
-  name: string;
+  name: null | string;
   cellphone: string;
-  email: string;
-  primary_image: null | string;
+  email: null | string;
   email_verified_at: null | string;
-  is_active: number;
+  primary_image: null | string;
   status: string;
-  update_user_id: null | number;
+  update_user_id: null | string;
+  is_active: string;
+  panel_access: string;
+  check_pay: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: null | string;
+  is_backend: null | string;
   roles: {
     display_name: string;
     name: string;
     pivot: {
       model_type: string;
-      model_id: number;
-      role_id: number;
+      model_id: string;
+      role_id: string;
     };
   }[];
 }
@@ -65,8 +71,17 @@ export interface UserShow {
   name: string;
   cellphone: string;
   email: string;
-  is_active: number;
+  email_verified_at: null | string;
+  primary_image: null | string;
   status: string;
+  update_user_id: null | string;
+  is_active: string;
+  panel_access: string;
+  check_pay: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: null | string;
+  is_backend: string;
   permissions: string[];
   departments: {
     id: number;
@@ -76,8 +91,21 @@ export interface UserShow {
     id: number;
     name: string;
     display_name: string;
-    guard_name: null;
-    is_editable: null;
+    pivot: {
+      model_type: string;
+      model_id: string;
+      role_id: string;
+    };
+    permissions: {
+      id: number;
+      name: string;
+      display_name: string;
+      pivot: {
+        role_id: string;
+        permission_id: string;
+      };
+    }[];
+    departments: any[];
   }[];
 }
 
@@ -163,6 +191,7 @@ export interface CategoryIndex {
   is_active: number;
   created_at: string;
   updated_at: string;
+  is_set: string;
 }
 
 export interface CategoryShow {
@@ -183,6 +212,7 @@ export interface CategoryShow {
   is_active: number;
   created_at: string;
   updated_at: string;
+  is_set: string;
   parent: null | {
     id: number;
     name: string;

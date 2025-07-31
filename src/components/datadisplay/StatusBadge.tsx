@@ -14,7 +14,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const modeClasses = {
     success: "bg-success text-success-foreground",
-    pending: "bg-accent-2 text-TextReverse",
+    pending: "bg-accent-2 text-accent-2-foreground",
     error: "bg-destructive text-destructive-foreground",
   };
 
@@ -22,7 +22,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     <div
       className={cn(
         "inline-block rounded-[4px] px-2 py-1 text-TextSize400 font-[400]",
-        mode ? modeClasses[mode] : "",
+        mode ? modeClasses[mode] : "text-TextColor",
         classname,
       )}
     >

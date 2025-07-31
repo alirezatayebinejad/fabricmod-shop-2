@@ -70,23 +70,24 @@ export default function FormCategories({
     setFieldError,
   } = useMyForm(
     {
-      name: categ?.name || "",
-      slug: categ?.slug || "",
+      name: categ?.name || undefined,
+      slug: categ?.slug || undefined,
       parent_id: categ?.parent_id || undefined,
       is_active: categ?.is_active?.toString() || "1",
       primary_image: undefined as undefined | string,
       content: categ?.content || undefined,
-      description: categ?.description || "",
-      seo_title: categ?.seo_title || "",
-      seo_description: categ?.seo_description || "",
+      description: categ?.description || undefined,
+      seo_title: categ?.seo_title || undefined,
+      seo_description: categ?.seo_description || undefined,
       is_important: categ?.is_important?.toString() || "0",
-      priority: categ?.priority?.toString() || "",
-      icon: categ?.icon || "",
-      attrs: categ?.attributes?.map((a) => a.id) || [],
+      priority: categ?.priority?.toString() || undefined,
+      icon: categ?.icon || undefined,
+      attrs: categ?.attributes?.map((a) => a.id) || undefined,
       filter_attrs: categ?.filter_attrs?.map((f) => f?.id?.toString()),
-      variation_attr: categ?.variation_attr?.[0]?.id?.toString() || "",
+      variation_attr: categ?.variation_attr?.[0]?.id?.toString() || undefined,
       type: categ?.type || "product", //no editmode
       faqs: undefined as { subject: string; body: string }[] | undefined,
+      is_set: categ?.is_set?.toString() as "0" | "1",
     },
     async (formValues) => {
       const payload = {
@@ -346,6 +347,13 @@ export default function FormCategories({
           value={values.icon}
           onChange={handleChange("icon")}
           errorMessage={errors.icon}
+          isDisabled={isShowMode}
+        />
+        <SwitchWrapper
+          label="ست:"
+          onChange={handleChange("is_set")}
+          isSelected={values.is_set}
+          errorMessage={errors?.is_set}
           isDisabled={isShowMode}
         />
         <SwitchWrapper

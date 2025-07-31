@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { RoleIndex } from "@/types/apiTypes";
 import apiCRUD from "@/services/apiCRUD";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import Link from "next/link";
 
 export default function HeaderUsers() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -43,7 +44,8 @@ export default function HeaderUsers() {
         permission="categoryCreate"
         component={
           <Button
-            onPress={onOpen}
+            as={Link}
+            href="panel/users/userslist/req-panel"
             color="secondary"
             className="h-[40px] rounded-[5px] bg-accent-2 p-[0_30px] text-[16px] font-[600] text-accent-2-foreground"
           >
@@ -62,6 +64,13 @@ export default function HeaderUsers() {
         modalBody={<UserForm onClose={onOpenChange} />}
       />
       <div className="flex flex-wrap-reverse gap-3 md:flex-nowrap">
+        <Button
+          onPress={onOpen}
+          color="secondary"
+          className="h-[40px] rounded-[5px] border-1 bg-accent-3 p-[0_30px] text-[16px] font-[600] text-accent-3-foreground"
+        >
+          درخواست های پنل عمده
+        </Button>
         <div dir="ltr" className="min-w-[200px]">
           <SelectSearchCustom
             requestSelectOptions={requestSelectOptions}

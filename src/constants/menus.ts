@@ -49,6 +49,14 @@ export const panelMenus: PanelMenu[] = [
       },
       {
         id: 2,
+        name: "درخواست پنل",
+        nameEn: "req-panel",
+        link: "/panel/users/userslist/req-panel",
+        iconSrc: "",
+        subMenu: [],
+      },
+      {
+        id: 3,
         name: "نقش ها",
         nameEn: "roles",
         link: "/panel/users/roles",

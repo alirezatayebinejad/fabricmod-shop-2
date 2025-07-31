@@ -21,11 +21,11 @@ export default function DashboardLayout({
 
   return (
     <>
-      <div className="flex h-dvh overflow-hidden bg-gradient-to-tl from-primary to-secondary p-2 md:p-4">
+      <div className="flex h-dvh overflow-hidden bg-gradient-to-tl from-primary to-secondary p-2 md:p-2.5">
         {/* if u change h or m in above div change h in dashboard navTab ScrollArea too*/}
         <div
           className={cn(
-            "relative hidden min-w-[297px] max-w-[297px] rounded-[0_12px_12px_0] bg-accent-3 transition-all lg:inline-block",
+            "relative hidden min-w-[297px] max-w-[297px] rounded-[0_12px_12px_0] bg-accent-3 transition-all dark:bg-boxBg200 lg:inline-block",
             !isMainSidebarOpen ? "min-w-[20px] max-w-[20px]" : null,
           )}
         >

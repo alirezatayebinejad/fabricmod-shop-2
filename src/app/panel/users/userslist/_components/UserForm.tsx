@@ -56,6 +56,8 @@ export default function UserForm({
       /*  password: undefined,
       password_confirm: undefined, */
       status: user?.status || "approved",
+      panel_access: user?.panel_access || "0",
+      check_pay: user?.check_pay || "0",
       roles: user?.roles?.map((r) => r.name),
       is_active: user?.is_active?.toString() || "1",
     },
@@ -220,6 +222,70 @@ export default function UserForm({
             handleChange("status")(selected?.[0]?.id.toString())
           }
           errorMessage={errors.status}
+          placeholder="انتخاب"
+        />
+        <SelectSearchCustom
+          title="دسترسی به فروش عمده
+"
+          options={[
+            { id: "0", title: "بدون دسترسی" },
+            { id: "1", title: "انتظار تایید" },
+            { id: "2", title: "دسترسی دارد" },
+          ]}
+          showNoOneOption={false}
+          isSearchDisable
+          isDisable={isShowMode}
+          defaultValue={
+            values?.panel_access
+              ? [
+                  {
+                    id: values.panel_access.toString(),
+                    title:
+                      values.panel_access.toString() === "0"
+                        ? "بدون دسترسی"
+                        : values.panel_access.toString() === "1"
+                          ? "انتظار تایید"
+                          : values.panel_access.toString() === "2"
+                            ? "دسترسی دارد"
+                            : "",
+                  },
+                ]
+              : []
+          }
+          onChange={(selected) =>
+            handleChange("panel_access")(selected?.[0]?.id.toString())
+          }
+          errorMessage={errors.panel_access}
+          placeholder="انتخاب"
+        />
+        <SelectSearchCustom
+          title="پرداخت چکی"
+          options={[
+            { id: "0", title: "بله" },
+            { id: "1", title: "خیر" },
+          ]}
+          showNoOneOption={false}
+          isSearchDisable
+          isDisable={isShowMode}
+          defaultValue={
+            values?.status
+              ? [
+                  {
+                    id: values?.check_pay,
+                    title:
+                      values?.check_pay?.toString() === "0"
+                        ? "بله"
+                        : values?.check_pay?.toString() === "1"
+                          ? "خیر"
+                          : "",
+                  },
+                ]
+              : []
+          }
+          onChange={(selected) =>
+            handleChange("check_pay")(selected?.[0]?.id.toString())
+          }
+          errorMessage={errors.check_pay}
           placeholder="انتخاب"
         />
       </div>
