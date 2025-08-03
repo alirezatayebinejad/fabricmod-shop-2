@@ -82,7 +82,8 @@ export default function TableProducts() {
       method: "POST",
       data: {
         name: prod.name,
-        is_active: prod.is_active == 1 ? 0 : 1,
+        is_set: prod.is_set,
+        is_active: prod.is_active == "1" ? "0" : "1",
         _method: "put",
       },
     });
@@ -90,7 +91,7 @@ export default function TableProducts() {
     if (res?.status === "success")
       updateProdState({
         ...prod,
-        is_active: prod.is_active == 0 ? 1 : 0,
+        is_active: prod.is_active == "0" ? "1" : "0",
       });
     else updateProdState({ ...prod, is_active: prod.is_active });
   };
@@ -126,20 +127,24 @@ export default function TableProducts() {
           ),
         },
         { data: <p>{prod.name}</p> },
-        { data: <p>{prod.price_check.quantity}</p> },
+        {
+          data: <p>{prod.quantity_check ? prod.quantity_check : "ناموجود"}</p>,
+        },
         {
           data: (
             <p>
-              {formatPrice(prod.price_check.price)} {currency}
+              {prod.price_check && typeof prod.price_check !== "boolean"
+                ? formatPrice(+prod.price_check.price) + " " + currency
+                : "-"}
             </p>
           ),
         },
         {
           data: (
             <p>
-              {prod.sale_check && prod.price_check.sale_price
-                ? formatPrice(prod.price_check.sale_price) + currency
-                : " "}{" "}
+              {prod.sale_check && typeof prod.sale_check !== "boolean"
+                ? formatPrice(+prod.sale_check.sale_price) + " " + currency
+                : "-"}{" "}
             </p>
           ),
         },

@@ -198,53 +198,60 @@ export interface CategoryShow {
   id: number;
   name: string;
   slug: string;
-  icon: string;
-  primary_image: null;
+  icon: null | string;
+  primary_image: null | string;
   parent_id: string;
+  priority: string;
+  is_important: string;
+  description: null | string;
+  seo_title: null | string;
+  seo_description: null | string;
+  content: null | string;
   type: string;
-  priority: number;
-  is_important: number;
-  description: string;
-  seo_title: string;
-  seo_description: string;
-  content: string;
-  user_id: null;
-  is_active: number;
+  is_active: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
   is_set: string;
-  parent: null | {
+  parent: {
     id: number;
     name: string;
     slug: string;
-    icon: string;
+    icon: null | string;
+    primary_image: null | string;
     parent_id: string;
-    cat_level: number;
-    priority: number;
-    is_important: number;
-    description: string;
-    content: string;
-    user_id: null;
-    is_active: number;
+    priority: string;
+    is_important: string;
+    description: null | string;
+    seo_title: null | string;
+    seo_description: null | string;
+    content: null | string;
+    type: string;
+    is_active: string;
+    user_id: string;
     created_at: string;
     updated_at: string;
+    is_set: string;
   };
   childs: {
     id: number;
     name: string;
     slug: string;
-    icon: null;
-    primary_image: null;
+    icon: null | string;
+    primary_image: null | string;
     parent_id: string;
+    priority: string;
+    is_important: string;
+    description: null | string;
+    seo_title: null | string;
+    seo_description: null | string;
+    content: null | string;
     type: string;
-    priority: number;
-    is_important: number;
-    description: string;
-    content: string;
-    user_id: null;
-    is_active: number;
+    is_active: string;
+    user_id: string;
     created_at: string;
     updated_at: string;
+    is_set: string;
   }[];
   faqs: {
     id: number;
@@ -253,7 +260,7 @@ export interface CategoryShow {
     faqable_type: string;
     faqable_id: number;
     user_id: number;
-    deleted_at: null;
+    deleted_at: null | string;
     created_at: string;
     updated_at: string;
   }[];
@@ -261,16 +268,15 @@ export interface CategoryShow {
     id: number;
     name: string;
     slug: string;
-    is_filter: number;
-    is_active: number;
-    user_id: null;
+    is_active: string;
+    user_id: string;
     created_at: string;
     updated_at: string;
     pivot: {
-      category_id: number;
-      attribute_id: number;
-      is_variation: number;
-      is_filter: number;
+      category_id: string;
+      attribute_id: string;
+      is_filter: string;
+      is_variation: string;
     };
   }[];
   filter_attrs: {
@@ -279,7 +285,7 @@ export interface CategoryShow {
     slug: string;
     is_filter: number;
     is_active: number;
-    user_id: null;
+    user_id: null | string;
     created_at: string;
     updated_at: string;
     pivot: {
@@ -295,7 +301,7 @@ export interface CategoryShow {
     slug: string;
     is_filter: number;
     is_active: number;
-    user_id: null;
+    user_id: null | string;
     created_at: string;
     updated_at: string;
     pivot: {
@@ -304,130 +310,238 @@ export interface CategoryShow {
       is_variation: number;
       is_filter: number;
     };
-  }[];
+  };
 }
+
 export interface ProductIndex {
   id: number;
   name: string;
   slug: string;
+  is_set: string;
+  code: null | string;
   primary_image: null | string;
   seo_title: null | string;
   seo_description: null | string;
-  weight: number;
-  category_id: number;
-  brand_id: null | number;
-  country_id: null | number;
+  weight: string;
+  category_id: string;
+  brand_id: null | string;
+  country_id: null | string;
   details: null | string;
   description: null | string;
   content: null | string;
   garranty_type: string;
-  garranty_day: number;
-  user_id: null;
-  is_active: number;
+  garranty_day: string;
+  user_id: string;
+  is_active: string;
   created_at: string;
   updated_at: string;
   quantity_check: boolean | number;
-  sale_check: boolean;
+  sale_check:
+    | boolean
+    | {
+        id: number;
+        attribute_id: null | string;
+        product_id: string;
+        value: string;
+        quantity: string;
+        sku: string;
+        price: string;
+        sale_price: string;
+        date_sale_from: string;
+        date_sale_to: string;
+        set_var_ids: string;
+        user_id: string;
+        deleted_at: null | string;
+        created_at: string;
+        updated_at: string;
+      };
+  price_check:
+    | boolean
+    | {
+        id: number;
+        attribute_id: null | string;
+        product_id: string;
+        value: string;
+        quantity: string;
+        sku: null | string;
+        price: string;
+        sale_price: string;
+        date_sale_from: null | string;
+        date_sale_to: null | string;
+        set_var_ids: null | string;
+        user_id: string;
+        deleted_at: null;
+        created_at: string;
+        updated_at: string;
+      };
+  rate: number;
+  is_wished: boolean;
+}
+
+export interface ProductsWithVariationIndex {
+  current_page: number;
+  data: {
+    id: number;
+    name: string;
+    slug: string;
+    primary_image: null;
+    is_set: string;
+    variations: {
+      id: number;
+      attribute_id: null;
+      product_id: string;
+      value: string;
+      quantity: string;
+      sku: null;
+      price: string;
+      sale_price: string;
+      date_sale_from: null;
+      date_sale_to: null;
+      set_var_ids: null;
+      user_id: string;
+      deleted_at: null;
+      created_at: string;
+      updated_at: string;
+    }[];
+  }[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: {
+    url: null | string;
+    label: string;
+    active: boolean;
+  }[];
+  next_page_url: null;
+  path: string;
+  per_page: number;
+  prev_page_url: null;
+  to: number;
+  total: number;
+}
+
+export interface ProductShow {
+  id: number;
+  name: string;
+  slug: string;
+  is_set: string;
+  is_offer: string;
+  code: string;
+  primary_image: string;
+  seo_title: null | string;
+  seo_description: null | string;
+  weight: string;
+  category_id: string;
+  brand_id: string;
+  country_id: null | string;
+  details: null | string;
+  description: string;
+  content: string;
+  garranty_type: string;
+  garranty_day: string;
+  user_id: string;
+  is_active: string;
+  created_at: string;
+  updated_at: string;
+  quantity_check: boolean;
+  sale_check: {
+    id: number;
+    attribute_id: null | string;
+    product_id: string;
+    value: string;
+    quantity: string;
+    sku: string;
+    price: string;
+    sale_price: string;
+    date_sale_from: string;
+    date_sale_to: string;
+    set_var_ids: string;
+    user_id: string;
+    deleted_at: null | string;
+    created_at: string;
+    updated_at: string;
+  };
   price_check: {
     id: number;
-    attribute_id: number | null;
-    product_id: number;
-    value: string | null;
-    quantity: number;
-    sku: string | null;
-    price: number;
-    sale_price: number | null;
-    date_sale_from: string | null;
-    date_sale_to: string | null;
-    user_id: number;
-    deleted_at: string | null;
+    attribute_id: null | string;
+    product_id: string;
+    value: string;
+    quantity: string;
+    sku: null | string;
+    price: string;
+    sale_price: string;
+    date_sale_from: null | string;
+    date_sale_to: null | string;
+    set_var_ids: string;
+    user_id: string;
+    deleted_at: null | string;
     created_at: string;
     updated_at: string;
   };
   rate: number;
   is_wished: boolean;
-}
-
-export interface ProductShow {
-  id: number;
-  category_id: number;
-  name: string;
-  slug: string;
-  primary_image: null | string;
-  brand_id: number;
-  country_id: number;
-  details: string;
-  description: string;
-  seo_title: string;
-  seo_description: string;
-  weight: number;
-  content: string;
-  is_send: number;
-  is_external_service: number;
-  delivery_amount_per_product: number;
-  garranty_type: string;
-  garranty_day: number;
-  user_id: null;
-  is_active: number;
-  created_at: string;
-  updated_at: string;
   category: {
     id: number;
     name: string;
     slug: string;
-    icon: string;
-    primary_image: null | string;
+    icon: null;
+    primary_image: null;
     parent_id: string;
+    priority: string;
+    is_important: string;
+    description: null;
+    seo_title: null;
+    seo_description: null;
+    content: null;
     type: string;
-    priority: number;
-    is_important: number;
-    description: string;
-    content: string;
-    user_id: null;
-    is_active: number;
+    is_active: string;
+    user_id: string;
     created_at: string;
     updated_at: string;
+    is_set: string;
   };
   attributes_value: {
     id: number;
     name: string;
     slug: string;
-    is_filter: number;
-    is_active: number;
-    user_id: null;
+    is_active: string;
+    user_id: string;
     created_at: string;
     updated_at: string;
     pivot: {
-      product_id: number;
-      attribute_id: number;
+      product_id: string;
+      attribute_id: string;
       value: string;
     };
   }[];
   variations: {
     id: number;
-    attribute_id: number;
-    product_id: number;
+    attribute_id: null;
+    product_id: string;
     value: string;
-    quantity: number;
-    sku: string;
-    price: number;
-    sale_price: number;
+    quantity: string;
+    sku: null | string;
+    price: string;
+    sale_price: string;
     date_sale_from: null | string;
     date_sale_to: null | string;
-    update_user_id: number;
+    set_var_ids: string;
+    user_id: string;
     deleted_at: null;
     created_at: string;
     updated_at: string;
-    attribute: {
+    /* TODO: add attributes in a category that this product is in it to see this data model  */
+    attribute: null | {
       id: number;
       name: string;
     };
   }[];
   images: {
     id: number;
-    product_id: number;
+    product_id: string;
     image: string;
-    is_active: number;
+    is_active: string;
     created_at: string;
     updated_at: string;
   }[];
@@ -435,19 +549,16 @@ export interface ProductShow {
     id: number;
     name: string;
     slug: string;
-    primary_image: string;
+    primary_image: null;
   };
-  country: {
-    id: number;
-    fa_name: string;
-  };
+  country: null;
   faqs: {
     id: number;
     subject: string;
     body: string;
     faqable_type: string;
-    faqable_id: number;
-    user_id: number;
+    faqable_id: string;
+    user_id: string;
     deleted_at: null;
     created_at: string;
     updated_at: string;
@@ -460,6 +571,86 @@ export interface ProductShow {
       taggable_type: string;
       taggable_id: number;
       tag_id: number;
+    };
+  }[];
+  collections: {
+    id: number;
+    name: string;
+    slug: string;
+    primary_image: null;
+    quantity_check: boolean;
+    sale_check: boolean;
+    price_check: {
+      id: number;
+      attribute_id: null;
+      product_id: string;
+      value: string;
+      quantity: string;
+      sku: null;
+      price: string;
+      sale_price: string;
+      date_sale_from: null;
+      date_sale_to: null;
+      set_var_ids: null;
+      user_id: string;
+      deleted_at: null;
+      created_at: string;
+      updated_at: string;
+    };
+    rate: number;
+    is_wished: boolean;
+    pivot: {
+      product_id: string;
+      parent_id: string;
+    };
+  }[];
+  singles: {
+    id: number;
+    name: string;
+    slug: string;
+    primary_image: null | string;
+    quantity_check: boolean;
+    sale_check:
+      | boolean
+      | {
+          id: number;
+          attribute_id: null;
+          product_id: string;
+          value: string;
+          quantity: string;
+          sku: string;
+          price: string;
+          sale_price: string;
+          date_sale_from: string;
+          date_sale_to: string;
+          set_var_ids: string;
+          user_id: string;
+          deleted_at: null;
+          created_at: string;
+          updated_at: string;
+        };
+    price_check: {
+      id: number;
+      attribute_id: null;
+      product_id: string;
+      value: string;
+      quantity: string;
+      sku: null;
+      price: string;
+      sale_price: string;
+      date_sale_from: null;
+      date_sale_to: null;
+      set_var_ids: string;
+      user_id: string;
+      deleted_at: null;
+      created_at: string;
+      updated_at: string;
+    };
+    rate: number;
+    is_wished: boolean;
+    pivot: {
+      parent_id: string;
+      product_id: string;
     };
   }[];
 }

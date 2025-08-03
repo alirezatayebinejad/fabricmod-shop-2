@@ -4,27 +4,27 @@ import { cn } from "@/utils/twMerge";
 import { Check, ChevronDown, RefreshCw, X } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
-export type SelectSearchItem = {
+export type SelectSearchItem<T = string> = {
   id: number | string;
   title: string;
   description?: string;
-  helperValue?: string;
+  helperValue?: T;
 };
 
-export type SelectSearchCustomProps = {
-  options?: SelectSearchItem[]; // for static options
+export type SelectSearchCustomProps<T = string> = {
+  options?: SelectSearchItem<T>[]; // for static options
   requestSelectOptions?: (
     searchQuery?: string,
-  ) => Promise<SelectSearchItem[] | undefined>; // for dynamic options (api)
+  ) => Promise<SelectSearchItem<T>[] | undefined>; // for dynamic options (api)
   isSearchFromApi?: boolean;
   isSearchDisable?: boolean;
   placeholder?: string;
-  onChange?: (option: SelectSearchItem[]) => void;
+  onChange?: (option: SelectSearchItem<T>[]) => void;
   isMultiSelect?: boolean;
   isDisable?: boolean;
   title?: string;
-  defaultValue?: SelectSearchItem[];
-  value?: SelectSearchItem[];
+  defaultValue?: SelectSearchItem<T>[];
+  value?: SelectSearchItem<T>[];
   errorMessage?: string;
   endContent?: React.ReactNode;
   isRequired?: boolean;
@@ -38,7 +38,7 @@ export type SelectSearchCustomProps = {
   revalidatorValue?: any; // new prop
 };
 
-const SelectSearchCustom = ({
+const SelectSearchCustom = <T = string,>({
   options,
   requestSelectOptions,
   isSearchFromApi = false,
@@ -56,17 +56,17 @@ const SelectSearchCustom = ({
   classNames,
   showNoOneOption = true,
   revalidatorValue, // new prop
-}: SelectSearchCustomProps) => {
+}: SelectSearchCustomProps<T>) => {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [optionsList, setOptionsList] = useState<
-    SelectSearchItem[] | null | undefined
+    SelectSearchItem<T>[] | null | undefined
   >(options);
   const [filteredOptions, setFilteredOptions] = useState<
-    SelectSearchItem[] | null | undefined
+    SelectSearchItem<T>[] | null | undefined
   >(optionsList);
   const [loadingOptions, setLoadingOptions] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<SelectSearchItem[]>(
+  const [selectedOptions, setSelectedOptions] = useState<SelectSearchItem<T>[]>(
     defaultValue || value || [],
   );
 
@@ -169,7 +169,7 @@ const SelectSearchCustom = ({
     }
   };
 
-  const handleOptionClick = (option: SelectSearchItem) => {
+  const handleOptionClick = (option: SelectSearchItem<T>) => {
     if (option.title === "no one") {
       setSelectedOptions([]);
       setSearchTerm("");

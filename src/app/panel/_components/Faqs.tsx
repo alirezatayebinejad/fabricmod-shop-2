@@ -5,7 +5,7 @@ import InputBasic from "@/components/inputs/InputBasic";
 import ConfirmModal from "@/components/datadisplay/ConfirmModal";
 import { useDisclosure } from "@heroui/modal";
 import apiCRUD from "@/services/apiCRUD";
-import { Faq } from "@/types/apiTypes";
+import { Faq, ProductShow } from "@/types/apiTypes";
 import { Spinner } from "@heroui/spinner";
 import useSWR from "swr";
 import RetryError from "@/components/datadisplay/RetryError";
@@ -16,7 +16,7 @@ type FaqsProps = {
   id?: number;
   mode: "edit" | "show" | "create";
   withButton: boolean; //show a button when clicked and faqsList is not available it will fetch data
-  faqsList?: Faq[];
+  faqsList?: Faq[] | ProductShow["faqs"];
   onFaqsChange?: (faqs: Faq[] | undefined) => void;
   onSaveStatusChange?: (hasUnsavedChanges: boolean) => void; //return true if we have unsaved changes
 };

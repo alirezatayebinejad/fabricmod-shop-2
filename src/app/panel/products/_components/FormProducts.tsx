@@ -6,14 +6,20 @@ import apiCRUD from "@/services/apiCRUD";
 import useMyForm from "@/hooks/useMyForm";
 import InputBasic from "@/components/inputs/InputBasic";
 import RetryError from "@/components/datadisplay/RetryError";
-import { BrandsIndex, CategoryShow, ProductShow } from "@/types/apiTypes";
+import {
+  BrandsIndex,
+  CategoryIndex,
+  CategoryShow,
+  ProductShow,
+  ProductsWithVariationIndex,
+} from "@/types/apiTypes";
 import SwitchWrapper from "@/components/inputs/SwitchWrapper";
 import SelectSearchCustom, {
   SelectSearchItem,
 } from "@/components/inputs/SelectSearchCustom";
 import { useFiltersContext } from "@/contexts/SearchFilters";
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, X, Eye } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import TextAreaCustom from "@/components/inputs/TextAreaCustom";
@@ -21,11 +27,14 @@ import DatePickerWrapper from "@/components/inputs/DatePickerWrapper";
 import Faqs from "@/app/panel/_components/Faqs";
 import countries from "@/constants/countries.json";
 import { cn } from "@/utils/twMerge";
-import InputList from "@/components/inputs/InputList"; // Importing InputList
+import InputList from "@/components/inputs/InputList";
 import ConfirmModal from "@/components/datadisplay/ConfirmModal";
 import { useRouter } from "next/navigation";
 import DropZone from "@/components/inputs/DropZone";
-import { currency, weight } from "@/constants/staticValues";
+import { weight } from "@/constants/staticValues";
+import { useDisclosure } from "@heroui/modal";
+import ModalWrapper from "@/components/datadisplay/ModalWrapper";
+import TableGenerate from "@/components/datadisplay/TableGenerate";
 const TextEditorCK = dynamic(() => import("@/components/inputs/TextEditorCK"), {
   ssr: false,
 });
@@ -57,14 +66,29 @@ export default function FormProducts({
         urlSuffix: url,
       }),
   );
+  const prod: ProductShow = prodData?.data;
 
   const { filters } = useFiltersContext();
   const { mutate } = useSWRConfig();
+  const router = useRouter();
+  const seeModal = useDisclosure();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const router = useRouter();
-  const prod: ProductShow = prodData?.data;
   const [selectedCateg, setSelectedCateg] = useState<CategoryShow>();
+  const [selectedData, setSelectedData] =
+    useState<SelectSearchItem<ProductsWithVariationIndex["data"][number]>>();
+
+  const [selectedSetProducts, setSelectedSetProducts] = useState<
+    SelectSearchItem<ProductsWithVariationIndex["data"][number]>[]
+  >([]);
+
+  // Initialize selectedSetProducts when prod data is loaded
+  useEffect(() => {
+    if (prod?.singles && isEditMode) {
+      // This would need to be populated with actual product data
+      // For now, we'll keep it empty and let the user re-select
+    }
+  }, [prod, isEditMode]);
 
   const {
     values,
@@ -88,10 +112,9 @@ export default function FormProducts({
       seo_title: prod?.seo_title || "",
       seo_description: prod?.seo_description || "",
       content: prod?.content || undefined,
-      is_send: prod?.is_send?.toString() || "0",
-      is_external_service: prod?.is_external_service?.toString() || "0",
-      delivery_amount_per_product:
-        prod?.delivery_amount_per_product || undefined,
+      is_offer: prod?.is_offer?.toString() || "0",
+      is_set: prod?.is_set?.toString() || "0",
+      set_ids: prod?.singles?.map((s) => s.id.toString()) || [],
       is_active: prod?.is_active?.toString() || "1",
       category_id: prod?.category_id || undefined,
       weight: prod?.weight || undefined,
@@ -118,6 +141,8 @@ export default function FormProducts({
           date_sale_from: v.date_sale_from || undefined,
           date_sale_to: v.date_sale_to || undefined,
           sku: v.sku || undefined,
+          var_ids:
+            v.set_var_ids?.split("-").filter((i) => i !== "") || undefined,
         })) || undefined,
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
@@ -134,6 +159,7 @@ export default function FormProducts({
       });
       if (res?.message) setErrors(res.message);
       if (res?.status === "success") {
+        setHasUnsavedChanges(false);
         clearForm();
         onClose?.();
         if (isModal)
@@ -155,6 +181,7 @@ export default function FormProducts({
 
   const handleConfirmSubmit = () => {
     setIsConfirmModalOpen(false);
+    setHasUnsavedChanges(false);
     handleSubmit();
   };
 
@@ -269,15 +296,6 @@ export default function FormProducts({
             placeholder="انتخاب"
           />
           <InputBasic
-            name="delivery_amount_per_product"
-            label={"هزینه تحویل به ازای هر محصول" + ` ${currency}`}
-            type="number"
-            value={values.delivery_amount_per_product?.toString() || ""}
-            onChange={handleChange("delivery_amount_per_product")}
-            errorMessage={errors.delivery_amount_per_product}
-            isDisabled={isShowMode}
-          />
-          <InputBasic
             name="weight"
             label={"وزن" + ` ${weight}`}
             type="number"
@@ -340,17 +358,30 @@ export default function FormProducts({
             errorMessage={errors.tags}
             isDisabled={isShowMode}
           />
+
+          <div className="col-span-full mb-5">
+            <SwitchWrapper
+              label="محصول ست:"
+              onChange={handleChange("is_set")}
+              isSelected={values.is_set}
+              errorMessage={errors?.is_set}
+              isDisabled={isShowMode}
+            />
+          </div>
           <SelectSearchCustom
             title="دسته‌بندی‌ها"
+            revalidatorValue={values.is_set}
             requestSelectOptions={async () => {
               const categoriesRes = await apiCRUD({
-                urlSuffix: `admin-panel/categories?per_page=all&type=product`,
+                urlSuffix: `admin-panel/categories?per_page=all&type=product&is_set=${values.is_set == "1" ? "1" : "0"}`,
               });
               if (categoriesRes?.status === "success") {
-                return categoriesRes.data?.categories?.map((item: any) => ({
-                  id: item.id,
-                  title: item.name,
-                }));
+                return categoriesRes.data?.categories?.map(
+                  (item: CategoryIndex) => ({
+                    id: item.id,
+                    title: item.name,
+                  }),
+                );
               }
               return [];
             }}
@@ -369,7 +400,7 @@ export default function FormProducts({
               setValues((prev) => ({
                 ...prev,
                 category_id: selected?.[0]?.id
-                  ? parseInt(selected[0].id.toString())
+                  ? selected[0].id.toString()
                   : undefined,
                 attr_ids: {},
               }));
@@ -377,6 +408,128 @@ export default function FormProducts({
             errorMessage={errors.category_id}
             placeholder="انتخاب"
           />
+          {values.is_set == "1" && (
+            <>
+              <SelectSearchCustom<ProductsWithVariationIndex["data"][number]>
+                title="محصول های ست"
+                isSearchFromApi
+                isMultiSelect
+                requestSelectOptions={async (search) => {
+                  const res = await apiCRUD({
+                    urlSuffix: `admin-panel/product/variations?per_page=10&is_set=0${search ? "&search=" + search : ""}`,
+                  });
+                  if (res?.status === "success") {
+                    const prods = res.data?.products?.data?.map(
+                      (item: ProductsWithVariationIndex["data"][number]) => ({
+                        id: item.id,
+                        title: item.name,
+                        helperValue: item,
+                      }),
+                    );
+
+                    return prods;
+                  }
+                  return [];
+                }}
+                isDisable={isShowMode}
+                value={
+                  selectedSetProducts?.length > 0
+                    ? selectedSetProducts?.map((s) => ({
+                        id: s.id,
+                        title: s.title,
+                        helperValue: s.helperValue,
+                      }))
+                    : []
+                }
+                onChange={(selected) => {
+                  setValues((prev) => ({
+                    ...prev,
+                    set_ids: selected?.map((s) => s.id.toString()),
+                  }));
+                  setSelectedSetProducts(selected);
+                }}
+                errorMessage={errors.category_id}
+                placeholder="انتخاب"
+              />
+              {values.set_ids?.length > 0 && (
+                <div className="col-span-full">
+                  <TableGenerate
+                    data={{
+                      headers: [
+                        { content: "عکس" },
+                        { content: "نام" },
+                        { content: <div></div> },
+                      ],
+                      body: selectedSetProducts?.map((prod) => ({
+                        cells: [
+                          {
+                            data: (
+                              <div className="flex justify-center">
+                                <Image
+                                  src={
+                                    prod.helperValue?.primary_image
+                                      ? process.env.NEXT_PUBLIC_IMG_BASE +
+                                        prod.helperValue?.primary_image
+                                      : "/images/imageplaceholder.png"
+                                  }
+                                  alt={prod.title}
+                                  width={82}
+                                  height={64}
+                                  className="rounded-[8px]"
+                                />
+                              </div>
+                            ),
+                          },
+                          { data: <p>{prod.title}</p> },
+
+                          {
+                            data: (
+                              <div className="flex min-w-[40px] justify-end gap-1">
+                                <Button
+                                  isIconOnly
+                                  size="sm"
+                                  onPress={() => {
+                                    setSelectedData(prod);
+                                    seeModal.onOpen();
+                                  }}
+                                  className="bg-boxBg300"
+                                >
+                                  <Eye
+                                    color="var(--TextColor)"
+                                    className="w-4"
+                                  />
+                                </Button>
+                                <Button
+                                  isIconOnly
+                                  size="sm"
+                                  onPress={() => {
+                                    setValues((prev) => ({
+                                      ...prev,
+                                      set_ids: prev.set_ids.filter(
+                                        (id: string) =>
+                                          id !== prod.id.toString(),
+                                      ),
+                                    }));
+                                    setSelectedSetProducts((prev) =>
+                                      prev.filter((p) => p.id !== prod.id),
+                                    );
+                                  }}
+                                  className="bg-boxBg300"
+                                >
+                                  <X className="w-4 text-TextColor" />
+                                </Button>
+                              </div>
+                            ),
+                          },
+                        ],
+                      })),
+                    }}
+                    stripedRows
+                  />
+                </div>
+              )}
+            </>
+          )}
           <SelectSearchCustom
             title="ویژگی ها"
             placeholder={
@@ -391,7 +544,7 @@ export default function FormProducts({
               if (catShowRes?.status === "success") {
                 const attrs = (catShowRes?.data as CategoryShow)?.attributes
                   ?.map((item) => {
-                    if (!item.pivot.is_variation) {
+                    if (item.pivot.is_variation == "0") {
                       return {
                         id: item.id.toString(),
                         title: item.name,
@@ -482,7 +635,7 @@ export default function FormProducts({
             {/* currently we have one variation_attr in the selected category */}
             <h2 className="mb-2">
               متغیر ها: ({" "}
-              {selectedCateg?.variation_attr?.[0]?.name ||
+              {selectedCateg?.variation_attr?.name ||
                 prod?.variations?.[0]?.attribute?.name}{" "}
               )
             </h2>
@@ -677,6 +830,74 @@ export default function FormProducts({
                       isDisabled={isShowMode}
                     />
                   </div>
+                  {/* If is_set, show var_ids select for each set product */}
+                  {values.is_set == "1" && selectedSetProducts.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-4">
+                      {selectedSetProducts.map((setProd, setIdx) => (
+                        <div
+                          key={setProd.id}
+                          className="flex min-w-[180px] flex-col"
+                        >
+                          <label className="mb-1 text-xs font-medium">
+                            متغیر محصول ست: {setProd.title}
+                          </label>
+                          <SelectSearchCustom
+                            title=""
+                            options={
+                              setProd.helperValue?.variations?.map((v) => ({
+                                id: v.id,
+                                title: v.value || "بی نام",
+                              })) || []
+                            }
+                            value={
+                              values.variations?.[i]?.var_ids?.[setIdx]
+                                ? [
+                                    {
+                                      id: values.variations[i].var_ids[setIdx],
+                                      title:
+                                        setProd.helperValue?.variations?.find(
+                                          (v) =>
+                                            v.id?.toString() ===
+                                            values.variations[i].var_ids[
+                                              setIdx
+                                            ]?.toString(),
+                                        )?.value || "",
+                                    },
+                                  ]
+                                : []
+                            }
+                            isDisable={isShowMode}
+                            onChange={(selected) => {
+                              setValues((prev) => {
+                                const variations = [...(prev.variations || [])];
+                                if (!variations[i].var_ids) {
+                                  variations[i].var_ids = [];
+                                }
+                                variations[i].var_ids[setIdx] =
+                                  selected?.[0]?.id?.toString();
+                                return {
+                                  ...prev,
+                                  variations,
+                                };
+                              });
+                            }}
+                            placeholder="انتخاب متغیر"
+                          />
+                          {(errors.variations as any)?.[
+                            `variations.${i}.var_ids.${setIdx}`
+                          ] && (
+                            <p className="mb-5 text-destructive-foreground">
+                              {
+                                (errors.variations as any)[
+                                  `variations.${i}.var_ids.${setIdx}`
+                                ]
+                              }
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))
             ) : (
@@ -689,6 +910,7 @@ export default function FormProducts({
                 {errors.variations}
               </p>
             )}
+
             {!isShowMode && (
               <Button
                 type="button"
@@ -706,6 +928,10 @@ export default function FormProducts({
                         date_sale_from: "",
                         date_sale_to: "",
                         sku: "",
+                        var_ids:
+                          values.is_set == "1" && selectedSetProducts.length > 0
+                            ? Array(selectedSetProducts.length).fill("")
+                            : [],
                       },
                     ],
                   }))
@@ -720,19 +946,12 @@ export default function FormProducts({
           <div className="col-span-full flex flex-col gap-3">
             <div className="flex flex-wrap items-center justify-evenly gap-5">
               <SwitchWrapper
-                label="ارسال:"
-                onChange={handleChange("is_send")}
-                isSelected={values.is_send}
-                errorMessage={errors?.is_send}
+                label="پیشنهاد ویژه:"
+                onChange={handleChange("is_offer")}
+                isSelected={values.is_offer}
+                errorMessage={errors?.is_offer}
                 isDisabled={isShowMode}
               />
-              <SwitchWrapper
-                label="خدمات خارجی:"
-                onChange={handleChange("is_external_service")}
-                isSelected={values.is_external_service}
-                errorMessage={errors?.is_external_service}
-                isDisabled={isShowMode}
-              />{" "}
               <SwitchWrapper
                 label="وضعیت:"
                 onChange={handleChange("is_active")}
@@ -751,7 +970,7 @@ export default function FormProducts({
                           <p>عکس اصلي:</p>
                           <Image
                             src={
-                              prod.primary_image
+                              prod?.primary_image
                                 ? process.env.NEXT_PUBLIC_IMG_BASE +
                                   prod.primary_image
                                 : "/images/imageplaceholder.png"
@@ -840,7 +1059,7 @@ export default function FormProducts({
                           })),
                         }));
                     }}
-                    faqsList={isShowMode ? prod.faqs : undefined}
+                    faqsList={isShowMode ? prod?.faqs : undefined}
                     onSaveStatusChange={setHasUnsavedChanges}
                     type="product"
                     mode={isEditMode ? "edit" : isShowMode ? "show" : "create"}
@@ -912,6 +1131,24 @@ export default function FormProducts({
         size="sm"
         onClose={() => setIsConfirmModalOpen(false)}
       />
+      {
+        <ModalWrapper
+          disclosures={{
+            onOpen: seeModal.onOpen,
+            onOpenChange: seeModal.onOpenChange,
+            isOpen: seeModal.isOpen,
+          }}
+          size="5xl"
+          modalHeader={<h2>مشاهده محصول</h2>}
+          modalBody={
+            <FormProducts
+              onClose={() => seeModal.onClose()}
+              isShowMode={true}
+              productId={selectedData?.id?.toString()}
+            />
+          }
+        />
+      }
     </>
   );
 }
