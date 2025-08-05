@@ -990,6 +990,7 @@ export interface Setting {
     longitude: string;
   }[];
   theme_colors: Theme;
+  whole_sale_options: string;
   benefits_buy: {
     title: string;
     description: string;
