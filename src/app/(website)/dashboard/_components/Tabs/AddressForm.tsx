@@ -10,23 +10,33 @@ import { Address, City } from "@/types/apiTypes";
 import provinces from "@/constants/provinces.json";
 import TextAreaCustom from "@/components/inputs/TextAreaCustom";
 import { useEffect, useState } from "react";
+
+type ForOthersProps = {
+  user_id: string | number;
+  addressId?: string | number;
+};
+
 type Props = {
   onClose?: () => void;
   isEditMode?: boolean;
   isShowMode?: boolean;
   selectedData?: Address;
   onSuccess?: () => void;
+  forOthers?: ForOthersProps;
 };
+
 export default function AddressForm({
   onClose,
   isEditMode = false,
   isShowMode = false,
   selectedData,
   onSuccess,
+  forOthers,
 }: Props) {
   const { mutate } = useSWRConfig();
   const [cities, setCities] = useState<City[]>([]);
   const [loadingCities, setLoadingCities] = useState<boolean>(false);
+
   const {
     values,
     setValues,
@@ -56,8 +66,26 @@ export default function AddressForm({
           : {}),
       };
 
+      // Determine URL and mutate key based on forOthers
+      let urlSuffix = "";
+      let mutateKey = "";
+      if (forOthers) {
+        if (isEditMode || isShowMode) {
+          // Edit or show mode: addressId is required
+          urlSuffix = `admin-panel/user-addresses/${forOthers.addressId}`;
+          mutateKey = `admin-panel/user-addresses/${forOthers.user_id}`;
+        } else {
+          // Create mode: user_id is required
+          urlSuffix = `admin-panel/user-addresses/${forOthers.user_id}`;
+          mutateKey = `admin-panel/user-addresses/${forOthers.user_id}`;
+        }
+      } else {
+        urlSuffix = `next/profile/addresses${isEditMode ? `/${selectedData?.id}` : ""}`;
+        mutateKey = `next/profile/addresses`;
+      }
+
       const res = await apiCRUD({
-        urlSuffix: `next/profile/addresses${isEditMode ? `/${selectedData?.id}` : ""}`,
+        urlSuffix,
         method: "POST",
         data: { ...payload, _method: isEditMode ? "put" : "post" },
       });
@@ -65,10 +93,11 @@ export default function AddressForm({
       if (res?.status === "success") {
         onSuccess?.();
         onClose?.();
-        mutate?.(`next/profile/addresses`);
+        mutate?.(mutateKey);
       }
     },
   );
+
   useEffect(() => {
     if (values.province_id) {
       (async () => {

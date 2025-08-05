@@ -1042,24 +1042,29 @@ interface ThemeList {
   accentColor4Foreground: string;
 }
 
+/* TODO: not sure if correct */
 export interface OrderIndex {
   id: number;
-  user_id: number;
-  address_id: number;
-  shipping_method_id: number;
-  delivery_serial: null;
-  delivery_amount: number;
-  coupon_id: number;
-  coupon_amount: number;
-  total_amount: number;
-  paying_amount: number;
-  total_weight: number;
+  uuid: null | string;
+  is_quick: string;
+  user_id: string;
+  address_id: string;
+  shipping_method_id: string;
+  delivery_serial: null | string;
+  delivery_amount: string;
+  coupon_id: null | string;
+  coupon_amount: string;
+  total_amount: string;
+  paying_amount: string;
+  total_weight: string;
   payment_status: string;
   status: string;
-  description: null;
+  json: null | string;
+  description: null | string;
+  deleted_at: null | string;
   created_at: string;
   updated_at: string;
-  items_count: number;
+  items_count: string;
   user: {
     id: number;
     name: string;
@@ -1067,21 +1072,26 @@ export interface OrderIndex {
   };
 }
 
+/* TODO: not sure if correct */
 export interface OrderShow {
   id: number;
-  user_id: number;
-  address_id: number;
-  shipping_method_id: number;
+  uuid: null;
+  is_quick: string;
+  user_id: string;
+  address_id: string;
+  shipping_method_id: string;
   delivery_serial: null;
-  delivery_amount: number;
-  coupon_id: number;
-  coupon_amount: number;
-  total_amount: number;
-  paying_amount: number;
-  total_weight: number;
-  payment_status: "pending" | "success" | "rejected";
-  status: "pending" | "payout" | "prepare" | "send" | "end" | "cancel";
+  delivery_amount: string;
+  coupon_id: null;
+  coupon_amount: string;
+  total_amount: string;
+  paying_amount: string;
+  total_weight: string;
+  payment_status: string;
+  status: string;
+  json: null;
   description: null;
+  deleted_at: null;
   created_at: string;
   updated_at: string;
   user: {
@@ -1091,62 +1101,30 @@ export interface OrderShow {
   };
   items: {
     id: number;
-    order_id: number;
-    product_id: number;
-    variation_id: number;
-    price: number;
-    quantity: number;
-    created_at: string;
-    updated_at: string;
+    order_id: string;
+    product_id: string;
+    price: string;
+    paying_price: string;
+    quantity: string;
+    json: string;
+    sub_total: string;
+    created_at: null;
+    updated_at: null;
     product: {
       id: number;
       name: string;
       slug: string;
-      quantity_check: boolean;
-      sale_check: boolean;
-      price_check:
-        | {
-            id: number;
-            attribute_id: number;
-            product_id: number;
-            value: string;
-            quantity: number;
-            sku: string;
-            price: number;
-            sale_price: number;
-            date_sale_from: null;
-            date_sale_to: null;
-            user_id: number;
-            deleted_at: null;
-            created_at: string;
-            updated_at: string;
-          }
-        | false;
       rate: number;
-    };
-    variation: {
-      id: number;
-      attribute_id: number;
-      product_id: number;
-      value: string;
-      quantity: number;
-      sku: string;
-      price: number;
-      sale_price: number;
-      date_sale_from: null;
-      date_sale_to: null;
-      user_id: number;
-      deleted_at: null;
-      created_at: string;
-      updated_at: string;
+      is_wished: boolean;
+      sale_check: boolean;
     };
   }[];
   transactions: {
     id: number;
-    user_id: number;
-    order_id: number;
-    amount: number;
-    ref_id: string;
+    user_id: string;
+    order_id: string;
+    amount: string;
+    ref_id: null;
     token: string;
     description: null;
     gateway_name: string;
@@ -1160,28 +1138,47 @@ export interface OrderShow {
     receiver_name: string;
     cellphone: string;
     address: string;
-    postal_code: null;
-    province_id: number;
-    city_id: number;
-    user_id: number;
-    longitude: null;
-    latitude: null;
+    postal_code: string;
+    province_id: string;
+    city_id: string;
+    municipality_zone_id: null;
+    user_id: string;
+    longitude: string;
+    latitude: string;
+    addinational: null;
     deleted_at: null;
     created_at: string;
     updated_at: string;
   };
-  coupon: {
-    id: number;
+  coupon: null | {
     name: string;
     code: string;
-    type: string;
-    value: number;
-    max_amount: number;
-    expire_at: string;
-    is_multi: number;
-    description: null;
-    created_at: string;
-    updated_at: string;
+    value: string;
+  };
+}
+
+export interface Transactions {
+  id: number;
+  user_id: string;
+  order_id: string;
+  amount: string;
+  ref_id: null;
+  token: string;
+  description: null;
+  gateway_name: "cash" | "card" | "admin";
+  status: "pending" | "success";
+  created_at: string;
+  updated_at: string;
+  user: {
+    id: number;
+    name: string;
+    cellphone: string;
+  };
+  order: {
+    id: number;
+    uuid: null | string;
+    payment_status: string;
+    status: string;
   };
 }
 
@@ -1315,7 +1312,7 @@ export interface ProfileSite {
   };
 }
 
-export interface Transactions {
+export interface TransactionsSite {
   transactions: {
     id: number;
     user_id: number;
@@ -2224,6 +2221,24 @@ export interface OrderShowSite {
   };
 }
 
+/* TODO: not sure */
+export interface AddressUser {
+  id: number;
+  title: string;
+  receiver_name: null | string;
+  cellphone: string;
+  address: string;
+  postal_code: null | string;
+  province_id: string | number;
+  city_id: string | number;
+  user_id: string | number;
+  longitude: null | string;
+  latitude: null | string;
+  addinational: null;
+  deleted_at: null;
+  created_at: string;
+  updated_at: string;
+}
 export interface Address {
   id: number;
   title: string;

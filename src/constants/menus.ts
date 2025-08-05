@@ -140,6 +140,14 @@ export const panelMenus: PanelMenu[] = [
   },
   {
     id: 10,
+    name: "تراکنش ها",
+    nameEn: "transactions",
+    link: "/panel/transactions",
+    iconSrc: "/icons/panel/transactions.svg",
+    subMenu: [],
+  },
+  {
+    id: 11,
     name: "روش های ارسال",
     nameEn: "shippings",
     link: "/panel/shippings",
@@ -147,7 +155,7 @@ export const panelMenus: PanelMenu[] = [
     subMenu: [],
   },
   {
-    id: 11,
+    id: 12,
     name: "کد تخفیف",
     nameEn: "coupons",
     link: "/panel/coupons",
@@ -155,7 +163,7 @@ export const panelMenus: PanelMenu[] = [
     subMenu: [],
   },
   {
-    id: 12,
+    id: 13,
     name: "پست ها",
     nameEn: "posts",
     link: "#",
@@ -180,7 +188,7 @@ export const panelMenus: PanelMenu[] = [
     ],
   },
   {
-    id: 13,
+    id: 14,
     name: "کامنت ها",
     nameEn: "comments",
     link: "/panel/comments",
@@ -188,7 +196,7 @@ export const panelMenus: PanelMenu[] = [
     subMenu: [],
   },
   {
-    id: 14,
+    id: 15,
     name: "تنظیمات",
     nameEn: "settings",
     link: "#",

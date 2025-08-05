@@ -14,6 +14,7 @@ export const routePermissions: { [key: string]: string } = {
   "/panel/posts/write": "posts-create",
   "/panel/posts/edit": "posts-edit",
   "/panel/orders": "orders-list",
+  "/panel/transactions": "transactions-list",
   "/panel/pages": "pages-list",
   "/panel/shippings": "shippings-list",
   "/panel/comments": "comments-list",
@@ -56,4 +57,6 @@ export const innerPermissions = {
   settingCache: "setting-cache",
   settingInfo: "setting-info",
   commentsEdit: "comments-edit",
+  transactionsEdit: "transactions-edit",
+  transactionsCreate: "transactions-create",
 };

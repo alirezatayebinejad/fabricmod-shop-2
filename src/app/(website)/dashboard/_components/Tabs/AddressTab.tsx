@@ -11,15 +11,25 @@ import ConfirmModal from "@/components/datadisplay/ConfirmModal";
 import { X } from "lucide-react";
 import AddressForm from "@/app/(website)/dashboard/_components/Tabs/AddressForm";
 
-export default function AddressTab() {
+interface AddressTabProps {
+  user_id?: number;
+  isSelectable?: boolean;
+  onSelect?: (address: Address) => void;
+}
+
+export default function AddressTab(props: AddressTabProps) {
+  const { user_id, isSelectable, onSelect } = props;
+
   const { data, error, isLoading, mutate } = useSWR(
-    `next/profile/addresses`,
-    (url) =>
+    user_id
+      ? `admin-panel/user-addresses/${user_id}`
+      : `next/profile/addresses`,
+    (url: string) =>
       apiCRUD({
         urlSuffix: url,
       }),
   );
-  const addresses: Address[] = data?.data;
+  const addresses: Address[] = data?.data?.addresses;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;
@@ -34,8 +44,11 @@ export default function AddressTab() {
 
   const handleDelete = async () => {
     if (deleteId !== null) {
+      const deleteUrl = user_id
+        ? `admin-panel/user-addresses/${deleteId}`
+        : `next/profile/addresses/${deleteId}`;
       const response = await apiCRUD({
-        urlSuffix: `next/profile/addresses/${deleteId}`,
+        urlSuffix: deleteUrl,
         method: "POST",
         data: { _method: "delete" },
       });
@@ -69,7 +82,10 @@ export default function AddressTab() {
   return (
     <div className="flex flex-col space-y-4 p-4">
       <Button
-        onPress={() => setIsFormModalOpen(true)}
+        onPress={() => {
+          setSelectedAddress(undefined);
+          setIsFormModalOpen(true);
+        }}
         color="secondary"
         className="h-[40px] rounded-[5px] bg-accent-2 p-[0_30px] text-[16px] font-[600] text-accent-2-foreground"
       >
@@ -78,30 +94,45 @@ export default function AddressTab() {
       {addresses?.map((address) => (
         <div
           key={address.id}
-          className="relative rounded-lg border-2 border-border bg-boxBg200 p-4"
+          className={`relative rounded-lg border-2 border-border bg-boxBg200 p-4 ${
+            isSelectable ? "cursor-pointer hover:border-primary" : ""
+          }`}
+          onClick={
+            isSelectable
+              ? () => {
+                  if (onSelect) onSelect(address);
+                }
+              : undefined
+          }
         >
-          <div className="absolute left-2 top-2 flex items-center gap-2">
-            <Button
-              variant="solid"
-              className="gap-1 bg-destructive text-destructive-foreground"
-              size="sm"
-              startContent={<X className="w-4" />}
-              onClick={() => {
-                setDeleteId(address.id);
-                setIsConfirmModalOpen(true);
-              }}
-            >
-              حذف
-            </Button>
-            <Button
-              variant="solid"
-              className="gap-1 bg-primary text-primary-foreground"
-              size="sm"
-              onClick={() => handleEdit(address)}
-            >
-              ویرایش
-            </Button>
-          </div>
+          {!isSelectable && (
+            <div className="absolute left-2 top-2 flex items-center gap-2">
+              <Button
+                variant="solid"
+                className="gap-1 bg-destructive text-destructive-foreground"
+                size="sm"
+                startContent={<X className="w-4" />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteId(address.id);
+                  setIsConfirmModalOpen(true);
+                }}
+              >
+                حذف
+              </Button>
+              <Button
+                variant="solid"
+                className="gap-1 bg-primary text-primary-foreground"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(address);
+                }}
+              >
+                ویرایش
+              </Button>
+            </div>
+          )}
           <h3 className="text-lg font-semibold">{address.title}</h3>
           <p className="text-TextLow">گیرنده: {address.receiver_name}</p>
           <p className="text-TextLow">شماره تماس: {address.cellphone}</p>
@@ -112,7 +143,8 @@ export default function AddressTab() {
               variant="solid"
               className="mt-2"
               size="sm"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedLocation({
                   lat: parseFloat(address.latitude || "0"),
                   long: parseFloat(address.longitude || "0"),
@@ -121,6 +153,19 @@ export default function AddressTab() {
               }}
             >
               نمایش نقشه
+            </Button>
+          )}
+          {isSelectable && (
+            <Button
+              variant="solid"
+              className="mt-2"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onSelect) onSelect(address);
+              }}
+            >
+              انتخاب این آدرس
             </Button>
           )}
         </div>
@@ -182,6 +227,14 @@ export default function AddressTab() {
             onClose={() => setIsFormModalOpen(false)}
             selectedData={selectedAddress}
             isEditMode={selectedAddress ? true : false}
+            forOthers={
+              user_id
+                ? {
+                    user_id: user_id,
+                    addressId: selectedAddress?.id,
+                  }
+                : undefined
+            }
           />
         }
       />

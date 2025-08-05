@@ -1,10 +1,14 @@
 "use client";
 
+import FormOrders from "@/app/panel/orders/_components/FormOrders";
+import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
 import { useFiltersContext } from "@/contexts/SearchFilters";
 import apiCRUD from "@/services/apiCRUD";
 import { ShippingmethodIndex } from "@/types/apiTypes";
-import { useEffect, useState } from "react";
+import { Button } from "@heroui/button";
+import { useDisclosure } from "@heroui/modal";
+import { useState } from "react";
 
 export default function HeaderOrders() {
   const { changeFilters, getFilterValue, deleteFilter } = useFiltersContext();
@@ -15,6 +19,7 @@ export default function HeaderOrders() {
   const [shippingMethods, setShippingMethods] = useState<ShippingmethodIndex[]>(
     [],
   );
+  const createModal = useDisclosure();
 
   const requestSelectOptions = async () => {
     const shippingData = await apiCRUD({
@@ -32,17 +37,30 @@ export default function HeaderOrders() {
     return [];
   };
 
-  useEffect(() => {
-    const fetchShippingMethods = async () => {
-      await requestSelectOptions();
-    };
-
-    fetchShippingMethods();
-  }, []);
-
   return (
     <div className="mb-6 flex flex-col gap-5">
-      <div className="flex flex-wrap justify-between gap-4"></div>
+      <div className="flex flex-wrap justify-between gap-4">
+        <div>
+          {" "}
+          <Button
+            onPress={() => createModal.onOpen()}
+            className="min-h-full !rounded-[5px] border-border"
+            variant="bordered"
+          >
+            ساخت سفارش جديد
+          </Button>
+        </div>
+        <ModalWrapper
+          disclosures={{
+            onOpen: createModal.onOpen,
+            onOpenChange: createModal.onOpenChange,
+            isOpen: createModal.isOpen,
+          }}
+          size="5xl"
+          modalHeader={<h2>ویرایش سفارش</h2>}
+          modalBody={<FormOrders onClose={() => createModal.onClose()} />}
+        />
+      </div>
 
       <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
         <SelectSearchCustom

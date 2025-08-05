@@ -2,7 +2,7 @@ import TableGenerate from "@/components/datadisplay/TableGenerate";
 import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
 import apiCRUD from "@/services/apiCRUD";
 import useSWR from "swr";
-import { Transactions } from "@/types/apiTypes";
+import { TransactionsSite } from "@/types/apiTypes";
 import { useFiltersContext } from "@/contexts/SearchFilters";
 import { dateConvert } from "@/utils/dateConvert";
 import { currency } from "@/constants/staticValues";
@@ -16,7 +16,7 @@ export default function PaymentsTab() {
         urlSuffix: url,
       }),
   );
-  const transactions: Transactions = data?.data;
+  const transactions: TransactionsSite = data?.data;
 
   return (
     <div className="w-full px-3 pb-12">

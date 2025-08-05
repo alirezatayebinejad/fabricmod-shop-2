@@ -1,67 +1,216 @@
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@heroui/button";
-import useSWR, { useSWRConfig } from "swr";
-import { Spinner } from "@heroui/spinner";
 import apiCRUD from "@/services/apiCRUD";
 import useMyForm from "@/hooks/useMyForm";
 import InputBasic from "@/components/inputs/InputBasic";
-import RetryError from "@/components/datadisplay/RetryError";
-import { OrderIndex, OrderShow } from "@/types/apiTypes";
-import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
+import SelectSearchCustom, {
+  SelectSearchItem,
+} from "@/components/inputs/SelectSearchCustom";
 import TextAreaCustom from "@/components/inputs/TextAreaCustom";
+import useSWR, { useSWRConfig } from "swr";
+import SwitchWrapper from "@/components/inputs/SwitchWrapper";
+import AddressTab from "@/app/(website)/dashboard/_components/Tabs/AddressTab";
+import {
+  Address,
+  AddressUser,
+  OrderIndex,
+  OrderShow,
+  ProductIndex,
+  UserIndex,
+} from "@/types/apiTypes";
+import RetryError from "@/components/datadisplay/RetryError";
+import { Spinner } from "@heroui/spinner";
 import { useFiltersContext } from "@/contexts/SearchFilters";
-import TableGenerate from "@/components/datadisplay/TableGenerate";
-import { dateConvert } from "@/utils/dateConvert";
-import { currency } from "@/constants/staticValues";
-import formatPrice from "@/utils/formatPrice";
 
 type Props = {
   onClose: () => void;
   selectedData?: OrderIndex;
   isShowMode?: boolean;
+  isEditMode?: boolean;
 };
+
+interface ProductWithQty {
+  product_id: string;
+  qty: string;
+}
 
 export default function FormOrders({
   onClose,
   selectedData,
   isShowMode,
+  isEditMode,
 }: Props) {
+  const { filters } = useFiltersContext();
+  const { mutate } = useSWRConfig();
   const {
     data: orderData,
     error: orderError,
     isLoading: orderLoading,
-    mutate: mutateOrder,
-  } = useSWR(`admin-panel/orders/` + selectedData?.id, (url) =>
-    apiCRUD({
-      urlSuffix: url,
-    }),
+    mutate: mutateorder,
+  } = useSWR(
+    isEditMode || isShowMode
+      ? `admin-panel/orders/` + selectedData?.id
+      : undefined,
+    (url) =>
+      apiCRUD({
+        urlSuffix: url,
+      }),
   );
-  const { filters } = useFiltersContext();
-  const { mutate } = useSWRConfig();
+  const order: OrderShow | undefined = orderData?.data;
 
-  const order: OrderShow = orderData?.data;
+  // Always start at step 2 in edit mode
+  const [step, setStep] = useState(isEditMode ? 2 : isShowMode ? 2 : 0);
+  const [selectedUser, setSelectedUser] = useState<SelectSearchItem | null>(
+    null,
+  );
+  const [selectedAddress, setSelectedAddress] = useState<
+    AddressUser | Address | null
+  >(null);
+  const [selectedProducts, setSelectedProducts] = useState<SelectSearchItem[]>(
+    [],
+  );
 
-  const { values, errors, loading, handleChange, handleSubmit, setErrors } =
-    useMyForm(
-      {
-        status: order?.status,
-        payment_status: order?.payment_status,
-        total_weight: order?.total_weight,
-        delivery_serial: order?.delivery_serial,
-        description: order?.description,
-      },
-      async (formValues) => {
-        const res = await apiCRUD({
-          urlSuffix: `admin-panel/orders/${selectedData?.id}`,
-          method: "PUT",
-          data: formValues,
+  const addressRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isEditMode && order) {
+      if (order.user) {
+        setSelectedUser({
+          id: order.user.id,
+          title: order.user.name + " - " + order.user.cellphone,
         });
-        if (res?.message) setErrors(res.message);
-        if (res?.status === "success") {
-          onClose();
-          mutate(`admin-panel/orders${filters ? "?" + filters : filters}`);
+      }
+      if (order.address) {
+        setSelectedAddress({
+          ...order.address,
+        });
+      }
+      if (order.items) {
+        setSelectedProducts(
+          order.items.map((p: OrderShow["items"][number]) => ({
+            id: p.product.id,
+            title: p.product.name,
+          })),
+        );
+      }
+      // Always set step to 2 in edit mode
+      setStep(2);
+    }
+    if (!isEditMode) {
+      setSelectedUser(null);
+      setSelectedAddress(null);
+      setSelectedProducts([]);
+    }
+    // eslint-disable-next-line
+  }, [isEditMode, order]);
+
+  const editAndShow = isEditMode || isShowMode;
+  const {
+    values,
+    errors,
+    loading,
+    handleChange,
+    handleSubmit,
+    setErrors,
+    setValues,
+  } = useMyForm(
+    {
+      user_id: editAndShow ? undefined : "",
+      is_whole: editAndShow ? undefined : 0,
+      address_id: editAndShow ? order?.address?.id : "",
+      delivery_amount: editAndShow ? (order?.delivery_amount ?? "") : "",
+      delivery_serial: editAndShow ? (order?.delivery_serial ?? "") : "",
+      status: editAndShow ? (order?.status ?? "pending") : "pending",
+      description: editAndShow ? (order?.description ?? "") : "",
+      products: editAndShow
+        ? (order?.items?.map((p) => ({
+            product_id: p.product_id,
+            qty: p.quantity?.toString() ?? "1",
+          })) ?? [])
+        : ([] as ProductWithQty[]),
+      shipping_method: editAndShow ? undefined : "post",
+      shipping_method_id: editAndShow
+        ? (order?.shipping_method_id ?? "")
+        : undefined,
+      coupon_amount: editAndShow ? (order?.coupon_amount ?? "") : "",
+    },
+    async (formValues) => {
+      const dataToSend = {
+        ...formValues,
+        user_id: isEditMode ? order?.user?.id : selectedUser?.id,
+        address_id: isEditMode ? formValues.address_id : selectedAddress?.id,
+        products: selectedProducts.map((product, index) => ({
+          product_id: product.id,
+          qty: (formValues.products as ProductWithQty[])?.[index]?.qty || "1",
+        })),
+        _method: isEditMode ? "put" : undefined,
+      };
+      const res = await apiCRUD({
+        urlSuffix: selectedData?.id
+          ? `admin-panel/orders/${selectedData.id}`
+          : "admin-panel/orders",
+        method: "POST",
+        data: dataToSend,
+      });
+      if (res?.message) setErrors(res.message);
+      if (res?.status === "success") {
+        onClose();
+        mutate(`admin-panel/orders${filters ? "?" + filters : "?"}`);
+      }
+    },
+  );
+
+  // Step 2: Address selection
+  const handleAddressSelect = (address: AddressUser | Address) => {
+    setSelectedAddress(address);
+    setValues((prev: any) => ({
+      ...prev,
+      address_id: address?.id,
+    }));
+    setStep(2);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  // Step 3: Product selection
+  const handleProductSelect = (selected: SelectSearchItem[]) => {
+    setSelectedProducts(selected);
+    setValues((prev: any) => ({
+      ...prev,
+      products: selected.map((s) => {
+        // If in edit mode and we have previous qty, use it
+        if (isEditMode && prev.products && Array.isArray(prev.products)) {
+          const found = (prev.products as ProductWithQty[])?.find(
+            (p) => p.product_id.toString() === s.id.toString(),
+          );
+          return {
+            product_id: s.id,
+            qty: found?.qty || "1",
+          };
         }
-      },
-    );
+        return { product_id: s.id, qty: "1" };
+      }),
+    }));
+  };
+
+  // Step 3: Product qty change
+  const handleProductQtyChange = (index: number, qty: string) => {
+    let safeQty = qty.replace(/[^0-9]/g, "");
+    if (safeQty === "") {
+      // do nothing, allow empty for now
+    } else if (parseInt(safeQty) < 1) {
+      safeQty = "1";
+    }
+    setValues((prev: any) => ({
+      ...prev,
+      products: (prev.products as ProductWithQty[])?.map(
+        (product: ProductWithQty, i: number) =>
+          i === index ? { ...product, qty: safeQty } : product,
+      ),
+    }));
+  };
 
   if (orderLoading)
     return (
@@ -74,106 +223,212 @@ export default function FormOrders({
       <div className="h-[250px]">
         <RetryError
           onRetry={() => {
-            mutateOrder();
+            mutateorder();
           }}
         />
       </div>
     );
   }
+
+  // Step 0: User selection (skip in edit mode)
+  if (!isEditMode && step === 0) {
+    return (
+      <form noValidate>
+        <div>
+          <SelectSearchCustom
+            title="انتخاب کاربر"
+            placeholder="براساس نام، شماره یا ایمیل"
+            isSearchFromApi
+            requestSelectOptions={async (search) => {
+              const res = await apiCRUD({
+                urlSuffix: `admin-panel/users?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
+              });
+              return (
+                res?.data?.users?.map((u: UserIndex) => ({
+                  id: u.id,
+                  title: u.name + " - " + u.cellphone,
+                })) || []
+              );
+            }}
+            showNoOneOption={false}
+            onChange={(selected: SelectSearchItem[]) => {
+              setSelectedUser(selected?.[0]);
+              setValues((prev: any) => ({
+                ...prev,
+                user_id: selected?.[0]?.id,
+              }));
+              setStep(1);
+              setTimeout(() => {
+                addressRef.current?.scrollIntoView({ behavior: "smooth" });
+              }, 100);
+            }}
+            isDisable={isShowMode}
+            value={selectedUser ? [selectedUser] : []}
+            errorMessage={errors.user_id}
+          />
+        </div>
+        <div className="mb-3 mt-3 flex justify-end gap-2">
+          <Button
+            type="button"
+            className="rounded-[8px] border-1 border-border bg-transparent px-6 text-[14px] font-[500] text-TextColor"
+            variant="light"
+            onPress={onClose}
+          >
+            لغو
+          </Button>
+        </div>
+      </form>
+    );
+  }
+
+  // Step 1: Address selection (do NOT skip in edit mode)
+  if (step === 1) {
+    return (
+      <form noValidate>
+        <div ref={addressRef}>
+          <AddressTab
+            user_id={
+              isEditMode
+                ? selectedData?.user?.id
+                  ? +selectedData?.user?.id
+                  : undefined
+                : selectedUser?.id
+                  ? +selectedUser?.id
+                  : undefined
+            }
+            onSelect={handleAddressSelect}
+            isSelectable
+          />
+        </div>
+        <div className="mb-3 mt-3 flex justify-end gap-2">
+          {!isEditMode && (
+            <Button
+              type="button"
+              className="rounded-[8px] border-1 border-border bg-transparent px-6 text-[14px] font-[500] text-TextColor"
+              variant="light"
+              onPress={() => setStep(0)}
+            >
+              بازگشت
+            </Button>
+          )}
+          <Button
+            type="button"
+            className="rounded-[8px] px-10 text-[14px] font-[500] text-primary-foreground"
+            color="primary"
+            onPress={() => {
+              if (selectedAddress) setStep(2);
+            }}
+            isDisabled={!selectedAddress}
+          >
+            ادامه
+          </Button>
+        </div>
+      </form>
+    );
+  }
+
+  // Step 2: Main form (always shown in edit mode after address selection)
   return (
-    <form noValidate onSubmit={handleSubmit}>
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        // Fix: Prevent submit if no products selected
+        if (
+          (!selectedProducts || selectedProducts.length === 0) &&
+          (!isEditMode || !order?.items || order?.items.length === 0)
+        ) {
+          setErrors((prev: any) => ({
+            ...prev,
+            products: "حداقل یک محصول انتخاب کنید",
+          }));
+          return;
+        }
+        handleSubmit(e);
+      }}
+    >
+      <div ref={formRef} />
+      <div className="mb-4">
+        <div className="mb-2">
+          <b>کاربر:</b>{" "}
+          {selectedUser?.title ||
+            (selectedData?.user
+              ? order?.user?.name + " - " + order?.user?.cellphone
+              : "")}
+        </div>
+        <div className="mb-2 flex items-center gap-2">
+          <b>آدرس:</b>{" "}
+          {selectedAddress?.title ||
+            selectedAddress?.address ||
+            order?.address?.title ||
+            order?.address?.address}
+          {/* Show "تغییر آدرس" button in edit mode */}
+          {isEditMode && (
+            <Button
+              type="button"
+              size="sm"
+              className="ml-2 rounded-[6px] border-1 border-border bg-transparent px-3 py-1 text-[13px] font-[500] text-primary"
+              variant="light"
+              onPress={() => setStep(1)}
+            >
+              تغییر آدرس
+            </Button>
+          )}
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {values?.status && (
-          <SelectSearchCustom
-            title="وضعیت"
-            options={[
-              { id: "pending", title: "در انتظار پرداخت" },
-              { id: "payout", title: "پرداخت" },
-              { id: "prepare", title: "آماده‌سازی" },
-              { id: "send", title: "ارسال" },
-              { id: "end", title: "پایان" },
-              { id: "cancel", title: "لغو" },
-            ]}
-            defaultValue={[
-              {
-                id: values.status,
-                title:
-                  values.status === "pending"
-                    ? "در انتظار پرداخت"
-                    : values.status === "payout"
-                      ? "پرداخت"
-                      : values.status === "prepare"
-                        ? "آماده‌سازی"
-                        : values.status === "send"
-                          ? "ارسال"
-                          : values.status === "end"
-                            ? "پایان"
-                            : values.status === "cancel"
-                              ? "لغو"
-                              : values.status,
-              },
-            ]}
-            onChange={
-              isShowMode
-                ? undefined
-                : (selected) =>
-                    handleChange("status")(selected?.[0]?.id.toString())
-            }
-            errorMessage={errors.status}
-            placeholder="انتخاب"
-            isDisable={isShowMode}
-          />
-        )}
-        {values?.payment_status && (
-          <SelectSearchCustom
-            title="وضعیت پرداخت"
-            options={[
-              { id: "pending", title: "در انتظار پرداخت" },
-              { id: "success", title: "پرداخت موفق" },
-              { id: "rejected", title: "پرداخت ناموفق" },
-            ]}
-            defaultValue={[
-              {
-                id: values.payment_status,
-                title:
-                  values.payment_status === "pending"
-                    ? "در انتظار پرداخت"
-                    : values.payment_status === "success"
-                      ? "پرداخت موفق"
-                      : values.payment_status === "rejected"
-                        ? "پرداخت ناموفق"
-                        : values.payment_status,
-              },
-            ]}
-            onChange={
-              isShowMode
-                ? undefined
-                : (selected) =>
-                    handleChange("payment_status")(selected?.[0]?.id.toString())
-            }
-            errorMessage={errors.payment_status}
-            placeholder="انتخاب"
-            isDisable={isShowMode}
-          />
-        )}
+        <SwitchWrapper
+          label="سفارش سریع"
+          isSelected={values.is_whole}
+          onChange={(val) => handleChange("is_whole")(val === "1" ? "1" : "0")}
+          isDisabled={isShowMode}
+        />
         <InputBasic
-          name="total_weight"
-          label="وزن کل"
-          value={values.total_weight?.toString()}
-          onChange={isShowMode ? undefined : handleChange("total_weight")}
-          errorMessage={errors.total_weight}
+          name="delivery_amount"
+          label="هزینه ارسال"
+          type="number"
+          value={values.delivery_amount}
+          onChange={isShowMode ? undefined : handleChange("delivery_amount")}
+          errorMessage={errors.delivery_amount}
           isDisabled={isShowMode}
         />
         <InputBasic
           name="delivery_serial"
           label="سریال تحویل"
-          value={values.delivery_serial || ""}
+          value={values.delivery_serial}
           onChange={isShowMode ? undefined : handleChange("delivery_serial")}
           errorMessage={errors.delivery_serial}
           isDisabled={isShowMode}
         />
+        <SelectSearchCustom
+          title="وضعیت"
+          options={[
+            { id: "pending", title: "در انتظار پرداخت" },
+            { id: "payout", title: "پرداخت" },
+            { id: "prepare", title: "آماده‌سازی" },
+            { id: "send", title: "ارسال" },
+            { id: "end", title: "پایان" },
+            { id: "cancel", title: "لغو" },
+          ]}
+          defaultValue={[
+            { id: "pending", title: "در انتظار پرداخت" },
+            { id: "payout", title: "پرداخت" },
+            { id: "prepare", title: "آماده‌سازی" },
+            { id: "send", title: "ارسال" },
+            { id: "end", title: "پایان" },
+            { id: "cancel", title: "لغو" },
+          ].filter((o) => o.id === values.status)}
+          onChange={
+            isShowMode
+              ? undefined
+              : (selected) =>
+                  handleChange("status")(selected?.[0]?.id?.toString() || "")
+          }
+          errorMessage={errors.status}
+          placeholder="انتخاب"
+          isDisable={isShowMode}
+        />
       </div>
-
       <div className="mt-3">
         <TextAreaCustom
           label="توضیحات:"
@@ -186,107 +441,151 @@ export default function FormOrders({
           isDisabled={isShowMode}
         />
       </div>
+      <div className="mt-4">
+        {isShowMode ? (
+          <div>
+            {order?.items?.map((item, idx) => (
+              <div
+                key={item.id || idx}
+                className="mt-1 flex flex-col gap-4 rounded-lg border border-border bg-boxBg100 p-4 md:flex-row md:items-center"
+              >
+                <div className="flex-1">
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-700">
+                      محصول:
+                    </span>
+                    <span className="text-base text-TextColor">
+                      {item.product?.name}
+                    </span>
+                  </div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-700">
+                      تعداد:
+                    </span>
+                    <span className="text-base text-TextColor">
+                      {item.quantity}
+                    </span>
+                  </div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-700">
+                      قیمت واحد:
+                    </span>
+                    <span className="text-base text-TextColor">
+                      {Number(item.price).toLocaleString()} تومان
+                    </span>
+                  </div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-700">
+                      قیمت پرداختی:
+                    </span>
+                    <span className="text-base text-TextColor">
+                      {Number(item.paying_price).toLocaleString()} تومان
+                    </span>
+                  </div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-700">
+                      جمع جزء:
+                    </span>
+                    <span className="text-base text-TextColor">
+                      {Number(item.sub_total).toLocaleString()} تومان
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <SelectSearchCustom
+            title="محصولات"
+            placeholder="جستجو و انتخاب محصولات"
+            isSearchFromApi
+            isMultiSelect
+            requestSelectOptions={async (search) => {
+              const res = await apiCRUD({
+                urlSuffix: `admin-panel/products?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
+              });
+              return (
+                res?.data?.products?.map((p: ProductIndex) => ({
+                  id: p.id,
+                  title: p.name,
+                })) || []
+              );
+            }}
+            onChange={(vs) =>
+              handleProductSelect(
+                vs?.map((v) => ({ id: v.id, title: v.title })) || [],
+              )
+            }
+            isDisable={isShowMode}
+            value={
+              selectedProducts && selectedProducts.length > 0
+                ? selectedProducts?.map((s) => ({ id: s.id, title: s.title }))
+                : isEditMode && order?.items
+                  ? order.items?.map((p) => ({
+                      id: p.product.id,
+                      title: p.product.name,
+                    }))
+                  : []
+            }
+            errorMessage={errors["products"]}
+          />
+        )}
+      </div>
 
-      {isShowMode && (
-        <>
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <InputBasic
-              name="user_name"
-              label="نام کاربر"
-              value={order?.user?.name || ""}
-              isDisabled
-            />
-            <InputBasic
-              name="user_cellphone"
-              label="شماره تلفن کاربر"
-              value={order?.user?.cellphone || ""}
-              isDisabled
-            />
-            <InputBasic
-              name="address"
-              label="آدرس"
-              value={order?.address?.address || ""}
-              isDisabled
-            />
-            <InputBasic
-              name="coupon"
-              label="کد تخفیف"
-              value={
-                order.coupon
-                  ? order?.coupon?.name +
-                      "  |  " +
-                      order?.coupon?.code +
-                      "  |  " +
-                      order?.coupon?.value || ""
-                  : "-"
-              }
-              isDisabled
-            />
+      {/* Product quantities */}
+      {(selectedProducts.length > 0 ||
+        (isEditMode && order?.items && order.items.length > 0)) && (
+        <div className="mt-4">
+          <h4 className="mb-3 text-sm font-medium">تعداد محصولات:</h4>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {(selectedProducts.length > 0
+              ? selectedProducts
+              : isEditMode && order?.items
+                ? order.items.map((p) => ({
+                    id: p.product?.id,
+                    title: p.product?.name,
+                  }))
+                : []
+            ).map((product, index) => (
+              <InputBasic
+                key={product.id}
+                name={`products.${index}.qty`}
+                label={`تعداد ${product.title}`}
+                type="number"
+                value={
+                  (values.products as ProductWithQty[])?.[index]?.qty ||
+                  (isEditMode && order?.items?.[index]?.quantity?.toString()) ||
+                  ""
+                }
+                onChange={(e) => handleProductQtyChange(index, e.target.value)}
+                errorMessage={
+                  errors[`products.${index}.qty` as keyof typeof errors]
+                }
+                isDisabled={isShowMode}
+              />
+            ))}
           </div>
-          <div className="mt-3 flex flex-col gap-3">
-            <TableGenerate
-              topHeader
-              title="آیتم‌ها"
-              data={{
-                headers: [
-                  { content: "نام" },
-                  { content: "تعداد" },
-                  { content: "قیمت" },
-                  { content: "متغیر" },
-                  { content: "sku" },
-                ],
-                body: order?.items?.map((item) => ({
-                  cells: [
-                    { data: item.product?.name },
-                    { data: item.quantity },
-                    { data: formatPrice(item.price) + " " + currency },
-                    { data: item.variation.sku },
-                  ],
-                })),
-              }}
-            />
-            <TableGenerate
-              topHeader
-              title="تراکنش‌ها"
-              data={{
-                headers: [
-                  { content: "تاریخ ایجاد" },
-                  { content: "تاریخ آپدیت" },
-                  { content: "درگاه" },
-                  { content: "مبلغ" },
-                  { content: "وضعیت" },
-                ],
-                body: order?.transactions?.map((transaction) => ({
-                  cells: [
-                    { data: dateConvert(transaction.created_at, "persian") },
-                    { data: dateConvert(transaction.updated_at, "persian") },
-                    { data: transaction.gateway_name },
-                    { data: formatPrice(transaction.amount) + " " + currency },
-                    {
-                      data:
-                        transaction.status === "pending"
-                          ? "در انتظار"
-                          : transaction.status === "payout"
-                            ? "پرداخت"
-                            : transaction.status === "prepare"
-                              ? "آماده سازی"
-                              : transaction.status === "send"
-                                ? "ارسال"
-                                : transaction.status === "end"
-                                  ? "پایان"
-                                  : transaction.status === "cancel"
-                                    ? "لغو"
-                                    : transaction.status,
-                    },
-                  ],
-                })),
-              }}
-            />
-          </div>
-        </>
+        </div>
       )}
 
-      <div className="mb-3 mt-3 flex justify-end gap-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <SelectSearchCustom
+          title="روش ارسال"
+          options={[{ id: "post", title: "پست" }]}
+          defaultValue={[{ id: "post", title: "پست" }]}
+          isDisable
+        />
+        <InputBasic
+          name="coupon_amount"
+          label="مقدار تخفیف"
+          type="number"
+          value={values.coupon_amount}
+          onChange={isShowMode ? undefined : handleChange("coupon_amount")}
+          errorMessage={errors.coupon_amount}
+          isDisabled={isShowMode}
+        />
+      </div>
+      <div className="mb-3 mt-6 flex justify-end gap-2">
         <Button
           type="button"
           className="rounded-[8px] border-1 border-border bg-transparent px-6 text-[14px] font-[500] text-TextColor"

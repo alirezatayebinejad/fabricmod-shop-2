@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import apiCRUD from "@/services/apiCRUD";
 import { useDisclosure } from "@heroui/modal";
-import { OrderIndex, PaginateMeta } from "@/types/apiTypes";
+import { Transactions, PaginateMeta } from "@/types/apiTypes";
 import TableGenerate, {
   TableGenerateData,
 } from "@/components/datadisplay/TableGenerate";
@@ -14,15 +14,14 @@ import Edit from "@/components/svg/Edit";
 import Eye from "@/components/svg/Eye";
 import { Button } from "@heroui/button";
 import StatusBadge from "@/components/datadisplay/StatusBadge";
-import FormOrders from "@/app/panel/orders/_components/FormOrders";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import { currency } from "@/constants/staticValues";
 import FormTransactions from "@/app/panel/transactions/_components/FormTransactions";
 
-export default function TableOrders() {
+export default function TableTransactions() {
   const { filters, changeFilters } = useFiltersContext();
   const { data, error, isLoading, mutate } = useSWR(
-    `admin-panel/orders${filters ? "?" + filters : "?"}`,
+    `admin-panel/transactions${filters ? "?" + filters : "?"}`,
     (url) =>
       apiCRUD({
         urlSuffix: url,
@@ -32,15 +31,14 @@ export default function TableOrders() {
   const [page, setPage] = useState(1);
   const editModal = useDisclosure();
   const seeModal = useDisclosure();
-  const transactionsModal = useDisclosure();
 
-  const [selectedData, setSelectedData] = useState<OrderIndex>();
-  const [orders, setOrders] = useState<OrderIndex[]>();
+  const [selectedData, setSelectedData] = useState<Transactions>();
+  const [transactions, setTransactions] = useState<Transactions[]>();
 
   useEffect(() => {
     if (data) {
       setPage(data.data?.meta?.current_page);
-      setOrders(data.data?.orders);
+      setTransactions(data.data?.transactions);
     }
   }, [data]);
 
@@ -50,33 +48,37 @@ export default function TableOrders() {
   const tableData: TableGenerateData = {
     headers: [
       { content: "کاربر" },
-      { content: "مبلغ پرداختی" },
-      { content: "وضعیت پرداخت" },
-      { content: "وضعیت سفارش" },
+      { content: "مبلغ" },
+      { content: "درگاه" },
+      { content: "وضعیت" },
+      { content: "تاریخ" },
       { content: <div></div> },
     ],
-    body: orders?.map((order) => ({
+    body: transactions?.map((transaction) => ({
       cells: [
-        { data: <p>{order.user?.name}</p> },
-        { data: <p>{order.paying_amount + " " + currency}</p> },
+        {
+          data: <p>{transaction.user?.name || transaction.user?.cellphone}</p>,
+        },
+        { data: <p>{transaction.amount + " " + currency}</p> },
+        { data: <p>{transaction.gateway_name}</p> },
         {
           data: (
             <StatusBadge
               title={
-                order.payment_status === "success"
+                transaction.status === "success"
                   ? "پرداخت موفق"
-                  : order.payment_status === "pending"
+                  : transaction.status === "pending"
                     ? "در حال انتظار"
-                    : order.payment_status === "rejected"
+                    : transaction.status === "rejected"
                       ? "پرداخت ناموفق"
                       : "نامشخص"
               }
               mode={
-                order.payment_status === "success"
+                transaction.status === "success"
                   ? "success"
-                  : order.payment_status === "pending"
+                  : transaction.status === "pending"
                     ? "pending"
-                    : order.payment_status === "rejected"
+                    : transaction.status === "rejected"
                       ? "error"
                       : undefined
               }
@@ -86,45 +88,20 @@ export default function TableOrders() {
         {
           data: (
             <p>
-              {order.status === "pending"
-                ? "در حال انتظار"
-                : order.status === "payout"
-                  ? "پرداخت"
-                  : order.status === "prepare"
-                    ? "آماده سازی"
-                    : order.status === "send"
-                      ? "ارسال"
-                      : order.status === "end"
-                        ? "پایان"
-                        : order.status === "cancel"
-                          ? "لغو"
-                          : order.status}
+              {transaction.created_at
+                ? new Date(transaction.created_at).toLocaleDateString("fa-IR")
+                : "-"}
             </p>
           ),
         },
         {
           data: (
             <div className="flex min-w-[40px] justify-end gap-1">
-              <ProtectComponent
-                permission="transactionsCreate"
-                component={
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setSelectedData(order);
-                      transactionsModal.onOpen();
-                    }}
-                    className="bg-boxBg300"
-                  >
-                    تراکنش ها
-                  </Button>
-                }
-              />
               <Button
                 isIconOnly
                 size="sm"
                 onClick={() => {
-                  setSelectedData(order);
+                  setSelectedData(transaction);
                   seeModal.onOpen();
                 }}
                 className="bg-boxBg300"
@@ -132,13 +109,13 @@ export default function TableOrders() {
                 <Eye color="var(--TextColor)" />
               </Button>
               <ProtectComponent
-                permission="ordersEdit"
+                permission="transactionsEdit"
                 component={
                   <Button
                     isIconOnly
                     size="sm"
                     onClick={() => {
-                      setSelectedData(order);
+                      setSelectedData(transaction);
                       editModal.onOpen();
                     }}
                     className="bg-boxBg300"
@@ -164,7 +141,7 @@ export default function TableOrders() {
           setPage(page);
           changeFilters(`page=${page}`);
         }}
-        loading={isLoading ? { columns: 5, rows: 5 } : undefined}
+        loading={isLoading ? { columns: 6, rows: 5 } : undefined}
         error={error}
         onRetry={() => mutate()}
       />
@@ -176,12 +153,14 @@ export default function TableOrders() {
           isOpen: editModal.isOpen,
         }}
         size="5xl"
-        modalHeader={<h2>ویرایش سفارش</h2>}
+        modalHeader={<h2>ویرایش تراکنش</h2>}
         modalBody={
-          <FormOrders
+          <FormTransactions
             onClose={() => editModal.onClose()}
             selectedData={selectedData}
             isEditMode
+            order_id={selectedData?.order.id}
+            order_uuid={selectedData?.order.uuid?.toString()}
           />
         }
       />
@@ -193,39 +172,14 @@ export default function TableOrders() {
           isOpen: seeModal.isOpen,
         }}
         size="5xl"
-        modalHeader={<h2>مشاهده سفارش</h2>}
+        modalHeader={<h2>مشاهده تراکنش</h2>}
         modalBody={
-          <FormOrders
+          <FormTransactions
             onClose={() => seeModal.onClose()}
             isShowMode={true}
             selectedData={selectedData}
-          />
-        }
-      />
-      <ModalWrapper
-        disclosures={{
-          onOpen: transactionsModal.onOpen,
-          onOpenChange: transactionsModal.onOpenChange,
-          isOpen: transactionsModal.isOpen,
-        }}
-        size="5xl"
-        modalHeader={
-          <h2>
-            ساخت و مشاهده تراکنش های سفارش{" "}
-            {selectedData?.uuid +
-              "- کاربر: " +
-              selectedData?.user.name +
-              " - " +
-              selectedData?.user.cellphone}
-          </h2>
-        }
-        modalBody={
-          <FormTransactions
-            onClose={() => editModal.onClose()}
-            isEditMode
-            order_id={selectedData?.id}
-            order_uuid={selectedData?.uuid?.toString()}
-            showOrderTransactions
+            order_id={selectedData?.order.id}
+            order_uuid={selectedData?.order.uuid?.toString()}
           />
         }
       />
