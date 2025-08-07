@@ -9,12 +9,15 @@ import apiCRUD from "@/services/apiCRUD";
 import { useSWRConfig } from "swr";
 import { Setting } from "@/types/apiTypes";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
-import SwitchWrapper from "@/components/inputs/SwitchWrapper";
 import SelectSearchCustom, {
   SelectSearchItem,
 } from "@/components/inputs/SelectSearchCustom";
 
-function parseWholeSaleOptions(options: string | undefined) {
+function parseWholeSaleOptions(options: string | undefined): {
+  have_count?: "0" | "1";
+  check_mod?: "order" | "payment";
+  check_mod_option?: string;
+} {
   if (!options) {
     return {
       have_count: undefined,
@@ -214,21 +217,47 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
         {/* --- Whole Sale Section --- */}
         <div className="rounded-lg border bg-boxBg100 p-4">
           <h2 className="mb-3 font-bold">تنظیمات خرید عمده</h2>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-              <SwitchWrapper
-                label="فعال بودن خرید عمده"
-                isSelected={values.whole_sale?.have_count}
-                onChange={(val) => handleWholeSaleChange("have_count", val)}
-                styles={{ label: "gap-2" }}
+          <div className="grid gap-4 max-md:grid-cols-1 md:grid-cols-3">
+            <div className="flex flex-col gap-4">
+              <label className="font-medium">نمایش:</label>
+              <SelectSearchCustom
+                showNoOneOption={false}
+                isSearchDisable
+                options={[
+                  { id: "1", title: "فقط کالاهای موجود" },
+                  { id: "0", title: "نمایش همه کالاها" },
+                ]}
+                value={[
+                  {
+                    id: values.whole_sale.have_count || "",
+                    title:
+                      values.whole_sale.have_count == "0"
+                        ? "نمایش همه کالاها"
+                        : "فقط کالاهای موجود",
+                  },
+                ]}
+                onChange={(selected) => {
+                  if (selected && selected.length > 0) {
+                    setValues((prev) => ({
+                      ...prev,
+                      whole_sale: {
+                        ...prev.whole_sale,
+                        have_count: selected[0].id as "1" | "0",
+                      },
+                    }));
+                  }
+                }}
+                isMultiSelect={false}
+                placeholder="انتخاب کنید"
                 errorMessage={getWholeSaleError("have_count")}
               />
             </div>
-            <div className="flex items-center gap-4">
-              <label className="min-w-[120px] font-medium">نوع بررسی:</label>
+            <div className="flex flex-col gap-4">
+              <label className="font-medium">نوع:</label>
               <div className="flex-1">
                 <SelectSearchCustom
                   showNoOneOption={false}
+                  isSearchDisable
                   options={checkModOptions}
                   value={getCheckModValue()}
                   onChange={handleCheckModSelect}
@@ -238,14 +267,15 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-4">
+              <label className="font-medium">
+                {values.whole_sale?.check_mod === "order"
+                  ? "حداقل تعداد خرید:"
+                  : "حداقل مبلغ خرید:"}
+              </label>
+
               <InputBasic
                 name="whole_sale[check_mod_option]"
-                label={
-                  values.whole_sale?.check_mod === "order"
-                    ? "حداقل تعداد خرید"
-                    : "حداقل مبلغ خرید"
-                }
                 type="number"
                 value={values.whole_sale?.check_mod_option ?? ""}
                 onChange={(e) =>

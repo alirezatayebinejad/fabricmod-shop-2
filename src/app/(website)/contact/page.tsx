@@ -14,7 +14,7 @@ export default async function ContactPage() {
   const data: PageShowSite = dataRes?.data;
   return (
     <main className="overflow-hidden">
-      <Title title={data.title} styles={{ container: "pt-5 pb-16" }} />
+      <Title title={data?.title} styles={{ container: "pt-5 pb-16" }} />
       {data?.primary_image && (
         <div className="mb-24">
           <PageHeader
@@ -23,9 +23,9 @@ export default async function ContactPage() {
         </div>
       )}
       <ContactInfo data={data} />
-      {data.body && (
+      {data?.body && (
         <div
-          dangerouslySetInnerHTML={{ __html: data.body }}
+          dangerouslySetInnerHTML={{ __html: data?.body }}
           className="pages_content md:mx-[45px]"
         ></div>
       )}

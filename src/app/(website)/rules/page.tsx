@@ -22,16 +22,19 @@ export default async function RulesPage() {
           title="قوانین و مقررات"
           breadCrumb={
             <Breadcrumb
-              items={[{ title: "خانه", link: "/" }, { title: data.title }]}
+              items={[
+                { title: "خانه", link: "/" },
+                { title: data?.title || "" },
+              ]}
             />
           }
         />
         <div className="mx-auto my-9 max-w-[800px]">
           <Title
-            title={data.title}
+            title={data?.title}
             styles={{ container: "items-center my-16" }}
           />
-          <ParseHTML htmlContent={data.body} />
+          <ParseHTML htmlContent={data?.body} />
         </div>
       </div>
     </main>

@@ -20,7 +20,7 @@ export default function NavTabs() {
   const currentTab = searchParams.get("tab");
 
   return (
-    <ScrollArea className="h-[calc(100dvh_-_192px_-_60px_-_10px)] rounded-[5px]">
+    <ScrollArea className="h-[calc(100dvh_-_192px_-_10px_-_10px)] rounded-[5px]">
       {/* scroll height: dynamic view height - sidebarHeader - sidebarFooter - dashboard margin */}
       <div className="m-[10px_18px_11px_19px]">
         <Accordion type="single" collapsible defaultValue={pathSegments[2]}>

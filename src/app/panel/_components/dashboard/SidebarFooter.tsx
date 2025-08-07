@@ -14,7 +14,7 @@ export default function SidebarFooter() {
   const router = useRouter();
   return (
     /* if change h here change h in dashboard navTab ScrollArea too*/
-    (<div className="h-[60px] border-t-1 border-t-boxBg300 p-[5px_20px_32px_24px] max-md:p-2">
+    <div className="h-[60px] border-t-1 border-t-boxBg300 p-[5px_20px_32px_24px] max-md:p-2">
       <div>
         <div className="flex items-center justify-between">
           <Button onPress={onOpen} variant="light" className="px-2">
@@ -44,6 +44,6 @@ export default function SidebarFooter() {
           }}
         />
       </div>
-    </div>)
+    </div>
   );
 }

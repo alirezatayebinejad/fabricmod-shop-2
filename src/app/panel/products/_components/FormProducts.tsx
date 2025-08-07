@@ -76,10 +76,10 @@ export default function FormProducts({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [selectedCateg, setSelectedCateg] = useState<CategoryShow>();
   const [selectedData, setSelectedData] =
-    useState<SelectSearchItem<ProductsWithVariationIndex["data"][number]>>();
+    useState<SelectSearchItem<ProductsWithVariationIndex>>();
 
   const [selectedSetProducts, setSelectedSetProducts] = useState<
-    SelectSearchItem<ProductsWithVariationIndex["data"][number]>[]
+    SelectSearchItem<ProductsWithVariationIndex>[]
   >([]);
 
   // Initialize selectedSetProducts when prod data is loaded
@@ -410,7 +410,7 @@ export default function FormProducts({
           />
           {values.is_set == "1" && (
             <>
-              <SelectSearchCustom<ProductsWithVariationIndex["data"][number]>
+              <SelectSearchCustom<ProductsWithVariationIndex>
                 title="محصول های ست"
                 isSearchFromApi
                 isMultiSelect
@@ -420,7 +420,7 @@ export default function FormProducts({
                   });
                   if (res?.status === "success") {
                     const prods = res.data?.products?.data?.map(
-                      (item: ProductsWithVariationIndex["data"][number]) => ({
+                      (item: ProductsWithVariationIndex) => ({
                         id: item.id,
                         title: item.name,
                         helperValue: item,

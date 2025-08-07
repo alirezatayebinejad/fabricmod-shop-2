@@ -18,6 +18,7 @@ import FormOrders from "@/app/panel/orders/_components/FormOrders";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import { currency } from "@/constants/staticValues";
 import FormTransactions from "@/app/panel/transactions/_components/FormTransactions";
+import formatPrice from "@/utils/formatPrice";
 
 export default function TableOrders() {
   const { filters, changeFilters } = useFiltersContext();
@@ -58,7 +59,7 @@ export default function TableOrders() {
     body: orders?.map((order) => ({
       cells: [
         { data: <p>{order.user?.name}</p> },
-        { data: <p>{order.paying_amount + " " + currency}</p> },
+        { data: <p>{formatPrice(+order.paying_amount) + " " + currency}</p> },
         {
           data: (
             <StatusBadge

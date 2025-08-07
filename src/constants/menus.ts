@@ -51,7 +51,7 @@ export const panelMenus: PanelMenu[] = [
         id: 2,
         name: "درخواست پنل",
         nameEn: "req-panel",
-        link: "/panel/users/userslist/req-panel",
+        link: "/panel/users/req-panel",
         iconSrc: "",
         subMenu: [],
       },

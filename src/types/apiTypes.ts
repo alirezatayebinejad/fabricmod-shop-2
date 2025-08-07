@@ -379,46 +379,33 @@ export interface ProductIndex {
 }
 
 export interface ProductsWithVariationIndex {
-  current_page: number;
-  data: {
+  id: number;
+  name: string;
+  slug: string;
+  primary_image: null;
+  is_set: string;
+  variations: {
     id: number;
-    name: string;
-    slug: string;
-    primary_image: null;
-    is_set: string;
-    variations: {
+    attribute_id: null;
+    product_id: string;
+    value: string;
+    quantity: string;
+    sku: null;
+    price: string;
+    sale_price: string;
+    date_sale_from: null;
+    date_sale_to: null;
+    set_var_ids: null;
+    user_id: string;
+    deleted_at: null;
+    created_at: string;
+    updated_at: string;
+
+    attribute: {
       id: number;
-      attribute_id: null;
-      product_id: string;
-      value: string;
-      quantity: string;
-      sku: null;
-      price: string;
-      sale_price: string;
-      date_sale_from: null;
-      date_sale_to: null;
-      set_var_ids: null;
-      user_id: string;
-      deleted_at: null;
-      created_at: string;
-      updated_at: string;
-    }[];
+      name: string;
+    };
   }[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  links: {
-    url: null | string;
-    label: string;
-    active: boolean;
-  }[];
-  next_page_url: null;
-  path: string;
-  per_page: number;
-  prev_page_url: null;
-  to: number;
-  total: number;
 }
 
 export interface ProductShow {
@@ -531,7 +518,6 @@ export interface ProductShow {
     deleted_at: null;
     created_at: string;
     updated_at: string;
-    /* TODO: add attributes in a category that this product is in it to see this data model  */
     attribute: null | {
       id: number;
       name: string;
@@ -1043,12 +1029,11 @@ interface ThemeList {
   accentColor4Foreground: string;
 }
 
-/* TODO: not sure if correct */
 export interface OrderIndex {
   id: number;
   uuid: null | string;
-  is_quick: string;
   user_id: string;
+  is_whole_sale: string;
   address_id: string;
   shipping_method_id: string;
   delivery_serial: null | string;
@@ -1061,63 +1046,119 @@ export interface OrderIndex {
   payment_status: string;
   status: string;
   json: null | string;
-  description: null | string;
-  deleted_at: null | string;
+  description: string;
   created_at: string;
   updated_at: string;
   items_count: string;
   user: {
     id: number;
-    name: string;
+    name: null | string;
     cellphone: string;
   };
 }
 
-/* TODO: not sure if correct */
 export interface OrderShow {
   id: number;
-  uuid: null;
-  is_quick: string;
+  uuid: null | string;
   user_id: string;
+  is_whole_sale: string;
   address_id: string;
   shipping_method_id: string;
-  delivery_serial: null;
+  delivery_serial: null | string;
   delivery_amount: string;
-  coupon_id: null;
+  coupon_id: null | string;
   coupon_amount: string;
   total_amount: string;
   paying_amount: string;
   total_weight: string;
   payment_status: string;
   status: string;
-  json: null;
-  description: null;
-  deleted_at: null;
+  json: null | string;
+  description: string;
   created_at: string;
   updated_at: string;
+  success_amount: null | string;
   user: {
     id: number;
-    name: string;
+    name: null | string;
     cellphone: string;
   };
   items: {
     id: number;
     order_id: string;
     product_id: string;
+    variation_id: string;
     price: string;
-    paying_price: string;
     quantity: string;
-    json: string;
     sub_total: string;
-    created_at: null;
-    updated_at: null;
+    paying_price: string;
+    json: string;
+    created_at: null | string;
+    updated_at: null | string | string;
     product: {
       id: number;
       name: string;
       slug: string;
+      quantity_check: boolean;
+      sale_check:
+        | boolean
+        | {
+            id: number;
+            attribute_id: null | string;
+            product_id: string;
+            value: string;
+            quantity: string;
+            sku: string;
+            price: string;
+            sale_price: string;
+            date_sale_from: string;
+            date_sale_to: string;
+            set_var_ids: string;
+            user_id: string;
+            deleted_at: null | string;
+            created_at: string;
+            updated_at: string;
+          };
+      price_check: {
+        id: number;
+        attribute_id: null | string;
+        product_id: string;
+        value: null | string;
+        quantity: string;
+        sku: null | string;
+        price: string;
+        sale_price: string;
+        date_sale_from: null | string;
+        date_sale_to: null | string;
+        set_var_ids: string;
+        user_id: string;
+        deleted_at: null | string;
+        created_at: string;
+        updated_at: string;
+      };
       rate: number;
       is_wished: boolean;
-      sale_check: boolean;
+    };
+    variation: {
+      id: number;
+      attribute_id: null | string;
+      product_id: string;
+      value: null | string;
+      quantity: string;
+      sku: null | string;
+      price: string;
+      sale_price: string;
+      date_sale_from: null | string;
+      date_sale_to: null | string;
+      set_var_ids: string;
+      user_id: string;
+      deleted_at: null | string;
+      created_at: string;
+      updated_at: string;
+      attribute: {
+        id: number;
+        name: string;
+      };
     };
   }[];
   transactions: {
@@ -1125,9 +1166,9 @@ export interface OrderShow {
     user_id: string;
     order_id: string;
     amount: string;
-    ref_id: null;
+    ref_id: null | string;
     token: string;
-    description: null;
+    description: null | string;
     gateway_name: string;
     status: string;
     created_at: string;
@@ -1136,18 +1177,16 @@ export interface OrderShow {
   address: {
     id: number;
     title: string;
-    receiver_name: string;
+    receiver_name: null | string;
     cellphone: string;
     address: string;
-    postal_code: string;
+    postal_code: null | string;
     province_id: string;
     city_id: string;
-    municipality_zone_id: null;
     user_id: string;
-    longitude: string;
-    latitude: string;
-    addinational: null;
-    deleted_at: null;
+    longitude: null | string;
+    latitude: null | string;
+    deleted_at: null | string;
     created_at: string;
     updated_at: string;
   };
@@ -1155,6 +1194,20 @@ export interface OrderShow {
     name: string;
     code: string;
     value: string;
+  };
+  shipping: {
+    id: number;
+    name: string;
+    code: string;
+    base_cost: string;
+    per_km_cost: string;
+    per_weight_cost: string;
+    is_user_pay: string;
+    description: null;
+    is_active: string;
+    config: null;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -2222,7 +2275,6 @@ export interface OrderShowSite {
   };
 }
 
-/* TODO: not sure */
 export interface AddressUser {
   id: number;
   title: string;
@@ -2235,7 +2287,6 @@ export interface AddressUser {
   user_id: string | number;
   longitude: null | string;
   latitude: null | string;
-  addinational: null;
   deleted_at: null;
   created_at: string;
   updated_at: string;

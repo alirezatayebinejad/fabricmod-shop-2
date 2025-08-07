@@ -15,7 +15,8 @@ import {
   AddressUser,
   OrderIndex,
   OrderShow,
-  ProductIndex,
+  ProductsWithVariationIndex,
+  ShippingmethodIndex,
   UserIndex,
 } from "@/types/apiTypes";
 import RetryError from "@/components/datadisplay/RetryError";
@@ -30,7 +31,7 @@ type Props = {
 };
 
 interface ProductWithQty {
-  product_id: string;
+  variation_id: string;
   qty: string;
 }
 
@@ -64,7 +65,7 @@ export default function FormOrders({
     null,
   );
   const [selectedAddress, setSelectedAddress] = useState<
-    AddressUser | Address | null
+    AddressUser | Address | OrderShow["address"] | null
   >(null);
   const [selectedProducts, setSelectedProducts] = useState<SelectSearchItem[]>(
     [],
@@ -89,8 +90,10 @@ export default function FormOrders({
       if (order.items) {
         setSelectedProducts(
           order.items.map((p: OrderShow["items"][number]) => ({
-            id: p.product.id,
+            id: p.variation_id,
             title: p.product.name,
+            description:
+              p.variation.attribute.name + ": " + p.variation.value || "",
           })),
         );
       }
@@ -119,21 +122,19 @@ export default function FormOrders({
       user_id: editAndShow ? undefined : "",
       is_whole: editAndShow ? undefined : 0,
       address_id: editAndShow ? order?.address?.id : "",
-      delivery_amount: editAndShow ? (order?.delivery_amount ?? "") : "",
-      delivery_serial: editAndShow ? (order?.delivery_serial ?? "") : "",
       status: editAndShow ? (order?.status ?? "pending") : "pending",
       description: editAndShow ? (order?.description ?? "") : "",
+      delivery_amount: editAndShow ? (order?.delivery_amount ?? "") : "",
+      delivery_serial: editAndShow ? (order?.delivery_serial ?? "") : "",
       products: editAndShow
         ? (order?.items?.map((p) => ({
-            product_id: p.product_id,
+            variation_id: p.variation_id,
             qty: p.quantity?.toString() ?? "1",
           })) ?? [])
         : ([] as ProductWithQty[]),
-      shipping_method: editAndShow ? undefined : "post",
-      shipping_method_id: editAndShow
-        ? (order?.shipping_method_id ?? "")
-        : undefined,
+      shipping_method: editAndShow ? order?.shipping.name : "",
       coupon_amount: editAndShow ? (order?.coupon_amount ?? "") : "",
+      total_weight: editAndShow ? (order?.total_weight ?? "") : "",
     },
     async (formValues) => {
       const dataToSend = {
@@ -141,7 +142,7 @@ export default function FormOrders({
         user_id: isEditMode ? order?.user?.id : selectedUser?.id,
         address_id: isEditMode ? formValues.address_id : selectedAddress?.id,
         products: selectedProducts.map((product, index) => ({
-          product_id: product.id,
+          variation_id: product.id,
           qty: (formValues.products as ProductWithQty[])?.[index]?.qty || "1",
         })),
         _method: isEditMode ? "put" : undefined,
@@ -183,14 +184,14 @@ export default function FormOrders({
         // If in edit mode and we have previous qty, use it
         if (isEditMode && prev.products && Array.isArray(prev.products)) {
           const found = (prev.products as ProductWithQty[])?.find(
-            (p) => p.product_id.toString() === s.id.toString(),
+            (p) => p.variation_id?.toString() === s.id.toString(),
           );
           return {
-            product_id: s.id,
+            variation_id: s.id,
             qty: found?.qty || "1",
           };
         }
-        return { product_id: s.id, qty: "1" };
+        return { variation_id: s.id, qty: "1" };
       }),
     }));
   };
@@ -241,7 +242,7 @@ export default function FormOrders({
             isSearchFromApi
             requestSelectOptions={async (search) => {
               const res = await apiCRUD({
-                urlSuffix: `admin-panel/users?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
+                urlSuffix: `admin-panel/users?${search ? `search=${search}` : "per_page=15"}`,
               });
               return (
                 res?.data?.users?.map((u: UserIndex) => ({
@@ -378,7 +379,7 @@ export default function FormOrders({
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SwitchWrapper
-          label="سفارش سریع"
+          label="سقارش عمده"
           isSelected={values.is_whole}
           onChange={(val) => handleChange("is_whole")(val === "1" ? "1" : "0")}
           isDisabled={isShowMode}
@@ -398,6 +399,15 @@ export default function FormOrders({
           value={values.delivery_serial}
           onChange={isShowMode ? undefined : handleChange("delivery_serial")}
           errorMessage={errors.delivery_serial}
+          isDisabled={isShowMode}
+        />
+        <InputBasic
+          name="total_weight"
+          label="مجموع وزن"
+          type="number"
+          value={values.total_weight}
+          onChange={isShowMode ? undefined : handleChange("total_weight")}
+          errorMessage={errors.total_weight}
           isDisabled={isShowMode}
         />
         <SelectSearchCustom
@@ -458,6 +468,16 @@ export default function FormOrders({
                       {item.product?.name}
                     </span>
                   </div>
+                  {item.variation && (
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-700">
+                        تنوع: ({item.variation.attribute?.name})
+                      </span>
+                      <span className="text-base text-TextColor">
+                        {item.variation.value}
+                      </span>
+                    </div>
+                  )}
                   <div className="mb-2 flex items-center gap-2">
                     <span className="text-sm font-semibold text-gray-700">
                       تعداد:
@@ -502,28 +522,55 @@ export default function FormOrders({
             isMultiSelect
             requestSelectOptions={async (search) => {
               const res = await apiCRUD({
-                urlSuffix: `admin-panel/products?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
+                urlSuffix: `admin-panel/products/variations?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
               });
-              return (
-                res?.data?.products?.map((p: ProductIndex) => ({
-                  id: p.id,
-                  title: p.name,
-                })) || []
-              );
+              // The API should return products, each with a variations array
+              // Each variation should have an id and a name
+              // We want to flatten all variations of all products into the select options
+              const products: ProductsWithVariationIndex[] =
+                res?.data?.products || [];
+              const options: SelectSearchItem[] = [];
+              products.forEach((product: ProductsWithVariationIndex) => {
+                if (
+                  Array.isArray(product.variations) &&
+                  product.variations.length > 0
+                ) {
+                  product.variations.forEach((variation) => {
+                    options.push({
+                      id: variation.id,
+                      title: product.name,
+                      description:
+                        variation.attribute.name + ": " + variation.value,
+                    });
+                  });
+                }
+              });
+              return options;
             }}
             onChange={(vs) =>
               handleProductSelect(
-                vs?.map((v) => ({ id: v.id, title: v.title })) || [],
+                vs?.map((v) => ({
+                  id: v.id,
+                  title: v.title,
+                  description: v.description,
+                })) || [],
               )
             }
             isDisable={isShowMode}
             value={
               selectedProducts && selectedProducts.length > 0
-                ? selectedProducts?.map((s) => ({ id: s.id, title: s.title }))
+                ? selectedProducts?.map((s) => ({
+                    id: s.id,
+                    title: s.title,
+                    description: s.description,
+                  }))
                 : isEditMode && order?.items
                   ? order.items?.map((p) => ({
-                      id: p.product.id,
+                      id: p.variation_id,
                       title: p.product.name,
+                      description:
+                        p.variation.attribute.name + ": " + p.variation.value ||
+                        "",
                     }))
                   : []
             }
@@ -542,15 +589,18 @@ export default function FormOrders({
               ? selectedProducts
               : isEditMode && order?.items
                 ? order.items.map((p) => ({
-                    id: p.product?.id,
+                    id: p.variation_id,
                     title: p.product?.name,
+                    description:
+                      p.variation.attribute.name + ": " + p.variation.value ||
+                      "",
                   }))
                 : []
             ).map((product, index) => (
               <InputBasic
                 key={product.id}
                 name={`products.${index}.qty`}
-                label={`تعداد ${product.title}`}
+                label={`تعداد ${product.title}${product.description ? " - " + product.description : ""}`}
                 type="number"
                 value={
                   (values.products as ProductWithQty[])?.[index]?.qty ||
@@ -570,10 +620,43 @@ export default function FormOrders({
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <SelectSearchCustom
-          title="روش ارسال"
           options={[{ id: "post", title: "پست" }]}
           defaultValue={[{ id: "post", title: "پست" }]}
           isDisable
+        />
+        <SelectSearchCustom
+          title="روش ارسال"
+          isSearchFromApi
+          requestSelectOptions={async () => {
+            const res = await apiCRUD({
+              urlSuffix: `admin-panel/shipping-methods?per_page=20`,
+            });
+            return (
+              res?.data?.shipping_methods?.map((d: ShippingmethodIndex) => ({
+                id: d.id,
+                title: d.name,
+              })) || []
+            );
+          }}
+          showNoOneOption={false}
+          onChange={(selected: SelectSearchItem[]) => {
+            setValues((prev: any) => ({
+              ...prev,
+              shipping_method: selected?.[0]?.title,
+            }));
+          }}
+          isDisable={isShowMode}
+          defaultValue={
+            values.shipping_method && selectedData?.shipping_method_id
+              ? [
+                  {
+                    id: selectedData?.shipping_method_id,
+                    title: values.shipping_method,
+                  },
+                ]
+              : []
+          }
+          errorMessage={errors.shipping_method}
         />
         <InputBasic
           name="coupon_amount"

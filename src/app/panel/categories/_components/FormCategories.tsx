@@ -84,7 +84,7 @@ export default function FormCategories({
       icon: categ?.icon || undefined,
       attrs: categ?.attributes?.map((a) => a.id) || undefined,
       filter_attrs: categ?.filter_attrs?.map((f) => f?.id?.toString()),
-      variation_attr: categ?.variation_attr?.[0]?.id?.toString() || undefined,
+      variation_attr: categ?.variation_attr?.id?.toString() || undefined,
       type: categ?.type || "product", //no editmode
       faqs: undefined as { subject: string; body: string }[] | undefined,
       is_set: categ?.is_set?.toString() as "0" | "1",
@@ -316,8 +316,8 @@ export default function FormCategories({
             categ?.variation_attr
               ? [
                   {
-                    id: categ.variation_attr?.[0]?.id,
-                    title: categ.variation_attr?.[0]?.name,
+                    id: categ.variation_attr?.id,
+                    title: categ.variation_attr?.name,
                   },
                 ]
               : undefined

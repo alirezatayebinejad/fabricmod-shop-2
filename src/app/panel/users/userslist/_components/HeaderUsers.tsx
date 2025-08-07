@@ -65,7 +65,8 @@ export default function HeaderUsers() {
       />
       <div className="flex flex-wrap-reverse gap-3 md:flex-nowrap">
         <Button
-          onPress={onOpen}
+          as={Link}
+          href="/panel/users/userslist/req-panel"
           color="secondary"
           className="h-[40px] rounded-[5px] border-1 bg-accent-3 p-[0_30px] text-[16px] font-[600] text-accent-3-foreground"
         >
