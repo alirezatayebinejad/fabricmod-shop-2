@@ -12,12 +12,12 @@ export const generateTheme = (theme: Theme) => {
     --TextSize700: 20px;
   }
   .light {
-    --primary: ${theme?.light?.primary || "#2b98bf"};
+    --primary: ${theme?.light?.primary || "#e6a200"};
     --primary-foreground: ${theme?.light?.primaryForeground || "#ffffff"};
-    --primary-50: ${theme?.light?.primary50 || "#2b98bf1a"};
-    --primary-100: ${theme?.light?.primary100 || "#2b98bf3d"};
-    --primary-200: ${theme?.light?.primary200 || "#fac7aa"};
-    --secondary: ${theme?.light?.secondary || "#4db18b"};
+    --primary-50: ${theme?.light?.primary50 || "#e6a2001a"};
+    --primary-100: ${theme?.light?.primary100 || "#e6a2003d"};
+    --primary-200: ${theme?.light?.primary200 || "#e6a20063"};
+    --secondary: ${theme?.light?.secondary || "#3d4b56"};
     --secondary-foreground: ${theme?.light?.secondaryForeground || "#ffffff"};
     --destructive: ${theme?.light?.destructive || "#df747459"};
     --destructive-foreground: ${theme?.light?.destructiveForeground || "#e25c5c"};
@@ -40,7 +40,7 @@ export const generateTheme = (theme: Theme) => {
     --TextLow: ${theme?.light?.TextLow || "#535353"};
     --TextMute: ${theme?.light?.TextMute || "#abadad"};
     --TextReverse: ${theme?.light?.TextReverse || "#eeeeee"};
-    --accentColor1: ${theme?.light?.accentColor1 || "#53937bd8"};
+    --accentColor1: ${theme?.light?.accentColor1 || "#b6ae65"};
     --accentColor1-foreground: ${theme?.light?.accentColor1Foreground || "#ffffff"};
     --accentColor2: ${theme?.light?.accentColor2 || "#1e667cb0"};
     --accentColor2-foreground: ${theme?.light?.accentColor2Foreground || "#ffffff"};
@@ -50,11 +50,11 @@ export const generateTheme = (theme: Theme) => {
     --accentColor4-foreground: ${theme?.light?.accentColor4Foreground || "#191818"};
   }
   .dark {
-    --primary: ${theme?.dark?.primary || "#2b98bf"};
+    --primary: ${theme?.dark?.primary || "#e6a200"};
     --primary-foreground: ${theme?.dark?.primaryForeground || "#ffffff"};
-    --primary-50: ${theme?.dark?.primary50 || "#2b98bf1a"};
-    --primary-100: ${theme?.dark?.primary100 || "#2b98bf3d"};
-    --primary-200: ${theme?.dark?.primary200 || "#2b98bf63"};
+    --primary-50: ${theme?.dark?.primary50 || "#e6a2001a"};
+    --primary-100: ${theme?.dark?.primary100 || "#e6a2003d"};
+    --primary-200: ${theme?.dark?.primary200 || "#e6a20063"};
     --secondary: ${theme?.dark?.secondary || "#3d4b56"};
     --secondary-foreground: ${theme?.dark?.secondaryForeground || "#ffffff"};
     --destructive: ${theme?.dark?.destructive || "#df747459"};
@@ -78,7 +78,7 @@ export const generateTheme = (theme: Theme) => {
     --TextLow: ${theme?.dark?.TextLow || "#535353"};
     --TextMute: ${theme?.dark?.TextMute || "#8b8b8b"};
     --TextReverse: ${theme?.dark?.TextReverse || "#3f3e3e"};
-    --accentColor1: ${theme?.dark?.accentColor1 || "#53937b"};
+    --accentColor1: ${theme?.dark?.accentColor1 || "#b6ae65"};
     --accentColor1-foreground: ${theme?.dark?.accentColor1Foreground || "#ffffff"};
     --accentColor2: ${theme?.dark?.accentColor2 || "#1e667c"};
     --accentColor2-foreground: ${theme?.dark?.accentColor2Foreground || "#ffffff"};

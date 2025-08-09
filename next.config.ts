@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "trustseal.enamad.ir",
       },
+      {
+        protocol: "http",
+        hostname: "87.248.156.50",
+        port: "8000",
+      },
     ],
   },
   logging: {

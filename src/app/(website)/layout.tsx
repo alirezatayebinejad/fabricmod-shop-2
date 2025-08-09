@@ -13,7 +13,7 @@ export default function RootLayout({
       <Providers>
         <Header />
         <MobileNav />
-        <div className="mx-auto max-w-[1350px] px-[15px] md:px-[70px]">
+        <div className="mx-auto max-w-[1600px] px-[15px] md:px-[20px]">
           {children}
         </div>
         <Footer />

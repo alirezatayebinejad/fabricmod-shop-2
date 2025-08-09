@@ -86,9 +86,14 @@ export default async function ProductPage({
           <div>
             <div className="sticky top-0">
               <PicGallery
-                sources={data?.images?.map(
-                  (img) => process.env.NEXT_PUBLIC_IMG_BASE! + img.image,
-                )}
+                sources={[
+                  data?.primary_image
+                    ? process.env.NEXT_PUBLIC_IMG_BASE + data?.primary_image
+                    : "/images/imageplaceholder.png",
+                  ...(data?.images?.map(
+                    (img) => process.env.NEXT_PUBLIC_IMG_BASE + img.image,
+                  ) || []),
+                ]}
               />
             </div>
           </div>

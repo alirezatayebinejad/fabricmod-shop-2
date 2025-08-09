@@ -1221,6 +1221,8 @@ export interface Transactions {
   description: null;
   gateway_name: "cash" | "card" | "admin";
   status: "pending" | "success";
+  pay_again: string;
+  image: string | null;
   created_at: string;
   updated_at: string;
   user: {

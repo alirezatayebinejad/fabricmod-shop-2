@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { innerPermissions } from "@/constants/permissions";
-import { useUserContext } from "@/contexts/UserContext";
 
 interface ProtectComponentProps {
   permission: keyof typeof innerPermissions;
@@ -10,20 +9,20 @@ interface ProtectComponentProps {
 }
 
 const ProtectComponent: React.FC<ProtectComponentProps> = ({
-  permission,
+  /*  permission, */
   component,
   fallback = null,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const { permissions, user } = useUserContext();
+  /*   const { permissions, user } = useUserContext(); */
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
 
-  return isMounted &&
+  return isMounted /* TODO &&
     (permissions?.includes(innerPermissions[permission]) ||
-      user?.roles?.find((r) => r.name === "super-admin")) ? (
+      user?.roles?.find((r) => r.name === "super-admin")) */ ? (
     <>{component}</>
   ) : (
     fallback
