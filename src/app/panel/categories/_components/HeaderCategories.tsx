@@ -12,13 +12,7 @@ import InputBasic from "@/components/inputs/InputBasic";
 import { useState } from "react";
 import { Search } from "lucide-react";
 
-export default function HeaderCategories({
-  type,
-  setType,
-}: {
-  type: "post" | "product";
-  setType: (val: "post" | "product") => void;
-}) {
+export default function HeaderCategories() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { changeFilters, getFilterValue, deleteFilter } = useFiltersContext();
   const [search, setSearch] = useState("");
@@ -66,18 +60,18 @@ export default function HeaderCategories({
             <Button
               className={cn(
                 "h-[40px] !rounded-[0_5px_5px_0] !border-1 p-[0_30px] text-[16px] font-[600] text-TextColor",
-                type === "product" ? "bg-boxBg250" : "",
+                typeFilterValue === "product" ? "bg-boxBg250" : "",
               )}
-              onPress={() => setType("product")}
+              onPress={() => changeFilters("type=post")}
             >
               محصولات
             </Button>
             <Button
               className={cn(
                 "h-[40px] !rounded-[5px_0_0_5px] !border-1 p-[0_30px] text-[16px] font-[600] text-TextColor",
-                type === "post" ? "bg-boxBg250" : "",
+                typeFilterValue === "post" ? "bg-boxBg250" : "",
               )}
-              onPress={() => setType("post")}
+              onPress={() => changeFilters("type=product")}
             >
               پست ها
             </Button>
