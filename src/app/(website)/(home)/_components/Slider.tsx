@@ -28,9 +28,9 @@ export default function Slider({ slidesData }: Props) {
 
   return (
     <section className="relative flex items-center justify-center" dir="ltr">
-      <div className="embla !m-0 mx-auto h-[600px] w-full max-md:h-[200px]">
+      <div className="embla !m-0 mx-auto h-[700px] w-full max-md:h-[200px]">
         <div
-          className="embla__viewport h-full overflow-hidden rounded-[20px]"
+          className="embla__viewport -mx-[20px] h-full overflow-hidden rounded-[0px]"
           ref={emblaRef}
         >
           <div className="embla__container flex h-full select-none">
@@ -40,15 +40,19 @@ export default function Slider({ slidesData }: Props) {
                 className="embla__slide relative flex min-w-0 flex-[0_0_100%] items-center"
               >
                 <Image
-                  src={process.env.NEXT_PUBLIC_IMG_BASE + item?.image}
+                  src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
                   priority={i === 0 ? true : false}
-                  alt={item.title}
+                  alt={item?.title}
                   fill
                   className="h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] object-cover"
                 />
                 {/* content */}
+                {item?.title && (
+                  <div className="absolute left-[6%] top-[23%] h-[360px] w-[42%] bg-black/35 blur-[69px]"></div>
+                )}
+
                 <div
-                  className="absolute left-10 top-[30%] max-w-[400px] max-md:left-2 max-md:max-w-[150px]"
+                  className="absolute left-10 top-[30%] min-w-[40%] max-w-[400px] max-md:left-2 max-md:max-w-[150px]"
                   dir="rtl"
                 >
                   <RevealEffect
@@ -60,19 +64,19 @@ export default function Slider({ slidesData }: Props) {
                       damping: 0.5,
                     }}
                   >
-                    <h3 className="text-[18px] max-md:text-[12px]">
-                      {item.pre_title}
+                    <h3 className="text-[18px] text-white max-md:text-[12px]">
+                      {item?.pre_title || " "}
                     </h3>
-                    <h2 className="text-[52px] font-bold max-md:text-[16px]">
-                      {item.title}
+                    <h2 className="text-[52px] font-bold text-white max-md:text-[16px]">
+                      {item?.title || " "}
                     </h2>
-                    <p className="text-TextLow max-md:hidden max-md:text-[12px]">
-                      {item.text}
+                    <p className="text-white/80 max-md:hidden max-md:text-[12px]">
+                      {item?.text || " "}
                     </p>
                     {item.btn_text && item.url && (
-                      <Link prefetch={false} href={item.url}>
+                      <Link prefetch={false} href={item?.url || "#"}>
                         <Button className="mt-5 h-[45px] rounded-full bg-primary px-6 !text-TextSize600 text-primary-foreground max-md:!h-[25px] max-md:p-0 max-md:!px-0 max-md:!text-[12px]">
-                          {item.btn_text}
+                          {item?.btn_text}
                         </Button>
                       </Link>
                     )}

@@ -60,28 +60,32 @@ export default function ProductCard({
           : "min-w-[280px] max-w-[280px] max-md:min-w-[170px] max-md:max-w-[170px]"
       }`}
     >
-      <div className="relative max-h-[270px] min-h-[270px] !overflow-hidden !rounded-[10px] max-md:max-h-[170px] max-md:min-h-[170px]">
+      <div className="relative max-h-[270px] min-h-[285px] !overflow-hidden !rounded-[10px] max-md:max-h-[170px] max-md:min-h-[170px]">
         <Link prefetch={false} href={`/shop/product/${product?.slug}`}>
-          <Image
-            src={
-              product?.primary_image
-                ? process.env.NEXT_PUBLIC_IMG_BASE + product.primary_image
-                : "/images/imageplaceholder.png"
-            }
-            alt="banner"
-            height={270}
-            width={270}
-            className={`absolute h-auto min-h-full w-full object-cover transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
-          />
-          {product?.images?.[0]?.image && (
+          <div className="flex h-full max-h-[270px] min-h-[285px] w-full items-center justify-center max-md:max-h-[170px] max-md:min-h-[170px]">
             <Image
-              src={process.env.NEXT_PUBLIC_IMG_BASE + product.images[0].image}
+              src={
+                product?.primary_image
+                  ? process.env.NEXT_PUBLIC_IMG_BASE + product.primary_image
+                  : "/images/imageplaceholder.png"
+              }
               alt="banner"
-              height={270}
+              height={285}
               width={270}
-              className={"max-h-[280px] min-h-[280px] w-full object-cover"}
+              className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
+              style={{ objectPosition: "center" }}
             />
-          )}
+            {product?.images?.[0]?.image && (
+              <Image
+                src={process.env.NEXT_PUBLIC_IMG_BASE + product.images[0].image}
+                alt="banner"
+                height={285}
+                width={270}
+                className="absolute left-0 top-0 h-full w-full object-cover object-center"
+                style={{ objectPosition: "center" }}
+              />
+            )}
+          </div>
           {product?.sale_check && (
             <p className="absolute right-5 top-5 rounded-full bg-primary px-1.5 text-TextSize300 text-primary-foreground md:px-3 md:py-1">
               حراج!
