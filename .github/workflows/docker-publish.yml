@@ -40,20 +40,20 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -p 9011 -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy with Docker
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ${{ secrets.DEPLOY_PATH }}
             git fetch origin
             git reset --hard origin/main
             git pull origin main || { echo "Git pull failed"; exit 1; }
             echo "Building and deploying with Docker"
-            docker-compose down || true
-            docker-compose build --no-cache || { echo "Docker build failed"; exit 1; }
-            docker-compose up -d || { echo "Docker up failed"; exit 1; }
+            docker compose down || true
+            docker compose build --no-cache || { echo "Docker build failed"; exit 1; }
+            docker compose up -d || { echo "Docker up failed"; exit 1; }
             echo "Deployment completed successfully"
           EOF
