@@ -1,5 +1,4 @@
 "use client";
-
 import HeaderCategories from "@/app/panel/categories/_components/HeaderCategories";
 import TableCategories from "@/app/panel/categories/_components/TableCategories";
 import Breadcrumb from "@/components/datadisplay/Breadcrumb";
