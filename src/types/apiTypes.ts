@@ -1681,7 +1681,63 @@ export interface Index {
       updated_at: string;
     }[];
   }[];
-  carousels: any[];
+  carousels: {
+    id: number;
+    name: string;
+    slug: string;
+    icon: null;
+    primary_image: string;
+    parent_id: string;
+    priority: number;
+    is_important: number;
+    description: null;
+    seo_title: null;
+    seo_description: null;
+    content: null;
+    type: string;
+    is_active: number;
+    user_id: null;
+    created_at: string;
+    updated_at: string;
+    is_set: number;
+    products: {
+      id: number;
+      name: string;
+      slug: string;
+      primary_image: string;
+      updated_at: string;
+      category_id: number;
+      quantity_check: boolean;
+      sale_check: boolean;
+      price_check: {
+        id: number;
+        attribute_id: number;
+        product_id: number;
+        value: string;
+        quantity: number;
+        price: number;
+        sku: string;
+        sale_price: null | null | number;
+        date_sale_from: null;
+        date_sale_to: null;
+        set_var_ids: null;
+        user_id: number;
+        deleted_at: null;
+        created_at: string;
+        updated_at: string;
+      };
+      rate: number;
+      is_wished: boolean;
+      images: {
+        id: number;
+        product_id: number;
+        image: string;
+        is_active: number;
+        created_at: string;
+        updated_at: string;
+      }[];
+    }[];
+  }[];
 }
 
 export interface ProductShowSite {

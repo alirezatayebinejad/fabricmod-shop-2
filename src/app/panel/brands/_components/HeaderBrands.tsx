@@ -5,9 +5,15 @@ import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import { useDisclosure } from "@heroui/modal";
 import FormBrands from "@/app/panel/brands/_components/FormBrands";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import { useFiltersContext } from "@/contexts/SearchFilters";
+import { useState } from "react";
+import { Search } from "lucide-react";
+import InputBasic from "@/components/inputs/InputBasic";
 
 export default function HeaderBrands() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { changeFilters, deleteFilter } = useFiltersContext();
+  const [search, setSearch] = useState("");
 
   return (
     <div className="mb-6 flex flex-wrap items-center justify-between gap-5">
@@ -33,6 +39,27 @@ export default function HeaderBrands() {
         modalHeader={<h2>ساخت برند جدید</h2>}
         modalBody={<FormBrands onClose={onOpenChange} />}
       />
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-5">
+        <InputBasic
+          name="search"
+          type="search"
+          placeholder="جستجو..."
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
+          endContent={
+            <Search
+              className="cursor-pointer text-TextMute"
+              onClick={() => {
+                if (search) {
+                  changeFilters("search=" + search);
+                } else {
+                  deleteFilter("search");
+                }
+              }}
+            />
+          }
+        />
+      </div>
     </div>
   );
 }

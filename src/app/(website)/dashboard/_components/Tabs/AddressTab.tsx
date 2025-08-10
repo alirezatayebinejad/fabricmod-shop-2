@@ -141,7 +141,7 @@ export default function AddressTab(props: AddressTabProps) {
           {address.latitude && address.longitude && (
             <Button
               variant="solid"
-              className="mt-2"
+              className="ml-2 mt-2"
               size="sm"
               onClick={(e) => {
                 e.stopPropagation();
