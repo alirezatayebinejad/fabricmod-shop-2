@@ -24,8 +24,11 @@ jobs:
       - name: Build the app
         run: npm run build
         env:
-          NEXT_PUBLIC_ENV_VARIABLE: ${{ secrets.NEXT_PUBLIC_ENV_VARIABLE }}
-          ENV_VARIABLE: ${{ secrets.ENV_VARIABLE }}
+          NEXT_PUBLIC_CRYPTO_KEY: ${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }}
+          NEXT_PUBLIC_BACKEND_BASE: ${{ secrets.NEXT_PUBLIC_BACKEND_BASE }}
+          NEXT_PUBLIC_BACKEND_API: ${{ secrets.NEXT_PUBLIC_BACKEND_API }}
+          NEXT_PUBLIC_IMG_BASE: ${{ secrets.NEXT_PUBLIC_IMG_BASE }}
+          NEXT_PUBLIC_BASE_PATH: ${{ secrets.NEXT_PUBLIC_BASE_PATH }}
 
   deploy:
     needs: build
