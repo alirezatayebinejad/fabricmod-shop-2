@@ -25,7 +25,8 @@ export default function ProductCard({
     | ProductIndexSite["products"][number]
     | ProductCategoryShowSite["data"]["products"][number]
     | ProductShowSite["related_products"][number]
-    | Index["latest_products"][number];
+    | Index["latest_products"][number]
+    | Index["carousels"][number]["products"][number];
   fullSize?: boolean;
 }) {
   const [loading, setLoading] = useState(false);

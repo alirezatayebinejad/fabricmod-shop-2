@@ -1,4 +1,4 @@
-import { Index } from "@/types/apiTypes";
+import { Index, Initials } from "@/types/apiTypes";
 import { Button } from "@heroui/button";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
@@ -7,13 +7,15 @@ import Link from "next/link";
 export default function CategoryCard({
   categ,
 }: {
-  categ: Index["categories"][number];
+  categ:
+    | Index["categories"][number]
+    | Initials["categories"][number]["childs"][number];
 }) {
   return (
     <Link
       prefetch={false}
       href={"/shop?category=" + categ.slug}
-      className="group relative max-h-[270px] min-w-[270px] overflow-hidden rounded-[20px] max-md:max-h-[160px] max-md:min-w-[170px] max-md:max-w-[170px]"
+      className="group relative max-h-[270px] min-w-[270px] overflow-hidden rounded-[5px] max-md:max-h-[160px] max-md:min-w-[170px] max-md:max-w-[170px]"
     >
       <Image
         src={
@@ -45,8 +47,8 @@ export default function CategoryCard({
             <ArrowLeft className="w-5 rotate-45" />
           </Button>
           {/* fake round corner */}
-          <span className="absolute -left-3 -top-7 h-5 w-5 rounded-bl-[15px] bg-transparent shadow-[-5px_5px_0px_var(--bodyBg)]"></span>
-          <span className="absolute -bottom-3 -right-7 h-5 w-5 rounded-bl-[15px] bg-transparent shadow-[-5px_5px_0px_var(--bodyBg)]"></span>
+          <span className="absolute -left-3 -top-7 h-5 w-5 rounded-bl-[8px] bg-transparent shadow-[-5px_5px_0px_var(--bodyBg)]"></span>
+          <span className="absolute -bottom-3 -right-7 h-5 w-5 rounded-bl-[8px] bg-transparent shadow-[-5px_5px_0px_var(--bodyBg)]"></span>
         </div>
       </div>
     </Link>

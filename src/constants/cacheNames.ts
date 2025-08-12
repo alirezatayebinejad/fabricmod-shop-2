@@ -1,10 +1,10 @@
 import { ApiCrudInput } from "@/services/apiCRUD";
 
 export const cookiesNames = {
-  userPermissions: "user_perms",
-  userSession: "user_session",
-  userInfo: "user_info",
-  tempPhoneToken: "temp_phone_token",
+  userPermissions: "user_perms_fabric",
+  userSession: "user_session_fabric",
+  userInfo: "user_info_fabric",
+  tempPhoneToken: "temp_phone_token_fabric",
 };
 
 export const localstorageNames = {

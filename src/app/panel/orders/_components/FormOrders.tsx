@@ -120,7 +120,7 @@ export default function FormOrders({
   } = useMyForm(
     {
       user_id: editAndShow ? undefined : "",
-      is_whole: editAndShow ? undefined : 0,
+      is_whole: order?.is_whole_sale ?? 0,
       address_id: editAndShow ? order?.address?.id : "",
       status: editAndShow ? (order?.status ?? "pending") : "pending",
       description: editAndShow ? (order?.description ?? "") : "",
@@ -132,7 +132,7 @@ export default function FormOrders({
             qty: p.quantity?.toString() ?? "1",
           })) ?? [])
         : ([] as ProductWithQty[]),
-      shipping_method: editAndShow ? order?.shipping.name : "",
+      shipping_method: editAndShow ? order?.shipping.code : "",
       coupon_amount: editAndShow ? (order?.coupon_amount ?? "") : "",
       total_weight: editAndShow ? (order?.total_weight ?? "") : "",
     },
@@ -198,10 +198,12 @@ export default function FormOrders({
 
   // Step 3: Product qty change
   const handleProductQtyChange = (index: number, qty: string) => {
+    // Allow empty string so user can clear the input and re-enter
     let safeQty = qty.replace(/[^0-9]/g, "");
-    if (safeQty === "") {
-      // do nothing, allow empty for now
-    } else if (parseInt(safeQty) < 1) {
+    // If user is deleting, allow empty string
+    if (qty === "") {
+      safeQty = "";
+    } else if (safeQty !== "" && parseInt(safeQty) < 1) {
       safeQty = "1";
     }
     setValues((prev: any) => ({
@@ -378,7 +380,7 @@ export default function FormOrders({
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SwitchWrapper
-          label="سقارش عمده"
+          label="سفارش عمده"
           isSelected={values.is_whole}
           onChange={(val) => handleChange("is_whole")(val === "1" ? "1" : "0")}
           isDisabled={isShowMode}
@@ -521,15 +523,15 @@ export default function FormOrders({
             isMultiSelect
             requestSelectOptions={async (search) => {
               const res = await apiCRUD({
-                urlSuffix: `admin-panel/products/variations?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
+                urlSuffix: `admin-panel/product/variations?${search ? `search=${search}&per_page=all` : "per_page=10"}`,
               });
               // The API should return products, each with a variations array
               // Each variation should have an id and a name
               // We want to flatten all variations of all products into the select options
               const products: ProductsWithVariationIndex[] =
-                res?.data?.products || [];
+                res?.data?.products?.data || [];
               const options: SelectSearchItem[] = [];
-              products.forEach((product: ProductsWithVariationIndex) => {
+              products?.forEach((product: ProductsWithVariationIndex) => {
                 if (
                   Array.isArray(product.variations) &&
                   product.variations.length > 0
@@ -602,9 +604,12 @@ export default function FormOrders({
                 label={`تعداد ${product.title}${product.description ? " - " + product.description : ""}`}
                 type="number"
                 value={
-                  (values.products as ProductWithQty[])?.[index]?.qty ||
-                  (isEditMode && order?.items?.[index]?.quantity?.toString()) ||
-                  ""
+                  (values.products as ProductWithQty[])?.[index]?.qty !==
+                  undefined
+                    ? (values.products as ProductWithQty[])?.[index]?.qty
+                    : (isEditMode &&
+                        order?.items?.[index]?.quantity?.toString()) ||
+                      ""
                 }
                 onChange={(e) => handleProductQtyChange(index, e.target.value)}
                 errorMessage={
@@ -619,11 +624,6 @@ export default function FormOrders({
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <SelectSearchCustom
-          options={[{ id: "post", title: "پست" }]}
-          defaultValue={[{ id: "post", title: "پست" }]}
-          isDisable
-        />
-        <SelectSearchCustom
           title="روش ارسال"
           isSearchFromApi
           requestSelectOptions={async () => {
@@ -634,23 +634,25 @@ export default function FormOrders({
               res?.data?.shipping_methods?.map((d: ShippingmethodIndex) => ({
                 id: d.id,
                 title: d.name,
+                helperValue: d.code,
               })) || []
             );
           }}
           showNoOneOption={false}
-          onChange={(selected: SelectSearchItem[]) => {
-            setValues((prev: any) => ({
+          onChange={(selected) => {
+            setValues((prev) => ({
               ...prev,
-              shipping_method: selected?.[0]?.title,
+              shipping_method: selected?.[0]?.helperValue,
             }));
           }}
           isDisable={isShowMode}
           defaultValue={
-            values.shipping_method && selectedData?.shipping_method_id
+            values.shipping_method && order?.shipping?.id
               ? [
                   {
-                    id: selectedData?.shipping_method_id,
-                    title: values.shipping_method,
+                    id: order.shipping?.id,
+                    title: order.shipping?.name,
+                    helperValue: order.shipping?.code,
                   },
                 ]
               : []

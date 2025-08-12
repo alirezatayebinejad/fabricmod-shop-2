@@ -1331,6 +1331,8 @@ export interface Initials {
     type: string;
     icon: null | string;
     priority: number;
+    primary_image: null | string;
+    products_count: number;
     childs: {
       id: number;
       name: string;
@@ -1338,6 +1340,8 @@ export interface Initials {
       parent_id: string;
       icon: string;
       priority: number;
+      primary_image: null | string;
+      products_count: number;
       childs: any[];
     }[];
   }[];

@@ -43,6 +43,8 @@ export default function Carousel({
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  const isEmpty = !cards || cards.length === 0;
+
   return (
     <section className="relative flex w-full flex-col py-8">
       <div
@@ -66,24 +68,28 @@ export default function Carousel({
           </Link>
         )}
       </div>
-      <Button
-        onClick={scrollPrev}
-        variant="flat"
-        size="sm"
-        isIconOnly
-        className="absolute -right-3 top-[50%] z-10 h-8 min-w-5 rounded-full bg-boxBg200 px-0 text-TextLow shadow-md md:h-10 md:min-w-10"
-      >
-        <ChevronRight />
-      </Button>
-      <Button
-        variant="flat"
-        onClick={scrollNext}
-        size="sm"
-        isIconOnly
-        className="absolute -left-3 top-[50%] z-10 h-8 min-w-5 rounded-full bg-boxBg200 px-0 text-TextLow shadow-md md:h-10 md:min-w-10"
-      >
-        <ChevronLeft />
-      </Button>
+      {!isEmpty && (
+        <>
+          <Button
+            onClick={scrollPrev}
+            variant="flat"
+            size="sm"
+            isIconOnly
+            className="absolute -right-3 top-[50%] z-10 h-8 min-w-5 rounded-full bg-boxBg200 px-0 text-TextLow shadow-md md:h-10 md:min-w-10"
+          >
+            <ChevronRight />
+          </Button>
+          <Button
+            variant="flat"
+            onClick={scrollNext}
+            size="sm"
+            isIconOnly
+            className="absolute -left-3 top-[50%] z-10 h-8 min-w-5 rounded-full bg-boxBg200 px-0 text-TextLow shadow-md md:h-10 md:min-w-10"
+          >
+            <ChevronLeft />
+          </Button>
+        </>
+      )}
       <RevealEffect
         mode="customFadeUp"
         options={{ triggerOnce: true, fraction: 0.3 }}
@@ -93,7 +99,13 @@ export default function Carousel({
           ref={emblaRef}
         >
           <div className="embla__container flex gap-4 md:mr-5 md:gap-[24px]">
-            {cards?.map((card) => card)}
+            {isEmpty ? (
+              <div className="w-full py-8 text-center text-lg text-TextLow">
+                موردي نيست
+              </div>
+            ) : (
+              cards?.map((card) => card)
+            )}
           </div>
         </div>
       </RevealEffect>

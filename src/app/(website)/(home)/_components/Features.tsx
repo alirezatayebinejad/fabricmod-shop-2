@@ -7,7 +7,7 @@ export default function Features() {
   const setting = globalData?.initials?.setting;
 
   return (
-    <section className="flex flex-wrap justify-between gap-3 py-5">
+    <section className="flex flex-wrap justify-between gap-3 py-5 md:px-16">
       <RevealEffect
         mode="customFadeUp"
         options={{

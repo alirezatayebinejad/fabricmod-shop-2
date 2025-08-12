@@ -47,7 +47,7 @@ export default function FormBanners({
       pre_title: banner?.pre_title,
       text: banner?.text,
       image: undefined as undefined | string,
-      url: banner?.url,
+      url: banner?.url || "",
       btn_text: banner?.btn_text,
       is_active: banner?.is_active?.toString() || "1",
       priority: banner?.priority,
@@ -82,7 +82,7 @@ export default function FormBanners({
         <InputBasic
           name="pre_title"
           label="پیش عنوان"
-          value={values.pre_title || undefined}
+          value={values.pre_title ? values.pre_title : ""}
           onChange={handleChange("pre_title")}
           errorMessage={errors.pre_title}
           isDisabled={isShowMode}

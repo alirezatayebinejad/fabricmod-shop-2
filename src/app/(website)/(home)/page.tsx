@@ -1,4 +1,5 @@
 import BannerCard from "@/app/(website)/(home)/_components/BannerCard";
+import CategoriesCarousel from "@/app/(website)/(home)/_components/CategoriesCarousel";
 import Features from "@/app/(website)/(home)/_components/Features";
 import NoticeBanner from "@/app/(website)/(home)/_components/NoticeBanner";
 import Slider from "@/app/(website)/(home)/_components/Slider";
@@ -86,6 +87,8 @@ export default async function HomePage() {
             </>
           )}
         </section>
+        <CategoriesCarousel />
+
         <Carousel
           title="جدید ترین ها"
           moreButton
@@ -95,117 +98,27 @@ export default async function HomePage() {
             <ProductCard product={p} key={p.slug} />
           ))}
         />
-        {/* TODO not dynamic */}
-        {/* <div className="rounded-[20px] bg-[url('/images/offerBg.png')] p-5">
-          <Carousel
-            title="پیشنهاد ویژه"
-            moreButton
-            autoplay
-            cards={[
-              <ProductCard
-                product={{
-                  bgImg: "/fake/product.jpg",
-                  title: "دستگاه اندازه‌گیری pH",
-                  price: "۱,۲۰۰,۰۰۰",
-                }}
-                link="#"
-                key={"5"}
-              />,
-              <ProductCard
-                product={{
-                  bgImg: "/fake/product.jpg",
-                  title: "کیت آزمایشگاهی",
-                  price: "۲,۵۰۰,۰۰۰",
-                  offerPrice: "۲,۰۰۰,۰۰۰",
-                }}
-                link="#"
-                key={"4"}
-              />,
-              <ProductCard
-                product={{
-                  bgImg: "/fake/product.jpg",
-                  title: "دستگاه تست کیفیت آب",
-                  price: "۱,۸۰۰,۰۰۰",
-                }}
-                link="#"
-                key={"3"}
-              />,
-              <ProductCard
-                product={{
-                  bgImg: "/fake/product.jpg",
-                  title: "تجهیزات آزمایشگاهی پیشرفته",
-                  price: "۳,۲۰۰,۰۰۰",
-                  offerPrice: "۲,۸۰۰,۰۰۰",
-                }}
-                link="#"
-                key={"2"}
-              />,
-              <ProductCard
-                product={{
-                  bgImg: "/fake/product.jpg",
-                  title: "تجهیزات آزمایشگاهی عمومی",
-                  price: "۹۰۰,۰۰۰",
-                }}
-                link="#"
-                key={"1"}
-              />,
-            ]}
-          />
-        </div>
-        <Carousel
-          title="محبوب ترین ها"
-          moreButton
-          autoplay
-          cards={[
-            <ProductCard
-              product={{
-                bgImg: "/fake/product.jpg",
-                title: "محصول پرطرفدار ۱: میکروسکوپ",
-                price: "۱,۵۰۰,۰۰۰",
-              }}
-              link="#"
-              key={"5"}
-            />,
-            <ProductCard
-              product={{
-                bgImg: "/fake/product.jpg",
-                title: "محصول پرطرفدار ۲: پمپ وکیوم",
-                price: "۲,۰۰۰,۰۰۰",
-                offerPrice: "۱,۷۰۰,۰۰۰",
-              }}
-              link="#"
-              key={"4"}
-            />,
-            <ProductCard
-              product={{
-                bgImg: "/fake/product.jpg",
-                title: "محصول پرطرفدار ۳: دستگاه تست کیفیت",
-                price: "۲,۵۰۰,۰۰۰",
-              }}
-              link="#"
-              key={"3"}
-            />,
-            <ProductCard
-              product={{
-                bgImg: "/fake/product.jpg",
-                title: "محصول پرطرفدار ۴: کیت آزمایشگاهی",
-                price: "۳,۰۰۰,۰۰۰",
-                offerPrice: "۲,۷۰۰,۰۰۰",
-              }}
-              link="#"
-              key={"2"}
-            />,
-            <ProductCard
-              product={{
-                bgImg: "/fake/product.jpg",
-                title: "محصول پرطرفدار ۵: تجهیزات ایمنی",
-                price: "۳,۵۰۰,۰۰۰",
-              }}
-              link="#"
-              key={"1"}
-            />,
-          ]}
-        /> */}
+
+        {/* Dynamic Carousels from Index.carousels */}
+        {data?.carousels?.map((carousel, idx) => (
+          <div
+            key={carousel.id}
+            className={`mt-8${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] p-5" : ""}`}
+          >
+            <Carousel
+              title={carousel.name}
+              moreButton
+              autoplay
+              ButtonLink={
+                carousel.slug ? "/shop/category/" + carousel.slug : undefined
+              }
+              cards={carousel.products?.map((product) => (
+                <ProductCard product={product} key={product.slug} />
+              ))}
+            />
+          </div>
+        ))}
+
         {data?.banners?.call_to_action?.[0] && (
           <NoticeBanner data={data.banners.call_to_action[0]} />
         )}

@@ -9,7 +9,7 @@ export default function BannerCard({
   headTitle,
   title,
   description,
-  height = 300,
+  height = 280,
   containerStyle,
 }: {
   bgImg: string;
