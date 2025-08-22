@@ -1749,6 +1749,7 @@ export interface ProductShowSite {
   name: string;
   slug: string;
   primary_image: string;
+  back_image: string;
   seo_title: string;
   seo_description: string;
   weight: number;
@@ -2545,4 +2546,24 @@ export interface SitemapIndex {
     slug: string;
     mode: string;
   }[];
+}
+
+export interface PaymentVerify {
+  success: string;
+  ref_id: number;
+  transaction: {
+    id: number;
+    user_id: number;
+    order_id: number;
+    amount: number;
+    ref_id: number;
+    token: string;
+    description: null | string;
+    gateway_name: string;
+    status: string;
+    pay_again: number;
+    image: null | string;
+    created_at: string;
+    updated_at: string;
+  };
 }
