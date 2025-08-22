@@ -82,7 +82,7 @@ export default function TextEditorCK({
         // Execute a callback function when the button is clicked.
         button.on("execute", () => {
           Flmngr.open({
-            apiKey: "FLMNFLMN", // default free key
+            apiKey: "FLMNFLMN",
             urlFileManager:
               process.env.NEXT_PUBLIC_BACKEND_BASE + "/api/admin-panel/flmngr",
             urlFiles: process.env.NEXT_PUBLIC_BACKEND_STORAGE,
@@ -111,31 +111,29 @@ export default function TextEditorCK({
                 },
               });
             },
-            onFinish: (files) => {
-              const fileUrl = files[0]?.url;
-              const fileExtension = fileUrl?.split(".").pop();
+          onFinish: (files) => {
+  if (files && files.length > 0) {
+    const fileUrl = files[0]?.url;
+      const fileExtension = fileUrl?.split('.').pop();
 
-              if (files) {
-                editor.model?.change(() => {
-                  const htmlString =
-                    fileExtension === "pdf" || fileExtension === "mkv"
-                      ? `<a href="${fileUrl}" target="_blank"><img src="${"/images/downloadimg.png"}"/></a>`
-                      : `<img src="${fileUrl}" />`;
+      if (fileUrl) {
+        editor.model?.change(() => {
+          const htmlString =
+            fileExtension === 'pdf' || fileExtension === 'mkv'
+              ? `<a href="${fileUrl}" target="_blank"><img src="/images/downloadimg.png"/></a>`
+              : `<img src="${fileUrl}" />`;
 
-                  const htmlDP = new HtmlDataProcessor(
-                    editor.editing.view.document,
-                  );
-                  const viewFragment = htmlDP.toView(htmlString);
+          const htmlDP = new HtmlDataProcessor(editor.editing.view.document);
+          const viewFragment = htmlDP.toView(htmlString);
+          const modelFragment = editor.data.toModel(viewFragment);
 
-                  const modelFragment = editor.data.toModel(viewFragment);
-
-                  editor.model?.insertContent(
-                    modelFragment,
-                    editor.model?.document.selection,
-                  );
-                });
-              }
-            },
+          editor.model?.insertContent(modelFragment, editor.model?.document.selection);
+        });
+      }
+      } else {
+        console.error('No files selected or files array is undefined.');
+      }
+      }
           });
         });
 
