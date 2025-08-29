@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "app.fabricmod.com",
-        port: "8000",
       },
       {
         protocol: "http",
