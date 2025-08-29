@@ -29,6 +29,15 @@ const nextConfig: NextConfig = {
       fullUrl: true,
     },
   },
+    async redirects() {
+    return [
+      {
+        source: '/shop/product/:slug/:id',
+        destination: '/shop/product/:slug',
+        permanent: true, // 301 redirect for SEO
+      },
+    ];
+  },
 };
 
 export default nextConfig;
