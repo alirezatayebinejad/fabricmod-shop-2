@@ -66,9 +66,9 @@ export default function Footer() {
                 : "/images/imageplaceholder.png"
             }
             alt="logo"
-            width={150}
-            height={80}
-            className="mb-5 h-auto w-full"
+            width={120}
+            height={120}
+            className="mb-5 h-auto w-[120px]"
           />
           <a
             target="_blank"

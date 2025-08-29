@@ -43,6 +43,13 @@ import {
   ButtonView,
   Link,
   HtmlDataProcessor,
+  Strikethrough,
+  Subscript,
+  Superscript,
+  Code,
+  CodeBlock,
+  Highlight,
+  SourceEditing,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 import Flmngr from "@flmngr/flmngr-react";
@@ -82,7 +89,7 @@ export default function TextEditorCK({
         // Execute a callback function when the button is clicked.
         button.on("execute", () => {
           Flmngr.open({
-            apiKey: "FLMNFLMN",
+            apiKey: "FLMNFLMN", // default free key
             urlFileManager:
               process.env.NEXT_PUBLIC_BACKEND_BASE + "/api/admin-panel/flmngr",
             urlFiles: process.env.NEXT_PUBLIC_BACKEND_STORAGE,
@@ -111,29 +118,31 @@ export default function TextEditorCK({
                 },
               });
             },
-          onFinish: (files) => {
-  if (files && files.length > 0) {
-    const fileUrl = files[0]?.url;
-      const fileExtension = fileUrl?.split('.').pop();
+            onFinish: (files) => {
+              const fileUrl = files[0]?.url;
+              const fileExtension = fileUrl?.split(".").pop();
 
-      if (fileUrl) {
-        editor.model?.change(() => {
-          const htmlString =
-            fileExtension === 'pdf' || fileExtension === 'mkv'
-              ? `<a href="${fileUrl}" target="_blank"><img src="/images/downloadimg.png"/></a>`
-              : `<img src="${fileUrl}" />`;
+              if (files) {
+                editor.model?.change(() => {
+                  const htmlString =
+                    fileExtension === "pdf" || fileExtension === "mkv"
+                      ? `<a href="${fileUrl}" target="_blank"><img src="${"/images/downloadimg.png"}"/></a>`
+                      : `<img src="${fileUrl}" />`;
 
-          const htmlDP = new HtmlDataProcessor(editor.editing.view.document);
-          const viewFragment = htmlDP.toView(htmlString);
-          const modelFragment = editor.data.toModel(viewFragment);
+                  const htmlDP = new HtmlDataProcessor(
+                    editor.editing.view.document,
+                  );
+                  const viewFragment = htmlDP.toView(htmlString);
 
-          editor.model?.insertContent(modelFragment, editor.model?.document.selection);
-        });
-      }
-      } else {
-        console.error('No files selected or files array is undefined.');
-      }
-      }
+                  const modelFragment = editor.data.toModel(viewFragment);
+
+                  editor.model?.insertContent(
+                    modelFragment,
+                    editor.model?.document.selection,
+                  );
+                });
+              }
+            },
           });
         });
 
@@ -164,6 +173,11 @@ export default function TextEditorCK({
     "myfiles",
     "bold",
     "italic",
+    "underline",
+    "strikethrough",
+    "subscript",
+    "superscript",
+    "|",
     "link",
     "imageToolbar",
     "bulletedList",
@@ -183,9 +197,13 @@ export default function TextEditorCK({
     "removeFormat",
     "pageBreak",
     "fontBackgroundColor",
-    "horizontalLine",
-    "fontSize",
     "fontColor",
+    "fontSize",
+    "horizontalLine",
+    "code",
+    "codeBlock",
+    "highlight",
+    "sourceEditing",
   ];
 
   return (
@@ -268,6 +286,13 @@ export default function TextEditorCK({
             Underline,
             Undo,
             WordCount,
+            Strikethrough,
+            Subscript,
+            Superscript,
+            Code,
+            CodeBlock,
+            Highlight,
+            SourceEditing,
           ],
 
           translations: [coreTranslations],

@@ -53,7 +53,10 @@ export default async function RootLayout({
           }}
         />
         <meta name="enamad" content="745786" />
-        {/* TODO: uncomment when the app is up   <meta name="google-site-verification" content="aqNZcNkIqHD-T7WMhkcbhPw9weFTuSU-0R49a-2E1G8" /> */}
+        <meta
+          name="google-site-verification"
+          content="aqNZcNkIqHD-T7WMhkcbhPw9weFTuSU-0R49a-2E1G8"
+        />
       </head>
       <body className={`${dana.variable} font-dana`}>
         <Providers

@@ -2,6 +2,7 @@ import ProductCard from "@/app/(website)/_components/cards/ProductCard";
 import PicGallery from "@/app/(website)/shop/product/[...product]/_components/PicGallery";
 import ProductInfo from "@/app/(website)/shop/product/[...product]/_components/ProductInfo";
 import ProductTabsContent from "@/app/(website)/shop/product/[...product]/_components/ProductTabsContent";
+import SetOrCollectionsList from "@/app/(website)/shop/product/[...product]/_components/SetOrCollectionsList";
 import Breadcrumb from "@/components/datadisplay/Breadcrumb";
 import Carousel from "@/components/datadisplay/Carousel";
 import { cookiesNames, serverCacheDynamic } from "@/constants/cacheNames";
@@ -83,7 +84,7 @@ export default async function ProductPage({
           />
         </div>
         <section className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
-          <div>
+          <div className="relative">
             <div className="sticky top-0">
               <PicGallery
                 sources={[
@@ -103,6 +104,15 @@ export default async function ProductPage({
             <ProductInfo data={data} />
           </div>
         </section>
+        {!!data?.collections ||
+          (!!data?.singles && (
+            <section>
+              <SetOrCollectionsList
+                isCollection={!!data?.collections}
+                data={data}
+              />
+            </section>
+          ))}
         <section className="my-24">
           <ProductTabsContent product={data} />
         </section>

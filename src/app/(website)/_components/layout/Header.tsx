@@ -31,11 +31,11 @@ import { useUserContext } from "@/contexts/UserContext";
 
 function HeaderComponent() {
   const globalData = useGlobalData();
-  const { user } = useUserContext();
   const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useUserContext();
   const { basket } = useBasket();
   const { compares } = useCompare();
-  const router = useRouter();
   const { changeFilters } = useFiltersContext();
 
   const [burgerOpen, setBurgerOpen] = useState(false);
@@ -84,7 +84,7 @@ function HeaderComponent() {
           />
         </BurgerMenu>
 
-        <div className="mx-auto flex min-h-[100px] max-w-[1350px] items-center justify-between px-[15px] max-md:min-h-[65px] md:px-[70px]">
+        <div className="mx-auto flex min-h-[100px] max-w-[1550px] items-center justify-between px-[15px] max-md:min-h-[65px] md:px-[50px]">
           <div className="flex items-center gap-3">
             <div
               onClick={() => setBurgerOpen((prev) => !prev)}
@@ -101,9 +101,9 @@ function HeaderComponent() {
                     : "/images/imageplaceholder.png"
                 }
                 alt="logo"
-                width={130}
-                height={42}
-                className="h-[42px]"
+                width={70}
+                height={70}
+                className="h-auto w-[70px]"
               />
             </Link>
           </div>
@@ -280,6 +280,14 @@ function HeaderComponent() {
                 </Button>
               </TooltipCustom>
             </div>
+            <Button
+              variant="solid"
+              as={Link}
+              href="https://app.fabricmod.com/login"
+              className="mr-1 bg-primary-100"
+            >
+              خرید عمده
+            </Button>
           </div>
         </div>
       </header>

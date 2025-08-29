@@ -43,8 +43,6 @@ const useMyForm = <T extends Record<string, any>>(
     ),
   );
   const [loading, setLoading] = useState<boolean>(false);
-  console.log("useMyform", values);
-  console.log("form errors", errors);
   /* if initialvalues changed and is not equal to the previous initialvalues, update it - cause in some rare usecases it may causes rerenders */
   const prevInitialValues = useRef(initialValues);
   useEffect(() => {

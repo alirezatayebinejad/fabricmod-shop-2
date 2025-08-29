@@ -1,25 +1,26 @@
 import { cookiesNames } from "@/constants/cacheNames";
+import { routePermissions } from "@/constants/permissions";
 import { getAuth } from "@/services/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = (request: NextRequest) => {
   const userSessionCookie = request.cookies.get(cookiesNames.userSession);
-  /*   const userInfoCookie = request.cookies.get(cookiesNames.userInfo);
-  const userPermsCookie = request.cookies.get(cookiesNames.userPermissions); */
+  const userInfoCookie = request.cookies.get(cookiesNames.userInfo);
+  const userPermsCookie = request.cookies.get(cookiesNames.userPermissions);
   const userSession = userSessionCookie
     ? getAuth.session(userSessionCookie.value)
     : undefined;
-  /*  const userInfo = userInfoCookie
+  const userInfo = userInfoCookie
     ? getAuth.user(userInfoCookie.value)
     : undefined;
-  let userPerms; */
+  let userPerms;
   try {
-    /* userPerms = userPermsCookie
+    userPerms = userPermsCookie
       ? getAuth.perms(userPermsCookie.value)
-      : undefined; */
+      : undefined;
   } catch (error) {
     console.error("Error parsing user permissions:", error);
-    /* userPerms = []; */
+    userPerms = [];
   }
   const path = request.nextUrl.pathname;
   const authRequiredPaths = ["/panel", "/dashboard"];
@@ -37,7 +38,7 @@ export const middleware = (request: NextRequest) => {
 
   /* ----------- check if the user has the permission of the page in admin panel -------------- */
 
-  /* TODO  if (path.startsWith("/panel")) {
+  if (path.startsWith("/panel")) {
     const roles = userInfo?.roles?.map((item) => item.name) || [];
     if (roles.includes("super-admin")) return;
     const requiredPermission =
@@ -53,7 +54,7 @@ export const middleware = (request: NextRequest) => {
       return NextResponse.error();
     }
   }
- */
+
   return NextResponse.next();
 };
 

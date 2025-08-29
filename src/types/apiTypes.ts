@@ -1902,6 +1902,72 @@ export interface ProductShowSite {
       tag_id: number;
     };
   }[];
+  collections:
+    | undefined
+    | {
+        id: number;
+        name: string;
+        slug: string;
+        primary_image: string;
+        quantity_check: boolean;
+        sale_check: boolean;
+        price_check: {
+          id: number;
+          attribute_id: number;
+          product_id: number;
+          value: string;
+          quantity: number;
+          price: number;
+          sku: string;
+          sale_price: null;
+          date_sale_from: null;
+          date_sale_to: null;
+          set_var_ids: null;
+          user_id: number;
+          deleted_at: null;
+          created_at: string;
+          updated_at: string;
+        };
+        rate: number;
+        is_wished: boolean;
+        pivot: {
+          product_id: number;
+          parent_id: number;
+        };
+      }[];
+  singles:
+    | undefined
+    | {
+        id: number;
+        name: string;
+        slug: string;
+        primary_image: string;
+        quantity_check: boolean;
+        sale_check: boolean;
+        price_check: {
+          id: number;
+          attribute_id: number;
+          product_id: number;
+          value: string;
+          quantity: number;
+          price: number;
+          sku: string;
+          sale_price: null | number;
+          date_sale_from: null;
+          date_sale_to: null;
+          set_var_ids: null;
+          user_id: number;
+          deleted_at: null;
+          created_at: string;
+          updated_at: string;
+        };
+        rate: number;
+        is_wished: boolean;
+        pivot: {
+          parent_id: number;
+          product_id: number;
+        };
+      }[];
 }
 
 export interface ProductIndexSite {

@@ -8,8 +8,8 @@ export const cookiesNames = {
 };
 
 export const localstorageNames = {
-  compares: "compares",
-  basket: "basket",
+  compares: "compares-fabric",
+  basket: "basket-fabric",
 };
 
 /* 

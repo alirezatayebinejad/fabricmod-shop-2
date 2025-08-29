@@ -38,7 +38,6 @@ export default async function apiCRUD({
 }: ApiCrudInput) {
   const finalUrl =
     fullUrl || process.env.NEXT_PUBLIC_BACKEND_API! + "/" + urlSuffix;
-  console.log("finalUrl", finalUrl);
 
   if (typeof window === "undefined" && requiresToken && !ssrToken) {
     console.error(
