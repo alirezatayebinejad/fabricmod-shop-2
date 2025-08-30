@@ -40,7 +40,7 @@ export const middleware = (request: NextRequest) => {
 
   if (path.startsWith("/panel")) {
     const roles = userInfo?.roles?.map((item) => item.name) || [];
-    if (roles.includes("super-admin")) return;
+    if (roles.includes("super_admin")) return;
     const requiredPermission =
       routePermissions[path] ||
       Object.entries(routePermissions).find((r) =>

@@ -17,6 +17,8 @@ import Image from "next/image";
 import SwitchWrapper from "@/components/inputs/SwitchWrapper";
 import FormCategories from "@/app/panel/categories/_components/FormCategories";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import { DollarSign } from "lucide-react";
+import FormCategPrice from "@/app/panel/categories/_components/FormCategPrice";
 
 export default function TableCategories() {
   const { filters, changeFilters } = useFiltersContext();
@@ -29,6 +31,7 @@ export default function TableCategories() {
     { keepPreviousData: true },
   );
   const [page, setPage] = useState(1);
+  const priceModal = useDisclosure();
   const editModal = useDisclosure();
   const seeModal = useDisclosure();
 
@@ -150,6 +153,17 @@ export default function TableCategories() {
               <Button
                 isIconOnly
                 size="sm"
+                onPress={() => {
+                  setSelectedData(categ);
+                  priceModal.onOpen();
+                }}
+                className="bg-boxBg300"
+              >
+                <DollarSign className="w-4 text-TextLow" />
+              </Button>
+              <Button
+                isIconOnly
+                size="sm"
                 onClick={() => {
                   setSelectedData(categ);
                   seeModal.onOpen();
@@ -212,7 +226,27 @@ export default function TableCategories() {
           />
         }
       />
-
+      <ModalWrapper
+        disclosures={{
+          onOpen: priceModal.onOpen,
+          onOpenChange: priceModal.onOpenChange,
+          isOpen: priceModal.isOpen,
+        }}
+        size="5xl"
+        isDismissable
+        modalHeader={
+          <h2>
+            قیمت گزاری محصول {selectedData?.name ? selectedData.name : ""}
+          </h2>
+        }
+        modalBody={
+          <FormCategPrice
+            onClose={() => priceModal.onClose()}
+            isModal
+            categ={selectedData}
+          />
+        }
+      />
       <ModalWrapper
         disclosures={{
           onOpen: seeModal.onOpen,

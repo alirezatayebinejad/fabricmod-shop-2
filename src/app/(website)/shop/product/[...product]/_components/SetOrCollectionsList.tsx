@@ -14,7 +14,7 @@ export default function SetOrCollectionsList({
 }) {
   return (
     <div
-      className="flex flex-col items-center gap-5 pb-2 pt-10"
+      className="flex flex-col flex-wrap items-center gap-5 pb-2 pt-10"
       id="setOrCollection"
     >
       <h3 className="font-bold">

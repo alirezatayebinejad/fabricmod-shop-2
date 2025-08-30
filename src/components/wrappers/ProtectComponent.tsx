@@ -23,7 +23,7 @@ const ProtectComponent: React.FC<ProtectComponentProps> = ({
 
   return isMounted &&
     (permissions?.includes(innerPermissions[permission]) ||
-      user?.roles?.find((r) => r.name === "super-admin")) ? (
+      user?.roles?.find((r) => r.name === "super_admin")) ? (
     <>{component}</>
   ) : (
     fallback

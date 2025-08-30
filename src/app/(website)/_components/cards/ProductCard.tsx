@@ -61,9 +61,9 @@ export default function ProductCard({
           : "min-w-[280px] max-w-[280px] max-md:min-w-[170px] max-md:max-w-[170px]"
       }`}
     >
-      <div className="relative max-h-[270px] min-h-[285px] !overflow-hidden !rounded-[10px] max-md:max-h-[170px] max-md:min-h-[170px]">
+      <div className="relative max-h-[300px] min-h-[300px] !overflow-hidden !rounded-[10px] max-md:max-h-[200px] max-md:min-h-[200px]">
         <Link prefetch={false} href={`/shop/product/${product?.slug}`}>
-          <div className="flex h-full max-h-[270px] min-h-[285px] w-full items-center justify-center max-md:max-h-[170px] max-md:min-h-[170px]">
+          <div className="flex h-full min-h-full items-center justify-center overflow-hidden !rounded-[10px]">
             <Image
               src={
                 product?.primary_image
@@ -71,7 +71,7 @@ export default function ProductCard({
                   : "/images/imageplaceholder.png"
               }
               alt="banner"
-              height={285}
+              height={345}
               width={270}
               className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
               style={{ objectPosition: "center" }}
