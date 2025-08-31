@@ -38,7 +38,10 @@ export default function ShopFilters({
         }))
       : []),
   ].filter((filter) => getFilterValue(filter.key));
-
+  const handleSearch = () => {
+    if (search) changeFilters(["search=" + search, "page=1"]);
+    else deleteFilter("search", true);
+  };
   return (
     <section className="pt-7">
       <InputBasic
@@ -49,13 +52,13 @@ export default function ShopFilters({
         value={search}
         defaultValue={getFilterValue("search") || ""}
         onChange={(e) => setSearch(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSearch();
+        }}
         endContent={
           <Search
             className="cursor-pointer text-TextMute"
-            onClick={() => {
-              if (search) changeFilters(["search=" + search, "page=1"]);
-              else deleteFilter("search", true);
-            }}
+            onClick={handleSearch}
           />
         }
       />

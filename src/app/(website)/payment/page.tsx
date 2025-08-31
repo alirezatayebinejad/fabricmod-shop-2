@@ -16,7 +16,7 @@ export default function PaymentResultPage() {
   const searchParams = useSearchParams();
   const [paymentData, setPaymentData] = useState<PaymentVerify | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | object | null>(null);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -73,7 +73,9 @@ export default function PaymentResultPage() {
           <h2 className="mt-4 text-xl font-bold text-destructive-foreground">
             خطا در پرداخت
           </h2>
-          <p className="mt-2 text-center text-TextColor">{error}</p>
+          <p className="mt-2 text-center text-TextColor">
+            {typeof error === "string" ? error : "مشکل در پرداخت"}
+          </p>
         </div>
       );
     }

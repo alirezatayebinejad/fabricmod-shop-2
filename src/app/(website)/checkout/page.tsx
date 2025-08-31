@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("online");
-  const [gatewayName, setGatewayName] = useState("zarinpal");
+  const [gatewayName, setGatewayName] = useState("sep");
 
   const router = useRouter();
   const {
@@ -157,9 +157,9 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (basket?.length > 0) {
       checkoutHandler();
-    }
+    } else router.push("/cart");
     // eslint-disable-next-line
-  }, [basket.length]);
+  }, []);
 
   return (
     <main className="relative">
@@ -386,6 +386,17 @@ export default function CheckoutPage() {
                   <div>
                     <h3 className="mb-5 mt-5 font-bold">درگاه پرداخت:</h3>
                     <div>
+                      <Button
+                        className="rounded-[5px] text-TextColor"
+                        style={
+                          gatewayName === "sep"
+                            ? { backgroundColor: "var(--boxBg500)" }
+                            : { backgroundColor: "var(--boxBg200)" }
+                        }
+                        onPress={() => setGatewayName("sep")}
+                      >
+                        سامان (سپ)
+                      </Button>
                       <Button
                         className="rounded-[5px] text-TextColor"
                         style={

@@ -8,9 +8,11 @@ export default function CategoriesCarousel() {
   const gd = useGlobalData();
 
   const childCategories =
-    gd?.initials?.categories?.flatMap((cat) =>
-      Array.isArray(cat.childs) ? cat.childs : [],
-    ) || [];
+    gd?.initials?.categories
+      ?.map((cat) =>
+        Array.isArray(cat.childs) && cat.childs.length > 0 ? cat.childs : [cat],
+      )
+      .flat() || [];
 
   return (
     <Carousel

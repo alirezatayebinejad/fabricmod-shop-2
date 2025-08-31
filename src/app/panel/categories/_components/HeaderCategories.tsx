@@ -20,6 +20,13 @@ export default function HeaderCategories() {
   const isParentFilterValue = getFilterValue("is_parent");
   const typeFilterValue = getFilterValue("type");
 
+  const handleSearch = () => {
+    if (search) {
+      changeFilters("search=" + search);
+    } else {
+      deleteFilter("search");
+    }
+  };
   return (
     <div>
       <ProtectComponent
@@ -43,16 +50,13 @@ export default function HeaderCategories() {
             placeholder="جستجو..."
             onChange={(e) => setSearch(e.target.value)}
             value={search}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
             endContent={
               <Search
                 className="cursor-pointer text-TextMute"
-                onClick={() => {
-                  if (search) {
-                    changeFilters("search=" + search);
-                  } else {
-                    deleteFilter("search");
-                  }
-                }}
+                onClick={handleSearch}
               />
             }
           />
@@ -62,7 +66,7 @@ export default function HeaderCategories() {
                 "h-[40px] !rounded-[0_5px_5px_0] !border-1 p-[0_30px] text-[16px] font-[600] text-TextColor",
                 typeFilterValue === "product" ? "bg-boxBg250" : "",
               )}
-              onPress={() => changeFilters("type=post")}
+              onPress={() => changeFilters("type=product")}
             >
               محصولات
             </Button>
@@ -71,7 +75,7 @@ export default function HeaderCategories() {
                 "h-[40px] !rounded-[5px_0_0_5px] !border-1 p-[0_30px] text-[16px] font-[600] text-TextColor",
                 typeFilterValue === "post" ? "bg-boxBg250" : "",
               )}
-              onPress={() => changeFilters("type=product")}
+              onPress={() => changeFilters("type=post")}
             >
               پست ها
             </Button>

@@ -252,7 +252,7 @@ export default function FormProducts({
             }}
             isDisable={isShowMode}
             defaultValue={
-              prod?.brand_id
+              prod?.brand?.id
                 ? [
                     {
                       id: prod?.brand.id,
@@ -387,11 +387,11 @@ export default function FormProducts({
             }}
             isDisable={isShowMode}
             defaultValue={
-              prod?.category
+              prod?.category?.id
                 ? [
                     {
-                      id: prod.category.id.toString(),
-                      title: prod.category.name,
+                      id: prod.category?.id.toString(),
+                      title: prod.category?.name,
                     },
                   ]
                 : []

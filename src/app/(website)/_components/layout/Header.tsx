@@ -71,7 +71,9 @@ function HeaderComponent() {
           isScrolled ? "shadow-md shadow-[#00000007]" : ""
         }`}
       >
-        {user?.roles.some((r) => r.name === "admin") && <ManagerHeader />}
+        {user?.roles.some(
+          (r) => r.name === "admin" || r.name === "super_admin",
+        ) && <ManagerHeader />}
         <BurgerMenu
           isVisible={burgerOpen}
           position="right"

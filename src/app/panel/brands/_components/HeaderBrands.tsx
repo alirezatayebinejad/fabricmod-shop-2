@@ -15,6 +15,13 @@ export default function HeaderBrands() {
   const { changeFilters, deleteFilter } = useFiltersContext();
   const [search, setSearch] = useState("");
 
+  const handleSearch = () => {
+    if (search) {
+      changeFilters("search=" + search);
+    } else {
+      deleteFilter("search");
+    }
+  };
   return (
     <div className="mb-6 flex flex-wrap items-center justify-between gap-5">
       <ProtectComponent
@@ -46,16 +53,13 @@ export default function HeaderBrands() {
           placeholder="جستجو..."
           onChange={(e) => setSearch(e.target.value)}
           value={search}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
           endContent={
             <Search
               className="cursor-pointer text-TextMute"
-              onClick={() => {
-                if (search) {
-                  changeFilters("search=" + search);
-                } else {
-                  deleteFilter("search");
-                }
-              }}
+              onClick={handleSearch}
             />
           }
         />

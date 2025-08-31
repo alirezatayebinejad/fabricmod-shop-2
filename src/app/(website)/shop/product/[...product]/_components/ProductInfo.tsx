@@ -21,7 +21,9 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
   const [selectedVariation, setSelectedVariation] = useState<
     ProductShowSite["variations"][number] | undefined
   >(undefined);
-  const isAdmin = user?.roles.some((r) => r.name === "admin");
+  const isAdmin = user?.roles.some(
+    (r) => r.name === "admin" || r.name === "super_admin",
+  );
 
   useEffect(() => {
     if (data) {

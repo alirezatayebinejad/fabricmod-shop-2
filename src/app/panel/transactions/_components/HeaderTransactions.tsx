@@ -20,6 +20,13 @@ export default function HeaderTransactions() {
     userCellphoneFilterValue || "",
   );
 
+  const handleSearch = () => {
+    if (userCellphone) {
+      changeFilters("user_cellphone=" + userCellphone);
+    } else {
+      deleteFilter("user_cellphone");
+    }
+  };
   return (
     <div className="mb-6 flex flex-col gap-5">
       <div className="flex flex-wrap justify-between gap-4">
@@ -30,16 +37,13 @@ export default function HeaderTransactions() {
           placeholder="جستجو شماره موبایل کاربر..."
           onChange={(e) => setUserCellphone(e.target.value)}
           value={userCellphone}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
           endContent={
             <Search
               className="cursor-pointer text-TextMute"
-              onClick={() => {
-                if (userCellphone) {
-                  changeFilters("user_cellphone=" + userCellphone);
-                } else {
-                  deleteFilter("user_cellphone");
-                }
-              }}
+              onClick={handleSearch}
             />
           }
         />

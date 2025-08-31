@@ -9,7 +9,8 @@ export default function CategoryCard({
 }: {
   categ:
     | Index["categories"][number]
-    | Initials["categories"][number]["childs"][number];
+    | Initials["categories"][number]["childs"][number]
+    | Initials["categories"][number];
 }) {
   return (
     <Link

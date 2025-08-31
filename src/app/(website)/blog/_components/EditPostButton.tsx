@@ -6,7 +6,8 @@ import Link from "next/link";
 
 export default function EditPostButton({ postId }: { postId: number }) {
   const { user } = useUserContext();
-  if (!user?.roles.some((r) => r.name === "admin")) return null;
+  if (!user?.roles.some((r) => r.name === "admin" || r.name === "super_admin"))
+    return null;
   else
     return (
       <div>

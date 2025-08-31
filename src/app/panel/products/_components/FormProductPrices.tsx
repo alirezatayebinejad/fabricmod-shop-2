@@ -47,7 +47,7 @@ export default function FormProductPrices({
                 value: variation.value || "",
                 quantity: variation.quantity || "",
                 price: variation.price || "",
-                sale_price: variation.sale_price || undefined,
+                sale_price: variation.sale_price || "",
                 date_sale_from: variation.date_sale_from || undefined,
                 date_sale_to: variation.date_sale_to || undefined,
                 sku: variation.sku || "",
@@ -207,7 +207,7 @@ export default function FormProductPrices({
                       const variations = { ...prev.variations };
                       variations[Number(id)] = {
                         ...variations[Number(id)],
-                        sale_price: e.target.value ? e.target.value : undefined,
+                        sale_price: e.target.value ? e.target.value : "",
                       };
                       return {
                         ...prev,

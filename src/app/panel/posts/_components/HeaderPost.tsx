@@ -41,6 +41,13 @@ export default function HeaderPost() {
     fetchCategories();
   }, []);
 
+  const handleSearch = () => {
+    if (search) {
+      changeFilters("search=" + search);
+    } else {
+      deleteFilter("search");
+    }
+  };
   return (
     <div>
       <ProtectComponent
@@ -63,16 +70,13 @@ export default function HeaderPost() {
           placeholder="جستجو..."
           onChange={(e) => setSearch(e.target.value)}
           value={search}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
           endContent={
             <Search
               className="cursor-pointer text-TextMute"
-              onClick={() => {
-                if (search) {
-                  changeFilters("search=" + search);
-                } else {
-                  deleteFilter("search");
-                }
-              }}
+              onClick={handleSearch}
             />
           }
         />

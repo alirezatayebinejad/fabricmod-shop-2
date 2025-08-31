@@ -42,6 +42,13 @@ export default function HeaderProducts() {
     fetchCategories();
   }, []);
 
+  const handleSearch = () => {
+    if (search) {
+      changeFilters("search=" + search);
+    } else {
+      deleteFilter("search");
+    }
+  };
   return (
     <div className="mb-6 flex flex-col gap-5">
       <div className="flex flex-wrap justify-between gap-4">
@@ -64,16 +71,13 @@ export default function HeaderProducts() {
           placeholder="جستجو..."
           onChange={(e) => setSearch(e.target.value)}
           value={search}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
           endContent={
             <Search
               className="cursor-pointer text-TextMute"
-              onClick={() => {
-                if (search) {
-                  changeFilters("search=" + search);
-                } else {
-                  deleteFilter("search");
-                }
-              }}
+              onClick={handleSearch}
             />
           }
         />
