@@ -1,4 +1,4 @@
-import TableUsersWholesales from "@/app/panel/users/userslist/req-panel/_components/TableUsersWholesales";
+import TableUsersWholesales from "@/app/panel/users/req-panel/_components/TableUsersWholesales";
 import Breadcrumb from "@/components/datadisplay/Breadcrumb";
 
 export default async function Users() {

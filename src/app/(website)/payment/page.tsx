@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import apiCRUD from "@/services/apiCRUD";
@@ -9,8 +9,10 @@ import formatPrice from "@/utils/formatPrice";
 import { dateConvert } from "@/utils/dateConvert";
 import { currency } from "@/constants/staticValues";
 import { CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
+import { useBasket } from "@/contexts/BasketContext";
 
 export default function PaymentResultPage() {
+  const { removeAllBasket } = useBasket();
   const searchParams = useSearchParams();
   const [paymentData, setPaymentData] = useState<PaymentVerify | null>(null);
   const [loading, setLoading] = useState(false);
@@ -38,6 +40,7 @@ export default function PaymentResultPage() {
 
         if (response?.status === "success") {
           setPaymentData(response.data);
+          removeAllBasket();
         } else {
           setError(response?.message || "خطا در تایید پرداخت");
         }
@@ -50,7 +53,8 @@ export default function PaymentResultPage() {
     };
 
     verifyPayment();
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderContent = () => {
     if (loading) {

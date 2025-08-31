@@ -21,6 +21,7 @@ interface BasketContextState {
     selectedVariationId: number,
   ) => boolean;
   removeFromBasket: (productId: number, selectedVariationId: number) => boolean;
+  removeAllBasket: () => void;
   isProductInBasket: (
     productId: number,
     selectedVariationId: number,
@@ -116,6 +117,13 @@ const BasketProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
+  const removeAllBasket = (): void => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("basket");
+    }
+    setBasket([]);
+  };
+
   const updateProductCount = (
     productId: number,
     countBasket: number,
@@ -142,6 +150,7 @@ const BasketProvider = ({ children }: { children: ReactNode }) => {
         basket,
         addToBasket,
         removeFromBasket,
+        removeAllBasket,
         isProductInBasket,
         updateProductCount,
         getProductCount,

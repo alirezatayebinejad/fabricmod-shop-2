@@ -33,6 +33,9 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | { [key: string]: string }>();
   const [couponRes, setCouponRes] = useState<CheckCoupon>();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("online");
+  const [gatewayName, setGatewayName] = useState("zarinpal");
 
   const router = useRouter();
   const {
@@ -44,8 +47,7 @@ export default function CheckoutPage() {
     `next/cart/shipping-methods`,
     (url) => url && apiCRUD({ urlSuffix: url }),
   );
-  const shippings: ShippingmethodIndexSite[] =
-    shippingsRes?.data.shipping_methods;
+  const shippings: ShippingmethodIndexSite[] = shippingsRes?.data;
   const {
     data: addressRes,
     isLoading: addressLoading,
@@ -74,7 +76,7 @@ export default function CheckoutPage() {
       data: {
         shipping_method:
           shippingMethod ||
-          checkout?.selected_shipping_method.code ||
+          checkout?.selected_shipping_method?.code ||
           undefined,
         address_id: addressId || checkout?.selected_address?.id || undefined,
         coupon: couponCode,
@@ -92,6 +94,38 @@ export default function CheckoutPage() {
     }
     if (refreshMode) setRefreshing(false);
     else setLoading(false);
+  };
+
+  const handlePayment = async () => {
+    if (!checkout) return;
+    setPayLoading(true);
+    setError(undefined);
+
+    const paymentData = {
+      shipping_method: checkout.selected_shipping_method?.code,
+      address_id: checkout.selected_address?.id,
+      coupon: couponRes?.code,
+      products: basket?.map((p) => ({
+        product_id: p.id,
+        qty: p.countBasket,
+        variation_id: p.selectedVariationId,
+      })),
+      payment_method: paymentMethod,
+      gateway_name: gatewayName,
+    };
+
+    const res = await apiCRUD({
+      urlSuffix: "next/cart/payment",
+      method: "POST",
+      data: paymentData,
+    });
+
+    if (res?.status === "success" && res.data?.redirect_url) {
+      window.location.href = res.data.redirect_url;
+    } else {
+      setError(res?.message || "خطا در پرداخت");
+    }
+    setPayLoading(false);
   };
 
   const couponForm = useMyForm(
@@ -157,7 +191,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <div className="flex gap-8 max-[1100px]:flex-col-reverse">
-            <div className="flex-1">
+            <div className="flex-[0.7]">
               <h2 className="mb-5 font-bold">سفارش شما</h2>
               <TableGenerate
                 data={{
@@ -307,7 +341,7 @@ export default function CheckoutPage() {
                     کد تخفیف اعمال شده: {couponRes.name}
                   </p>
                 )}
-                <h3 className="mb-4 mt-5 font-bold">روش ارسال:</h3>
+                <h3 className="mb-2 mt-5 font-bold">روش ارسال:</h3>
 
                 {shippingsLoading ? (
                   <div className="grid h-[200px] w-full place-content-center">
@@ -332,15 +366,50 @@ export default function CheckoutPage() {
                     }}
                   />
                 )}
+                <div className="flex flex-wrap gap-20">
+                  <div>
+                    <h3 className="mb-5 mt-5 font-bold">روش پرداخت:</h3>
+                    <div>
+                      <Button
+                        className="rounded-[5px] text-TextColor"
+                        style={
+                          paymentMethod === "online"
+                            ? { backgroundColor: "var(--boxBg500)" }
+                            : { backgroundColor: "var(--boxBg200)" }
+                        }
+                        onPress={() => setPaymentMethod("online")}
+                      >
+                        آنلاین
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="mb-5 mt-5 font-bold">درگاه پرداخت:</h3>
+                    <div>
+                      <Button
+                        className="rounded-[5px] text-TextColor"
+                        style={
+                          gatewayName === "zarinpal"
+                            ? { backgroundColor: "var(--boxBg500)" }
+                            : { backgroundColor: "var(--boxBg200)" }
+                        }
+                        onPress={() => setGatewayName("zarinpal")}
+                      >
+                        زرین پال
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Button className="my-5 w-full max-w-[180px] !rounded-[5px] border-border bg-primary text-primary-foreground">
-                پرداخت
+              <Button
+                className="my-10 w-full max-w-[180px] !rounded-[5px] border-border bg-primary text-primary-foreground"
+                isDisabled={payLoading || !checkout}
+                onPress={handlePayment}
+              >
+                {payLoading ? <Spinner size="sm" /> : "پرداخت"}
               </Button>
             </div>
-
-            <div className="flex w-full max-w-[430px] flex-col gap-5 max-md:max-w-full">
-              <h2 className="font-bold">محاسبه مبلغ</h2>
-
+            <div className="flex-[0.3]">
               <TableGenerate
                 data={{
                   headers: [],

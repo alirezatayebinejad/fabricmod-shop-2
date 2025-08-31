@@ -46,10 +46,10 @@ export default function TableUsersWholesales() {
   const meta: PaginateMeta = data?.data?.meta;
   const pages = meta?.last_page;
 
-  const changeAccess = async (panel_access: "0" | "2") => {
+  const changeAccess = async (panel_access: "0" | "2", userid: number) => {
     setLoading(true);
     const res = await apiCRUD({
-      urlSuffix: `admin-panel/users/${selectedData?.id}`,
+      urlSuffix: `admin-panel/users/${userid}`,
       method: "POST",
       data: { panel_access, _method: "put" },
     });
@@ -77,7 +77,7 @@ export default function TableUsersWholesales() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => changeAccess("2")}
+                    onClick={() => changeAccess("2", user.id)}
                     className="bg-success"
                     isLoading={loading}
                     isDisabled={loading}
@@ -87,7 +87,7 @@ export default function TableUsersWholesales() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => changeAccess("0")}
+                    onClick={() => changeAccess("0", user.id)}
                     className="bg-destructive"
                     isLoading={loading}
                     isDisabled={loading}

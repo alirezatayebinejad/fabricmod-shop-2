@@ -52,13 +52,18 @@ const FiltersProviderComponent = ({
     // eslint-disable-next-line
   }, [filters]);
 
-  const changeFilters = (query: string | string[]) => {
+  const changeFilters = (
+    query: string | string[],
+    resetPage: boolean = true,
+  ) => {
     /* state update batching in React cause bugs
      when changing multiple query at once so use
     string[] not multiple function call at once */
     const filtersParams = new URLSearchParams(filters);
 
     const queries = Array.isArray(query) ? query : [query];
+    let shouldResetPage = false;
+
     queries.forEach((q) => {
       const [key, value] = q.split("=");
       if (filtersParams.has(key)) {
@@ -66,9 +71,19 @@ const FiltersProviderComponent = ({
       } else {
         filtersParams.append(key, value);
       }
+      // If any key is not "page", we should reset page
+      if (key !== "page") {
+        shouldResetPage = true;
+      }
     });
 
+    // Only reset page if at least one key is not "page"
+    if (resetPage && shouldResetPage) {
+      filtersParams.set("page", "1");
+    }
+
     const updatedQuery = filtersParams.toString();
+
     setFullFilters(updatedQuery);
   };
 
