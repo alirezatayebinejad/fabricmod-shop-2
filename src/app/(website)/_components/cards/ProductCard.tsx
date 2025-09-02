@@ -9,6 +9,7 @@ import {
   ProductShowSite,
 } from "@/types/apiTypes";
 import formatPrice from "@/utils/formatPrice";
+import isSaleActive from "@/utils/isSaleActive";
 import { Button } from "@heroui/button";
 import { Eye, Heart } from "lucide-react";
 import Image from "next/image";
@@ -131,7 +132,11 @@ export default function ProductCard({
         </h3>
         <p className="text-TextSize400 text-TextLow max-md:text-TextSize300">
           {product?.price_check ? (
-            product.price_check.sale_price ? (
+            product.price_check.sale_price &&
+            isSaleActive(
+              product.price_check.date_sale_from,
+              product.price_check.date_sale_to,
+            ) ? (
               <>
                 <span className="line-through">
                   {formatPrice(product.price_check.price)}

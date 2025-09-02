@@ -13,6 +13,7 @@ import Link from "next/link";
 import { currency } from "@/constants/staticValues";
 import { getAuth } from "@/services/auth";
 import toast from "react-hot-toast";
+import isSaleActive from "@/utils/isSaleActive";
 
 export default function FavouritesTab() {
   const { data, error, isLoading, mutate } = useSWR(
@@ -95,7 +96,12 @@ export default function FavouritesTab() {
                 data:
                   typeof item.product.price_check !== "boolean"
                     ? formatPrice(
-                        item.product.price_check.sale_price ||
+                        (item.product.sale_check &&
+                          isSaleActive(
+                            item.product.price_check.date_sale_from,
+                            item.product.price_check.date_sale_to,
+                          ) &&
+                          item.product.price_check.sale_price) ||
                           item.product.price_check.price,
                       ) +
                       " " +

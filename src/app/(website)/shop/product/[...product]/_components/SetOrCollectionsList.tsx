@@ -1,6 +1,7 @@
 import { currency } from "@/constants/staticValues";
 import { ProductShowSite } from "@/types/apiTypes";
 import formatPrice from "@/utils/formatPrice";
+import isSaleActive from "@/utils/isSaleActive";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -47,7 +48,12 @@ export default function SetOrCollectionsList({
                   </h3>
                   <p className="text-TextSize400 text-TextLow max-md:text-TextSize300">
                     {d?.price_check ? (
-                      d.price_check.sale_price ? (
+                      d.price_check.sale_price &&
+                      d.sale_check &&
+                      isSaleActive(
+                        d.price_check.date_sale_from,
+                        d.price_check.date_sale_to,
+                      ) ? (
                         <>
                           <span className="line-through">
                             {formatPrice(d.price_check.price)}

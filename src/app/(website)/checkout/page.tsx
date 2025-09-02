@@ -412,13 +412,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
-              <Button
-                className="my-10 w-full max-w-[180px] !rounded-[5px] border-border bg-primary text-primary-foreground"
-                isDisabled={payLoading || !checkout}
-                onPress={handlePayment}
-              >
-                {payLoading ? <Spinner size="sm" /> : "پرداخت"}
-              </Button>
             </div>
             <div className="flex-[0.3]">
               <TableGenerate
@@ -477,6 +470,13 @@ export default function CheckoutPage() {
                   container: "shadow-none border-1 rounded-none",
                 }}
               />
+              <Button
+                className="my-10 min-h-[50px] w-full !rounded-[5px] border-border bg-primary text-primary-foreground"
+                isDisabled={payLoading || !checkout}
+                onPress={handlePayment}
+              >
+                {payLoading ? <Spinner size="sm" /> : "پرداخت"}
+              </Button>
             </div>
           </div>
         )}

@@ -9,6 +9,7 @@ import { currency } from "@/constants/staticValues";
 import { useUserContext } from "@/contexts/UserContext";
 import { ProductShowSite } from "@/types/apiTypes";
 import formatPrice from "@/utils/formatPrice";
+import isSaleActive from "@/utils/isSaleActive";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { DollarSign, Eye, Pencil } from "lucide-react";
@@ -73,23 +74,34 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
           </div>
         </div>
         <div className="text-[32px]">
-          {selectedVariation?.sale_price ? (
-            <div>
-              <span className="text-TextSize500 line-through">
-                {formatPrice(selectedVariation.price)} {currency}
-              </span>
-              <span className="block text-TextColor">
-                {formatPrice(selectedVariation.sale_price)} {currency}
-              </span>
-            </div>
-          ) : null}
-          {!selectedVariation?.sale_price && (
-            <span>
-              {selectedVariation?.price
-                ? formatPrice(selectedVariation?.price) + " " + currency
-                : ""}{" "}
-            </span>
-          )}
+          {selectedVariation
+            ? (() => {
+                // Import isSaleActive at the top if not already: import isSaleActive from "@/utils/isSaleActive";
+                const saleActive = isSaleActive(
+                  selectedVariation.date_sale_from ?? null,
+                  selectedVariation.date_sale_to ?? null,
+                );
+                if (selectedVariation.sale_price && saleActive) {
+                  return (
+                    <div>
+                      <span className="text-TextSize500 line-through">
+                        {formatPrice(selectedVariation.price)} {currency}
+                      </span>
+                      <span className="block text-TextColor">
+                        {formatPrice(selectedVariation.sale_price)} {currency}
+                      </span>
+                    </div>
+                  );
+                }
+                return (
+                  <span>
+                    {selectedVariation.price
+                      ? formatPrice(selectedVariation.price) + " " + currency
+                      : ""}
+                  </span>
+                );
+              })()
+            : null}
         </div>
         {isAdmin && (
           <div>

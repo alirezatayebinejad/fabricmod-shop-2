@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { getAuth } from "@/services/auth";
+import isSaleActive from "@/utils/isSaleActive";
 
 export default function WhishlistPage() {
   const { filters } = useFiltersContext();
@@ -129,7 +130,12 @@ export default function WhishlistPage() {
                           typeof item.product.price_check !== "boolean"
                             ? "قیمت: " +
                               formatPrice(
-                                item.product.price_check.sale_price ??
+                                (item.product.sale_check &&
+                                  isSaleActive(
+                                    item.product.price_check.date_sale_from,
+                                    item.product.price_check.date_sale_to,
+                                  ) &&
+                                  item.product.price_check.sale_price) ||
                                   item.product.price_check.price,
                               )
                             : "ناموجود",

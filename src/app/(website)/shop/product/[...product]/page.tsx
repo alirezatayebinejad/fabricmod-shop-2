@@ -9,6 +9,7 @@ import { cookiesNames, serverCacheDynamic } from "@/constants/cacheNames";
 import apiCRUD from "@/services/apiCRUD";
 import { getAuth } from "@/services/auth";
 import { ProductShowSite } from "@/types/apiTypes";
+import isSaleActive from "@/utils/isSaleActive";
 import { cookies } from "next/headers";
 import type { Product, WithContext } from "schema-dts";
 
@@ -52,7 +53,14 @@ export default async function ProductPage({
         ? {
             "@type": "Offer",
             priceCurrency: "Toman",
-            price: data?.price_check.sale_price || data?.price_check.price,
+            price:
+              (data?.sale_check &&
+                isSaleActive(
+                  data.price_check.date_sale_from,
+                  data.price_check.date_sale_to,
+                ) &&
+                data?.price_check.sale_price) ||
+              data?.price_check.price,
             availability: data?.quantity_check
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",

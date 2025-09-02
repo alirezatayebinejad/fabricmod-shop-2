@@ -36,6 +36,7 @@ import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import FormProductPrices from "@/app/panel/products/_components/FormProductPrices";
 import { currency } from "@/constants/staticValues";
 import FormProductWholesalePrices from "@/app/panel/products/_components/FormProductWholesalePrices";
+import isSaleActive from "@/utils/isSaleActive";
 
 export default function TableProducts() {
   const { filters, changeFilters } = useFiltersContext();
@@ -144,8 +145,13 @@ export default function TableProducts() {
         {
           data: (
             <p>
-              {prod.sale_check && typeof prod.sale_check !== "boolean"
-                ? formatPrice(+prod.sale_check.sale_price) + " " + currency
+              {prod.sale_check &&
+              typeof prod.price_check !== "boolean" &&
+              isSaleActive(
+                prod.price_check.date_sale_from,
+                prod.price_check.date_sale_to,
+              )
+                ? formatPrice(+prod.price_check.sale_price) + " " + currency
                 : "-"}{" "}
             </p>
           ),

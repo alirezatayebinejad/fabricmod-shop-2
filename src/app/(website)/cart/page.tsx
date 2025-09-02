@@ -6,6 +6,7 @@ import { currency } from "@/constants/staticValues";
 import { useBasket } from "@/contexts/BasketContext";
 import { getAuth } from "@/services/auth";
 import formatPrice from "@/utils/formatPrice";
+import isSaleActive from "@/utils/isSaleActive";
 import { Button } from "@heroui/button";
 import { X, Minus, Plus } from "lucide-react";
 import Image from "next/image";
@@ -26,7 +27,13 @@ export default function CartPage() {
         const sVar = item.variations?.find(
           (v) => v.id === item.selectedVariationId,
         );
-        return (sVar?.sale_price || sVar?.price || 0) * item.countBasket;
+        const useSale = isSaleActive(
+          sVar?.date_sale_from ?? null,
+          sVar?.date_sale_to ?? null,
+        );
+        const unitPrice =
+          useSale && sVar?.sale_price ? sVar.sale_price : sVar?.price || 0;
+        return unitPrice * item.countBasket;
       })
       .reduce((a, b) => a + b, 0);
 
@@ -106,9 +113,15 @@ export default function CartPage() {
                         const sVar = item.variations?.find(
                           (v) => v.id === item.selectedVariationId,
                         );
-                        return formatPrice(
-                          sVar?.sale_price || sVar?.price || 0,
+                        const useSale = isSaleActive(
+                          sVar?.date_sale_from ?? null,
+                          sVar?.date_sale_to ?? null,
                         );
+                        const unitPrice =
+                          useSale && sVar?.sale_price
+                            ? sVar.sale_price
+                            : sVar?.price || 0;
+                        return formatPrice(unitPrice);
                       })(),
                     },
                     {
@@ -158,10 +171,15 @@ export default function CartPage() {
                         const sVar = item.variations?.find(
                           (v) => v.id === item.selectedVariationId,
                         );
-                        return formatPrice(
-                          (sVar?.sale_price || sVar?.price || 0) *
-                            item.countBasket,
+                        const useSale = isSaleActive(
+                          sVar?.date_sale_from ?? null,
+                          sVar?.date_sale_to ?? null,
                         );
+                        const unitPrice =
+                          useSale && sVar?.sale_price
+                            ? sVar.sale_price
+                            : sVar?.price || 0;
+                        return formatPrice(unitPrice * item.countBasket);
                       })(),
                     },
                     {
