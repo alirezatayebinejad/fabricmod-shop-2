@@ -105,7 +105,7 @@ function HeaderComponent() {
                 alt="logo"
                 width={60}
                 height={60}
-                className="h-auto max-md:w-[60px] w-[60px]"
+                className="h-auto max-md:w-[50px] w-[60px]"
               />
             </Link>
           </div>
