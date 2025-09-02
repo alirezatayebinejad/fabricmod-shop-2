@@ -35,6 +35,7 @@ import FormProductPics from "@/app/panel/products/_components/FormProductPics";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import FormProductPrices from "@/app/panel/products/_components/FormProductPrices";
 import { currency } from "@/constants/staticValues";
+import FormProductWholesalePrices from "@/app/panel/products/_components/FormProductWholesalePrices";
 
 export default function TableProducts() {
   const { filters, changeFilters } = useFiltersContext();
@@ -51,6 +52,7 @@ export default function TableProducts() {
   const seeModal = useDisclosure();
   const faqsModal = useDisclosure();
   const picsModal = useDisclosure();
+  const wholesalePriceModal = useDisclosure();
 
   const [selectedData, setSelectedData] = useState<ProductIndex>();
   const [switchLoading, setSwitchLoading] = useState<number | undefined>();
@@ -246,6 +248,16 @@ export default function TableProducts() {
                   >
                     تصاویر محصول
                   </DropdownItem>
+                  <DropdownItem
+                    key="wholesale"
+                    startContent={<ImagePlus className="w-4 text-TextLow" />}
+                    onPress={() => {
+                      setSelectedData(prod);
+                      wholesalePriceModal.onOpen();
+                    }}
+                  >
+                    تغییر قیمت عمده
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -369,6 +381,26 @@ export default function TableProducts() {
             isModal
             inSiteMode={false}
             productSlug={selectedData?.slug}
+          />
+        }
+      />
+      <ModalWrapper
+        disclosures={{
+          onOpen: wholesalePriceModal.onOpen,
+          onOpenChange: wholesalePriceModal.onOpenChange,
+          isOpen: wholesalePriceModal.isOpen,
+        }}
+        size="5xl"
+        isDismissable
+        modalHeader={
+          <h2>قیمت گزاری عمده {selectedData?.name ? selectedData.name : ""}</h2>
+        }
+        modalBody={
+          <FormProductWholesalePrices
+            onClose={() => wholesalePriceModal.onClose()}
+            isModal
+            productSlug={selectedData?.slug}
+            productId={selectedData?.id}
           />
         }
       />

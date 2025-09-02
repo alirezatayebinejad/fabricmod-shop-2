@@ -61,9 +61,9 @@ export default function ProductCard({
           : "min-w-[280px] max-w-[280px] max-md:min-w-[170px] max-md:max-w-[170px]"
       }`}
     >
-      <div className="relative max-h-[300px] min-h-[300px] !overflow-hidden !rounded-[10px] max-md:max-h-[200px] max-md:min-h-[200px]">
+      <div className="relative aspect-square !overflow-hidden !rounded-[10px]">
         <Link prefetch={false} href={`/shop/product/${product?.slug}`}>
-          <div className="flex h-full min-h-full items-center justify-center overflow-hidden !rounded-[10px]">
+          <div className="absolute inset-0 flex h-full items-center justify-center overflow-hidden !rounded-[10px]">
             <Image
               src={
                 product?.primary_image

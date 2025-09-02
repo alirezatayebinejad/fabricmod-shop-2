@@ -2633,3 +2633,87 @@ export interface PaymentVerify {
     updated_at: string;
   };
 }
+
+export interface ProductWholesales {
+  id: number;
+  name: string;
+  slug: string;
+  is_set: number;
+  is_offer: number;
+  code: number;
+  primary_image: string;
+  back_image: string;
+  seo_title: null;
+  seo_description: null;
+  weight: number;
+  category_id: number;
+  brand_id: number;
+  country_id: null;
+  details: null;
+  description: null;
+  content: string;
+  garranty_type: string;
+  garranty_day: number;
+  user_id: null;
+  is_active: number;
+  created_at: string;
+  updated_at: string;
+  quantity_check: boolean;
+  sale_check: boolean;
+  price_check: {
+    id: number;
+    attribute_id: number;
+    product_id: number;
+    value: string;
+    quantity: number;
+    price: number;
+    sku: string;
+    sale_price: number;
+    date_sale_from: null;
+    date_sale_to: null;
+    set_var_ids: null;
+    user_id: number;
+    deleted_at: null;
+    created_at: string;
+    updated_at: string;
+  };
+  rate: number;
+  is_wished: boolean;
+  whole_sales: {
+    id: number;
+    product_id: number;
+    variation_id: number;
+    count_at: number;
+    count_to: number;
+    price: number;
+    delivery_whole_amount: number;
+    created_at: string;
+    updated_at: string;
+  }[];
+  variations: {
+    id: number;
+    attribute_id: number;
+    product_id: number;
+    value: string;
+    quantity: number;
+    price: number;
+    sku: string;
+    sale_price: number;
+    date_sale_from: null;
+    date_sale_to: null;
+    set_var_ids: null;
+    user_id: number;
+    deleted_at: null;
+    created_at: string;
+    updated_at: string;
+    attribute: {
+      id: number;
+      name: string;
+      slug: string;
+      is_active: number;
+      user_id: number;
+      created_at: string;
+      updated_at: string;
+    };
+  }[];
+}
