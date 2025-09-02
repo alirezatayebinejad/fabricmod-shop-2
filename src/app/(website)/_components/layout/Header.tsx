@@ -103,9 +103,9 @@ function HeaderComponent() {
                     : "/images/imageplaceholder.png"
                 }
                 alt="logo"
-                width={70}
-                height={70}
-                className="h-auto w-[70px]"
+                width={60}
+                height={60}
+                className="h-auto w-[60px]"
               />
             </Link>
           </div>
