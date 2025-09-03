@@ -101,9 +101,9 @@ export default function HeaderProducts() {
           }
           onChange={(selected) => {
             if (selected.length > 0 && selected[0].id !== undefined) {
-              changeFilters("parent_id=" + selected[0].id.toString());
+              changeFilters("category_id=" + selected[0].id.toString());
             } else {
-              deleteFilter("parent_id");
+              deleteFilter("category_id");
             }
           }}
           title="دسته بندی"

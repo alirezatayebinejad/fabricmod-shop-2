@@ -42,7 +42,7 @@ export default function Slider({ slidesData }: Props) {
                 <Image
                   src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
                   priority={i === 0 ? true : false}
-                  alt={item?.title}
+                  alt={item?.title || "عکس بنر"}
                   fill
                   className="h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] object-cover"
                 />

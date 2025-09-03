@@ -80,7 +80,6 @@ export default function FormProductWholesalePrices({
           method: "POST",
           updateCacheByTag: `product-${productSlug}`,
           data: {
-            product_id: productId,
             var: formValues.var,
             _method: "put",
           },

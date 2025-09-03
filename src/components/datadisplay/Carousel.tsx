@@ -98,7 +98,7 @@ export default function Carousel({
           className="embla__viewport relative overflow-hidden py-10"
           ref={emblaRef}
         >
-          <div className="embla__container flex gap-4 md:mr-5 md:gap-[24px]">
+          <div className="embla__container flex gap-1.5 md:mr-5 md:gap-[15px]">
             {isEmpty ? (
               <div className="w-full py-8 text-center text-lg text-TextLow">
                 موردي نيست

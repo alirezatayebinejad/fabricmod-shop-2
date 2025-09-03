@@ -38,7 +38,7 @@ export default function ProductsList({
             triggerOnce: true,
           }}
         >
-          <div className="grid grid-cols-3 place-items-center gap-4 max-[977px]:grid-cols-2 max-[760px]:grid-cols-3 max-[550px]:grid-cols-2 max-[300px]:grid-cols-1">
+          <div className="grid grid-cols-3 place-items-center gap-2.5 max-[977px]:grid-cols-2 max-[760px]:grid-cols-3 max-[550px]:grid-cols-2 max-[300px]:grid-cols-1">
             {product?.products?.map((p) => (
               <ProductCard fullSize key={p.id} product={p} />
             ))}
