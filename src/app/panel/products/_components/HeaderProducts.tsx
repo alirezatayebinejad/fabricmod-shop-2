@@ -110,12 +110,14 @@ export default function HeaderProducts() {
         />
         <SelectSearchCustom
           options={[
-            { id: "max", title: "بیشترین" },
-            { id: "min", title: "کمترین" },
+            { id: "code_asc", title: "کد صعودی" },
+            { id: "code_desc", title: "کد نزولی" },
             { id: "latest", title: "جدیدترین" },
             { id: "oldest", title: "قدیمی‌ترین" },
             { id: "most_rate", title: "بیشترین امتیاز" },
             { id: "most_sale", title: "بیشترین فروش" },
+            { id: "max", title: "گران ترین" },
+            { id: "min", title: "ارزان ترین" },
           ]}
           isSearchDisable
           title="انتخاب ترتیب"
@@ -144,6 +146,10 @@ export default function HeaderProducts() {
                                 ? "بیشترین امتیاز"
                                 : sortByFilterValue === "most_sale"
                                   ? "بیشترین فروش"
+                                  : sortByFilterValue === "code_asc"
+                                    ? "کد صعودی"
+                                    : sortByFilterValue === "code_desc"
+                                      ? "کد نزولی"
                                   : "",
                   },
                 ]
