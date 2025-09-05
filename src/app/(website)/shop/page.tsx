@@ -11,6 +11,8 @@ import { ProductIndexSite } from "@/types/apiTypes";
 import { useRef } from "react";
 import RetryError from "@/components/datadisplay/RetryError";
 import { Spinner } from "@heroui/spinner";
+import { productsJsonLd, shopBreadcrumbJsonLd } from "@/constants/jsonlds";
+import Head from "next/head";
 
 export default function ShopPage() {
   const { filters, changeFilters } = useFiltersContext();
@@ -46,41 +48,61 @@ export default function ShopPage() {
     );
   }
   return (
-    <main>
-      <div>
-        <PageHeader
-          img={
-            products?.banners[0]?.image
-              ? process.env.NEXT_PUBLIC_IMG_BASE + products.banners[0].image
-              : "/images/imageplaceholder.png"
-          }
-          title="فروشگاه"
-          breadCrumb={
-            <Breadcrumb
-              items={[{ title: "خانه", link: "/" }, { title: "فروشگاه" }]}
-            />
-          }
+    <>
+      <Head>
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH}/shop`}
         />
-        <div className="mt-[35px] flex gap-20">
-          <div className="flex-[0.25] max-[1244px]:hidden">
-            <ShopFilters />
-          </div>
-          <div className="mb-16 flex flex-[0.75] flex-col gap-[35px] max-[1244px]:flex-[1]">
-            <div>
-              <HeaderFilters product={products} />
-            </div>
-            <div ref={productsRef}>
-              <ProductsList
-                product={products}
-                loading={isLoading}
-                error={error}
-                mutate={mutate}
-                onPageChange={handlePageChange}
+      </Head>
+      <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productsJsonLd(products)),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(shopBreadcrumbJsonLd()),
+          }}
+        />
+        <div>
+          <PageHeader
+            img={
+              products?.banners[0]?.image
+                ? process.env.NEXT_PUBLIC_IMG_BASE + products.banners[0].image
+                : "/images/imageplaceholder.png"
+            }
+            title="فروشگاه"
+            breadCrumb={
+              <Breadcrumb
+                items={[{ title: "خانه", link: "/" }, { title: "فروشگاه" }]}
               />
+            }
+          />
+          <div className="mt-[35px] flex gap-20">
+            <div className="flex-[0.25] max-[1244px]:hidden">
+              <ShopFilters />
+            </div>
+            <div className="mb-16 flex flex-[0.75] flex-col gap-[35px] max-[1244px]:flex-[1]">
+              <div>
+                <HeaderFilters product={products} />
+              </div>
+              <div ref={productsRef}>
+                <ProductsList
+                  product={products}
+                  loading={isLoading}
+                  error={error}
+                  mutate={mutate}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
