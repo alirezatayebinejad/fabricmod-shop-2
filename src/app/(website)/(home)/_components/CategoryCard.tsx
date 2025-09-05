@@ -16,7 +16,7 @@ export default function CategoryCard({
     <Link
       prefetch={false}
       href={"/shop?category=" + categ.slug}
-      className="group relative max-h-[270px] min-w-[270px] overflow-hidden rounded-[5px] max-md:max-h-[160px] max-md:min-w-[170px] max-md:max-w-[170px]"
+      className="group relative max-h-[270px] min-w-[270px] max-w-[270px] overflow-hidden rounded-[5px] max-md:max-h-[170px] max-md:min-w-[170px] max-md:max-w-[170px]"
     >
       <Image
         src={

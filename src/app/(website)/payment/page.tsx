@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import {
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import formatPrice from "@/utils/formatPrice";
 import { currency } from "@/constants/staticValues";
+import { useBasket } from "@/contexts/BasketContext";
 
 export default function PaymentResultPage() {
+  const { removeAllBasket } = useBasket();
   const searchParams = useSearchParams();
 
   const success = searchParams.get("success") === "true";
@@ -26,7 +25,14 @@ export default function PaymentResultPage() {
     melat: "بانک ملت",
     meli: "بانک ملی",
   };
-  const gateway = gatewayParam ? gatewayMap[gatewayParam] || gatewayParam : null;  const refId = searchParams.get("ref_id");
+  const gateway = gatewayParam
+    ? gatewayMap[gatewayParam] || gatewayParam
+    : null;
+  const refId = searchParams.get("ref_id");
+
+  useEffect(() => {
+    if (success) removeAllBasket();
+  }, [removeAllBasket, success]);
 
   return (
     <main className="flex min-h-screen w-full items-center justify-center px-4 py-12">
@@ -48,7 +54,6 @@ export default function PaymentResultPage() {
             </>
           ) : (
             <>
-              <XCircle className="h-20 w-20 text-destructive-foreground" />
               <h2 className="text-2xl font-bold text-destructive-foreground">
                 پرداخت ناموفق بود
               </h2>

@@ -397,17 +397,6 @@ export default function CheckoutPage() {
                       >
                         سامان (سپ)
                       </Button>
-                      <Button
-                        className="rounded-[5px] text-TextColor"
-                        style={
-                          gatewayName === "zarinpal"
-                            ? { backgroundColor: "var(--boxBg500)" }
-                            : { backgroundColor: "var(--boxBg200)" }
-                        }
-                        onPress={() => setGatewayName("zarinpal")}
-                      >
-                        زرین پال
-                      </Button>
                     </div>
                   </div>
                 </div>

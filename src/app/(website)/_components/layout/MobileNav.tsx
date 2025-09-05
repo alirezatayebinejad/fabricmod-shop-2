@@ -53,7 +53,7 @@ export default function MobileNav() {
             </Button>
           </PopoverTrigger>
           <PopoverContent>
-            <div className="p-2">
+            <div className="p-2 max-md:px-20">
               <InputBasic
                 name="search"
                 type="search"

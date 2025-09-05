@@ -103,7 +103,7 @@ export default async function HomePage() {
         {data?.carousels?.map((carousel, idx) => (
           <div
             key={carousel.id}
-            className={`mt-8${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] p-5" : ""}`}
+            className={`${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] px-5" : ""}`}
           >
             <Carousel
               title={carousel.name}
