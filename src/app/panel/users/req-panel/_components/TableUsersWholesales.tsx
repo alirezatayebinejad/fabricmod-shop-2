@@ -48,6 +48,7 @@ export default function TableUsersWholesales() {
 
   const changeAccess = async (panel_access: "0" | "2", userid: number) => {
     setLoading(true);
+    console.log(panel_access, userid);
     const res = await apiCRUD({
       urlSuffix: `admin-panel/users/${userid}`,
       method: "POST",
