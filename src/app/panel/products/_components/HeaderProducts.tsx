@@ -216,7 +216,7 @@ export default function HeaderProducts() {
             { id: "0", title: "خير" },
             { id: "1", title: "بله" },
           ]}
-          title="وضعیت تخفیف"
+          title="محصولات تخفیف دار"
           isSearchDisable
           onChange={(selected) => {
             if (selected.length > 0 && selected[0].id !== undefined) {
