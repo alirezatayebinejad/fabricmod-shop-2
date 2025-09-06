@@ -46,7 +46,7 @@ export default function Carousel({
   const isEmpty = !cards || cards.length === 0;
 
   return (
-    <section className="relative flex w-full flex-col py-8">
+    <section className="relative flex w-full flex-col py-3">
       <div
         className={`${
           moreButton

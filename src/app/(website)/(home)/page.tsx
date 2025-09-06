@@ -7,10 +7,16 @@ import BlogCard from "@/app/(website)/_components/cards/BlogCard";
 import ProductCard from "@/app/(website)/_components/cards/ProductCard";
 import Carousel from "@/components/datadisplay/Carousel";
 import { serverCache } from "@/constants/cacheNames";
+import { homepageJsonLd } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
-import { Index } from "@/types/apiTypes";
+import { Index, Initials } from "@/types/apiTypes";
 
 export default async function HomePage() {
+  const initialsRes = (await apiCRUD({
+    urlSuffix: "next/initials",
+    requiresToken: false,
+    ...serverCache.initials,
+  })) as Initials;
   const dataRes = await apiCRUD({
     urlSuffix: "next",
     requiresToken: false,
@@ -20,6 +26,12 @@ export default async function HomePage() {
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homepageJsonLd(initialsRes)),
+        }}
+      />
       <div>
         <Slider slidesData={data?.banners?.slider} />
 
@@ -103,7 +115,7 @@ export default async function HomePage() {
         {data?.carousels?.map((carousel, idx) => (
           <div
             key={carousel.id}
-            className={`mt-8${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] p-5" : ""}`}
+            className={`${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] px-5" : ""}`}
           >
             <Carousel
               title={carousel.name}

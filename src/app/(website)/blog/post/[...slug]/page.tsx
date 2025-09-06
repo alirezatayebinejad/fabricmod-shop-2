@@ -4,12 +4,46 @@ import PostCommentSection from "@/app/(website)/blog/_components/PostCommentSect
 import PostWidgets from "@/app/(website)/blog/_components/PostWidgets";
 import Carousel from "@/components/datadisplay/Carousel";
 import { serverCacheDynamic } from "@/constants/cacheNames";
+import {
+  blogFaqJsonLd,
+  blogPostJsonLd,
+  postBreadcrumbJsonLd,
+  relatedPostsJsonLd,
+} from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { PostShowSite } from "@/types/apiTypes";
 import { dateConvert } from "@/utils/dateConvert";
 import { Eye, MessageCircle, Star } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
-import type { BlogPosting, WithContext } from "schema-dts";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}): Promise<Metadata> {
+  const slugString = (await params).slug[0];
+  const dataRes = await apiCRUD({
+    urlSuffix: "next/posts/" + slugString,
+    requiresToken: false,
+    ...serverCacheDynamic(slugString).post,
+  });
+  const data: PostShowSite = dataRes?.data;
+
+  return {
+    title:
+      data?.seo_title ?? `مقاله ${data?.title} |  - خرید آنلاین باتری ماشین`,
+    description:
+      data?.seo_description ?? data?.description?.slice(0, 160) + "...",
+    openGraph: {
+      title: data?.seo_title ?? data?.title,
+      description: data?.seo_description ?? data?.description,
+      images: data?.primary_image
+        ? `${process.env.NEXT_PUBLIC_IMG_BASE}${data?.primary_image}`
+        : "/default-og-image.png",
+    },
+  };
+}
 
 export default async function PostPage({
   params,
@@ -24,39 +58,36 @@ export default async function PostPage({
   });
   const data: PostShowSite = dataRes?.data;
 
-  const blogPostJsonLd: WithContext<BlogPosting> = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: data?.seo_title || data?.title,
-    description: data?.seo_description || data?.description,
-    image: data?.primary_image
-      ? [process.env.NEXT_PUBLIC_IMG_BASE + data?.primary_image]
-      : undefined,
-    author: {
-      "@type": "Organization",
-      name: "فابریک مد",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "فابریک مد",
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${data?.slug}`,
-    },
-    datePublished: data?.created_at,
-    dateModified: data?.updated_at,
-    url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${data?.slug}`,
-    keywords: data?.tags?.map((tag) => tag.name).join(", "),
-    commentCount: data?.comments_count,
-  };
-
   return (
     <main className="min-h-dvh">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostJsonLd(data)),
+        }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(postBreadcrumbJsonLd(data)),
+        }}
+      />
+      {data?.faqs && data.faqs.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(blogFaqJsonLd(data)),
+          }}
+        />
+      )}
+      {data?.related_posts && data.related_posts.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(relatedPostsJsonLd(data)),
+          }}
+        />
+      )}
       <div className="mx-auto max-w-[1000px]">
         <div className="flex flex-col gap-5 py-16">
           <h1 className="text-[40px] font-bold max-md:text-[26px]">

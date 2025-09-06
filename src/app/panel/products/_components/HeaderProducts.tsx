@@ -19,6 +19,7 @@ export default function HeaderProducts() {
   const offerFilterValue = getFilterValue("offer");
   const [categs, setCategs] = useState<CategoryIndex[]>();
   const [search, setSearch] = useState("");
+  const isactiveFilterValue = getFilterValue("is_active");
 
   const requestSelectOptions = async () => {
     const catData = await apiCRUD({
@@ -65,10 +66,13 @@ export default function HeaderProducts() {
             </Button>
           }
         />
+      </div>
+      <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
         <InputBasic
           name="search"
           type="search"
-          placeholder="جستجو..."
+          label="جستجو"
+          placeholder="بنویسید..."
           onChange={(e) => setSearch(e.target.value)}
           value={search}
           onKeyDown={(e) => {
@@ -79,6 +83,32 @@ export default function HeaderProducts() {
               className="cursor-pointer text-TextMute"
               onClick={handleSearch}
             />
+          }
+        />
+        <SelectSearchCustom
+          options={[
+            { id: "0", title: "غیرفعال ها" },
+            { id: "1", title: "فعال ها" },
+          ]}
+          title="وضعیت نمایش"
+          isSearchDisable
+          onChange={(selected) => {
+            if (selected.length > 0 && selected[0].id !== undefined) {
+              changeFilters("is_active=" + selected[0].id);
+            } else {
+              deleteFilter("is_active");
+            }
+          }}
+          defaultValue={
+            isactiveFilterValue
+              ? [
+                  {
+                    id: isactiveFilterValue,
+                    title:
+                      isactiveFilterValue === "0" ? "غیرفعال ها" : "فعال ها",
+                  },
+                ]
+              : undefined
           }
         />
       </div>

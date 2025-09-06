@@ -83,6 +83,7 @@ export default function TableCategories() {
     headers: [
       { content: "عکس" },
       { content: "نام" },
+      { content: "اولویت" },
       { content: "بخش" },
       { content: "نوع" },
       { content: "وضعیت" },
@@ -108,6 +109,7 @@ export default function TableCategories() {
           ),
         },
         { data: <p>{categ.name}</p> },
+        { data: <p>{categ.priority}</p> },
         {
           data: (
             <div>
@@ -205,7 +207,7 @@ export default function TableCategories() {
           setPage(page);
           changeFilters(`page=${page}`);
         }}
-        loading={isLoading ? { columns: 5, rows: 5 } : undefined}
+        loading={isLoading ? { columns: 7, rows: 5 } : undefined}
         error={error}
         onRetry={() => mutate()}
       />
