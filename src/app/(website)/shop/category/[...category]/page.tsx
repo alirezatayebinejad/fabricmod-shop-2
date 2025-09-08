@@ -15,7 +15,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ category: string[] }>;
 }): Promise<Metadata> {
-  const resolvedParams = await params;
+  const resolvedParams = await params; // Resolve the Promise
   const slug = resolvedParams.category[0];
   const dataRes = await apiCRUD({
     urlSuffix: "next/categories/" + slug,
