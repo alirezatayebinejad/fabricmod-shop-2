@@ -10,7 +10,71 @@ import { productJsonLd } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { getAuth } from "@/services/auth";
 import { ProductShowSite } from "@/types/apiTypes";
+import { Metadata } from "next";
+// import Head from "next/head";
 import { cookies } from "next/headers";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ product: string[] }>;
+}): Promise<Metadata> {
+  const slug = (await params).product[0];
+  const dataRes = await apiCRUD({
+    urlSuffix: "next/products/" + slug,
+    requiresToken: false,
+  });
+  const data: ProductShowSite = dataRes?.data;
+
+  const priceCheck = data?.price_check && typeof data.price_check === "object"
+    ? data.price_check
+    : null;
+    
+  const finalPrice = priceCheck?.sale_price || priceCheck?.price;
+  const oldPrice = priceCheck?.sale_price ? priceCheck.price : undefined;
+
+  const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${data?.slug}`;
+  return {
+    title: data?.seo_title || data?.name,
+    description:
+      data?.seo_description ||
+      data?.description ||
+      `${data?.name} با بهترین قیمت و کیفیت پوشاک از فابریک مد`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: data?.seo_title || data?.name,
+      description: data?.seo_description || data?.description,
+      url: canonicalUrl,
+      images: data?.primary_image
+        ? [
+            {
+              url: process.env.NEXT_PUBLIC_IMG_BASE + data.primary_image,
+              alt: data?.name,
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data?.seo_title || data?.name,
+      description:
+        data?.seo_description ||
+        data?.description ||
+        `خرید آنلاین ${data?.name} از فابریک مد`,
+    },
+    other: {
+      "product_id": data.id.toString(),
+      "product_name": data.name,
+      "product_price": finalPrice?.toString() || "",
+      "product_old_price": oldPrice?.toString() || "",
+      "availability": data.quantity_check ? "instock" : "outofstock",
+    },
+  };
+}
+
+
 
 export default async function ProductPage({
   params,
@@ -39,6 +103,35 @@ export default async function ProductPage({
           __html: JSON.stringify(productJsonLd(data)),
         }}
       />
+
+      {/* ✅ متاهای سفارشی */}
+    {/* <Head>
+      <meta name="product_id" content={data?.id?.toString() || ""} />
+      <meta name="product_name" content={data?.name || ""} />
+      <meta
+        property="og:image"
+        content={data?.primary_image ? process.env.NEXT_PUBLIC_IMG_BASE + data.primary_image : ""}
+      />
+      <meta
+        name="product_price"
+        content={
+          data?.sale_check && data?.price_check
+            ? data.price_check.sale_price?.toString() || data.price_check.price.toString()
+            : data?.price_check && data.price_check.price
+            ? data.price_check.price.toString()
+            : ""
+        }
+      />
+      <meta
+        name="product_old_price"
+        content={data?.price_check ? data.price_check.price.toString() : ""}
+      />
+      <meta
+        name="availability"
+        content={data?.quantity_check ? "instock" : "outofstock"}
+      />
+    </Head> */}
+
       <div>
         <div className="mb-5 mt-4 sm:mt-10">
           <Breadcrumb
