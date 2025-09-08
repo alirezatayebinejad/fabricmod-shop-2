@@ -58,8 +58,8 @@ export default function BlogSidebar({
         >
           <ul>
             {globalData?.initials?.categories
-              .filter((c) => c.type === "post")
-              .map((category) => (
+              ?.filter((c) => c.type === "post")
+              ?.map((category) => (
                 <Fragment key={category?.slug}>
                   <li
                     className="group mb-1 flex cursor-pointer justify-between"
@@ -81,7 +81,7 @@ export default function BlogSidebar({
                   </li>
                   {category?.childs?.length > 0 && (
                     <div className="border-t-1 border-border py-3 pr-5">
-                      {category?.childs.map((subCat) => (
+                      {category?.childs?.map((subCat) => (
                         <li
                           key={subCat.slug}
                           className="group mb-1 flex cursor-pointer justify-between"

@@ -461,6 +461,30 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
   return jsonLd;
 };
 
+// Shop page JSON-LD (Collection overview)
+export const shopPageJsonLd = (
+  products: ProductIndexSite | null,
+): WithContext<WebPage> => ({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "فروشگاه فابریک مد",
+  description:
+    "لیست کامل محصولات فروشگاه فابریک مد با امکان فیلتر، جستجو و مرتب‌سازی",
+  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop`,
+  mainEntity: products
+    ? {
+        "@type": "ItemList",
+        itemListElement:
+          products.products?.map((p: any, index: number) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${p.slug}`,
+            name: p.name,
+          })) || [],
+      }
+    : undefined,
+});
+
 // product faqs JSON-LD
 export const productFaqJsonLd = (data: ProductShowSite) =>
   data?.faqs && data.faqs.length > 0

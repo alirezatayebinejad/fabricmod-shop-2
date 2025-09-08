@@ -3,6 +3,9 @@ import apiStatusMessage from "@/utils/apiStatusMessage";
 import { cacheUpdator } from "@/utils/cacheUpdator";
 import toast from "react-hot-toast";
 
+// Import Next.js notFound for SSR 404 handling
+import { notFound } from "next/navigation";
+
 export type ApiCrudInput = {
   urlSuffix?: string;
   fullUrl?: string;
@@ -66,6 +69,14 @@ export default async function apiCRUD({
     const result = await response.json();
 
     if (!response.ok) {
+      if (
+        typeof window === "undefined" &&
+        response.status === 404 &&
+        method === "GET"
+      ) {
+        notFound();
+      }
+
       if (typeof window !== "undefined") {
         apiStatusMessage(
           response.status,

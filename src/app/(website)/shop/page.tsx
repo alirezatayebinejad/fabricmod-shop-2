@@ -11,7 +11,11 @@ import { ProductIndexSite } from "@/types/apiTypes";
 import { useRef } from "react";
 import RetryError from "@/components/datadisplay/RetryError";
 import { Spinner } from "@heroui/spinner";
-import { productsJsonLd, shopBreadcrumbJsonLd } from "@/constants/jsonlds";
+import {
+  productsJsonLd,
+  shopBreadcrumbJsonLd,
+  shopPageJsonLd,
+} from "@/constants/jsonlds";
 import Head from "next/head";
 
 export default function ShopPage() {
@@ -59,15 +63,25 @@ export default function ShopPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(productsJsonLd(products)),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
             __html: JSON.stringify(shopBreadcrumbJsonLd()),
           }}
         />
+        {products && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(productsJsonLd(products)),
+            }}
+          />
+        )}
+        {products && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(shopPageJsonLd(products)),
+            }}
+          />
+        )}
         <div>
           <PageHeader
             img={
