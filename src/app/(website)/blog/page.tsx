@@ -50,7 +50,7 @@ export default function BlogPage() {
     );
   }
   return (
-    <main>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -98,6 +98,6 @@ export default function BlogPage() {
           </div>
         </div>
       </div>
-    </main>
+    </>
   );
 }

@@ -160,7 +160,7 @@ export default async function ProductPage({
         </div>
         <section className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
           <div className="relative">
-            <div className="sticky top-0">
+            <div className="top-0 lg:sticky">
               <PicGallery
                 sources={[
                   data?.back_image &&

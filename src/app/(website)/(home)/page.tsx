@@ -21,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
   })) as Initials;
 
   return {
-    title: initialsRes.setting.seo_title
-      ? initialsRes.setting.seo_title
+    title: initialsRes.setting.title
+      ? initialsRes.setting.title
       : "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
-    description: initialsRes.setting.seo_description
-      ? initialsRes.setting.seo_description
+    description: initialsRes.setting.description
+      ? initialsRes.setting.description
       : "خرید آنلاین انواع روسری، کیف، کفش و لباس زنانه در فابریک مد ✅ ارسال سریع، ضمانت اصالت کالا و بهترین قیمت بازار. همین حالا سفارش دهید.",
     keywords: [
       "فابریک مد",
@@ -53,8 +53,8 @@ export async function generateMetadata(): Promise<Metadata> {
           url: process.env.NEXT_PUBLIC_IMG_BASE + initialsRes.setting.logo,
           width: 1200,
           height: 630,
-          alt: initialsRes.setting.seo_title
-            ? initialsRes.setting.seo_title
+          alt: initialsRes.setting.title
+            ? initialsRes.setting.title
             : "فابریک مد - فروشگاه اینترنتی پوشاک زنانه",
         },
       ],
@@ -62,11 +62,11 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       site: "@fabricmod",
-      title: initialsRes.setting.seo_title
-        ? initialsRes.setting.seo_title
+      title: initialsRes.setting.title
+        ? initialsRes.setting.title
         : "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
-      description: initialsRes.setting.seo_description
-        ? initialsRes.setting.seo_description
+      description: initialsRes.setting.description
+        ? initialsRes.setting.description
         : "فروش اینترنتی انواع روسری، کیف، کفش و لباس زنانه با ارسال سریع و ضمانت اصالت کالا. فابریک مد انتخاب اول بانوان شیک‌پوش.",
       images: [process.env.NEXT_PUBLIC_IMG_BASE + initialsRes.setting.logo],
     },

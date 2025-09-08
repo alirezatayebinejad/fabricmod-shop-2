@@ -51,7 +51,8 @@ export default function TableTransactions() {
       { content: "مبلغ" },
       { content: "درگاه" },
       { content: "وضعیت" },
-      { content: "تاریخ" },
+      { content: "ثبت" },
+      { content: "ویرایش" },
       { content: <div></div> },
     ],
     body: transactions?.map((transaction) => ({
@@ -90,6 +91,15 @@ export default function TableTransactions() {
             <p>
               {transaction.created_at
                 ? new Date(transaction.created_at).toLocaleDateString("fa-IR")
+                : "-"}
+            </p>
+          ),
+        },
+        {
+          data: (
+            <p>
+              {transaction.updated_at
+                ? new Date(transaction.updated_at).toLocaleDateString("fa-IR")
                 : "-"}
             </p>
           ),
@@ -141,7 +151,7 @@ export default function TableTransactions() {
           setPage(page);
           changeFilters(`page=${page}`);
         }}
-        loading={isLoading ? { columns: 6, rows: 5 } : undefined}
+        loading={isLoading ? { columns: 7, rows: 5 } : undefined}
         error={error}
         onRetry={() => mutate()}
       />

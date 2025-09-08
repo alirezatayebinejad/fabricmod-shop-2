@@ -19,6 +19,7 @@ import Edit from "@/components/svg/Edit";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import { useDisclosure } from "@heroui/modal";
+import { dateConvert } from "@/utils/dateConvert";
 
 type Props = {
   onClose: () => void;
@@ -247,6 +248,36 @@ export default function FormTransactions({
             errorMessage={errors.gateway_name}
             placeholder="انتخاب"
           />
+          {isShowMode && (
+            <>
+              <InputBasic
+                name="created_at"
+                label="تاریخ ایجاد"
+                isDisabled
+                value={
+                  selectedData?.created_at
+                    ? (dateConvert(
+                        selectedData.created_at,
+                        "persian",
+                      ) as string)
+                    : "-"
+                }
+              />
+              <InputBasic
+                name="updated_at"
+                label="تاریخ بروزرسانی"
+                isDisabled
+                value={
+                  selectedData?.updated_at
+                    ? (dateConvert(
+                        selectedData.updated_at,
+                        "persian",
+                      ) as string)
+                    : "-"
+                }
+              />
+            </>
+          )}
           <SelectSearchCustom
             title="وضعیت"
             options={[
