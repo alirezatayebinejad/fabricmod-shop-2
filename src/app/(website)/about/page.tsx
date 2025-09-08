@@ -2,12 +2,48 @@ import Title from "@/components/datadisplay/Title";
 import BgCircles from "@/components/svg/bgCircles";
 import RevealEffect from "@/components/wrappers/RevealEffect";
 import { serverCache } from "@/constants/cacheNames";
+import { aboutBreadcrumbJsonLd, aboutPageJsonLd } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { PageShowSite } from "@/types/apiTypes";
 import { Button } from "@heroui/button";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
+
+export async function generateMetadata() {
+  const dataRes = await apiCRUD({
+    urlSuffix: "next/about-us",
+    requiresToken: false,
+    ...serverCache.about,
+  });
+
+  const data: PageShowSite = dataRes?.data;
+
+  return {
+    title: data?.seo_title || data?.title || "درباره فابریک مد",
+    description:
+      data?.seo_description ||
+      data?.description ||
+      "فابریک مد، فروشگاه آنلاین فروش روسری و کیف و کفش و لباس زنانه با خدمات سریع و مطمئن.",
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_BASE_PATH}/about`,
+    },
+    openGraph: {
+      title: data?.seo_title || data?.title,
+      description: data?.seo_description || data?.description,
+      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/about`,
+      images: data?.primary_image
+        ? [
+            {
+              url: process.env.NEXT_PUBLIC_IMG_BASE + data.primary_image,
+              alt: data?.title,
+            },
+          ]
+        : [],
+    },
+  };
+}
 
 export default async function AboutPage() {
   const dataRes = await apiCRUD({
@@ -31,6 +67,24 @@ export default async function AboutPage() {
 
   return (
     <main className="flex w-full justify-center overflow-hidden">
+      <Script
+        id="about-page-jsonld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(aboutPageJsonLd(data)),
+        }}
+      />
+      {/* Breadcrumb JSON-LD */}
+      <Script
+        id="about-breadcrumb-jsonld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(aboutBreadcrumbJsonLd()),
+        }}
+      />
+
       <div className="m-[0_auto] max-w-[1950px]">
         <Title title={data.title} styles={{ container: "pt-5 pb-28" }} />
         <div className="relative mb-40 flex justify-evenly gap-[90px] px-5 max-md:flex-col-reverse md:px-12">

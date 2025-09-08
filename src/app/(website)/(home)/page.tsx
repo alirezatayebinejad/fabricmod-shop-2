@@ -11,6 +11,68 @@ import { homepageJsonLd } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { Index, Initials } from "@/types/apiTypes";
 
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const initialsRes = (await apiCRUD({
+    urlSuffix: "next/initials",
+    requiresToken: false,
+    ...serverCache.initials,
+  })) as Initials;
+
+  return {
+    title: initialsRes.setting.seo_title
+      ? initialsRes.setting.seo_title
+      : "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
+    description: initialsRes.setting.seo_description
+      ? initialsRes.setting.seo_description
+      : "خرید آنلاین انواع روسری، کیف، کفش و لباس زنانه در فابریک مد ✅ ارسال سریع، ضمانت اصالت کالا و بهترین قیمت بازار. همین حالا سفارش دهید.",
+    keywords: [
+      "فابریک مد",
+      "خرید روسری",
+      "خرید کیف زنانه",
+      "خرید کفش زنانه",
+      "خرید لباس زنانه",
+      "فروشگاه آنلاین پوشاک زنانه",
+      "مد زنانه",
+    ],
+    alternates: {
+      canonical: process.env.NEXT_PUBLIC_BASE_PATH + "/",
+    },
+    robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      locale: "fa_IR",
+      url: process.env.NEXT_PUBLIC_BASE_PATH + "/",
+      title: "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
+      description:
+        "خرید آنلاین انواع روسری، کیف، کفش و لباس زنانه در فابریک مد ✅ ارسال سریع، ضمانت اصالت کالا و بهترین قیمت بازار.",
+      siteName: "فابریک مد",
+      images: [
+        {
+          url: process.env.NEXT_PUBLIC_IMG_BASE + initialsRes.setting.logo,
+          width: 1200,
+          height: 630,
+          alt: initialsRes.setting.seo_title
+            ? initialsRes.setting.seo_title
+            : "فابریک مد - فروشگاه اینترنتی پوشاک زنانه",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@fabricmod",
+      title: initialsRes.setting.seo_title
+        ? initialsRes.setting.seo_title
+        : "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
+      description: initialsRes.setting.seo_description
+        ? initialsRes.setting.seo_description
+        : "فروش اینترنتی انواع روسری، کیف، کفش و لباس زنانه با ارسال سریع و ضمانت اصالت کالا. فابریک مد انتخاب اول بانوان شیک‌پوش.",
+      images: [process.env.NEXT_PUBLIC_IMG_BASE + initialsRes.setting.logo],
+    },
+  };
+}
+
 export default async function HomePage() {
   const initialsRes = (await apiCRUD({
     urlSuffix: "next/initials",

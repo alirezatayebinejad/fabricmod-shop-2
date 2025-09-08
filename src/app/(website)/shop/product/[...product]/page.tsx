@@ -6,11 +6,63 @@ import SetOrCollectionsList from "@/app/(website)/shop/product/[...product]/_com
 import Breadcrumb from "@/components/datadisplay/Breadcrumb";
 import Carousel from "@/components/datadisplay/Carousel";
 import { cookiesNames, serverCacheDynamic } from "@/constants/cacheNames";
-import { productJsonLd } from "@/constants/jsonlds";
+import {
+  productBreadcrumbJsonLd,
+  productFaqJsonLd,
+  productJsonLd,
+} from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { getAuth } from "@/services/auth";
 import { ProductShowSite } from "@/types/apiTypes";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ product: string[] }>;
+}): Promise<Metadata> {
+  const slug = (await params).product[0];
+  const dataRes = await apiCRUD({
+    urlSuffix: "next/products/" + slug,
+    requiresToken: false,
+  });
+  const data: ProductShowSite = dataRes?.data;
+
+  const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${data?.slug}`;
+
+  return {
+    title: data?.seo_title || data?.name,
+    description:
+      data?.seo_description ||
+      data?.description ||
+      `${data?.name} با بهترین قیمت و گارانتی معتبر از فابریک مد`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: data?.seo_title || data?.name,
+      description: data?.seo_description || data?.description,
+      url: canonicalUrl,
+      images: data?.primary_image
+        ? [
+            {
+              url: process.env.NEXT_PUBLIC_IMG_BASE + data.primary_image,
+              alt: data?.name,
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data?.seo_title || data?.name,
+      description:
+        data?.seo_description ||
+        data?.description ||
+        `خرید آنلاین ${data?.name} از فابریک مد`,
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -32,11 +84,24 @@ export default async function ProductPage({
 
   return (
     <main>
-      {" "}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd(data)),
+        }}
+      />
+      {data.faqs && data.faqs.length > 0 ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productFaqJsonLd(data)),
+          }}
+        />
+      ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productBreadcrumbJsonLd(data)),
         }}
       />
       <div>

@@ -11,6 +11,7 @@ import useSWR from "swr";
 import { useRef } from "react";
 import RetryError from "@/components/datadisplay/RetryError";
 import { Spinner } from "@heroui/spinner";
+import { blogBreadcrumbJsonLd, blogPageJsonLd } from "@/constants/jsonlds";
 
 export default function BlogPage() {
   const { filters, changeFilters } = useFiltersContext();
@@ -50,6 +51,18 @@ export default function BlogPage() {
   }
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogBreadcrumbJsonLd()),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPageJsonLd(posts)),
+        }}
+      />
       <div>
         <PageHeader
           img={
