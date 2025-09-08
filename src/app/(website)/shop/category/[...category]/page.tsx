@@ -2,13 +2,13 @@ import CategoryLayout from "@/app/(website)/shop/category/[...category]/_compone
 import { serverCacheDynamic } from "@/constants/cacheNames";
 import {
   categoryBreadcrumbJsonLd,
+  categoryFaqJsonLd,
   categoryJsonLd,
   categoryProductsJsonLd,
 } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { ProductCategoryShowSite } from "@/types/apiTypes";
 import { Metadata } from "next";
-import Head from "next/head";
 
 export async function generateMetadata({
   params,
@@ -65,50 +65,37 @@ export default async function CategoryPage({
   const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/category/${slug}`;
 
   return (
-    <>
-      <Head>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content={"دسته بندی " + data?.name} />
-        <meta
-          property="og:description"
-          content={"تمامی محصولات مربوط به دسته بندی " + data?.name}
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonicalUrl} />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={"دسته بندی " + data?.name} />
-        <meta
-          name="twitter:description"
-          content={"تمامی محصولات مربوط به دسته بندی " + data?.name}
-        />
-      </Head>
-      <main>
+    <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(categoryBreadcrumbJsonLd(data)),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(categoryProductsJsonLd(data)),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(categoryJsonLd(data)),
+        }}
+      />
+      {data?.faqs?.length > 0 && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(categoryBreadcrumbJsonLd(data)),
+            __html: JSON.stringify(categoryFaqJsonLd(data)),
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(categoryProductsJsonLd(data)),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(categoryJsonLd(data)),
-          }}
-        />
+      )}
 
         <div>
           <CategoryLayout categorySlug={slug} initialCategoryData={data} />
         </div>
       </main>
-    </>
   );
 }

@@ -155,11 +155,9 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
               {selectedVariation?.sku}
             </p>
           </div>
-          <div className="flex flex-wrap gap-7 max-md:gap-3">
+          <div className="flex flex-wrap gap-7 max-md:gap-3">        
             <h5 className="text-TextSize400 text-TextLow">دسته‌بندی‌</h5>
-            <p className="text-TextSize400 text-TextLow">
-              {data.category.name}
-            </p>
+            <Link href={`/shop/category/${data?.category?.slug}`} className="text-TextSize400 text-TextLow">{data?.category.name}</Link>
           </div>
           <div className="flex flex-wrap gap-7 max-md:gap-3">
             <h5 className="text-TextSize400 text-TextLow">برچسب‌ها</h5>

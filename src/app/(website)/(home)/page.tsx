@@ -7,7 +7,7 @@ import BlogCard from "@/app/(website)/_components/cards/BlogCard";
 import ProductCard from "@/app/(website)/_components/cards/ProductCard";
 import Carousel from "@/components/datadisplay/Carousel";
 import { serverCache } from "@/constants/cacheNames";
-import { homepageJsonLd } from "@/constants/jsonlds";
+import { homeFaqJsonLd, homepageJsonLd } from "@/constants/jsonlds";
 import apiCRUD from "@/services/apiCRUD";
 import { Index, Initials } from "@/types/apiTypes";
 
@@ -94,7 +94,14 @@ export default async function HomePage() {
           __html: JSON.stringify(homepageJsonLd(initialsRes)),
         }}
       />
+            <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homeFaqJsonLd(initialsRes)),
+        }}
+      />
       <div>
+        
         <Slider slidesData={data?.banners?.slider} />
 
         <section className="mt-4 flex gap-4 max-md:flex-col">

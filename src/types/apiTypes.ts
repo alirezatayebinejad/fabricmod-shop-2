@@ -2065,6 +2065,7 @@ export interface ProductCategoryShowSite {
   slug: string;
   parent_id: string;
   type: string;
+  content:string;
   banners: {
     id: number;
     title: string;
@@ -2149,6 +2150,17 @@ export interface ProductCategoryShowSite {
       attribute_id: number;
       value: string;
     }[];
+  }[];
+    faqs: {
+    id: number;
+    subject: string;
+    body: string;
+    faqable_type: string;
+    faqable_id: number;
+    user_id: number;
+    deleted_at: null;
+    created_at: string;
+    updated_at: string;
   }[];
 }
 

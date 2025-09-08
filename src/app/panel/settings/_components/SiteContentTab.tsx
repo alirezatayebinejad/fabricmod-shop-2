@@ -58,6 +58,8 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
         logo: undefined as undefined | string,
         title: setting?.title || "",
         description: setting?.description || "",
+        seo_title: setting?.seo_title || "",
+        seo_description: setting?.seo_description || "",
         faqs: setting?.faqs || [],
         benefits: setting?.benefits_buy || [],
         whole_sale: initialWholeSale,
@@ -212,6 +214,25 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
             setValues((prev) => ({ ...prev, description: e.target.value }))
           }
           errorMessage={errors.description}
+        />
+
+        <InputBasic
+          name="seo_title"
+          label="عنوان سئو"
+          value={values.seo_title}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, seo_title: e.target.value }))
+          }
+          errorMessage={errors.seo_title}
+        />
+        <InputBasic
+          name="seo_description"
+          label="توضیحات سئو"
+          value={values.seo_description}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, seo_description: e.target.value }))
+          }
+          errorMessage={errors.seo_description}
         />
 
         {/* --- Whole Sale Section --- */}

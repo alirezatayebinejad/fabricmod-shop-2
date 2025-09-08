@@ -679,6 +679,23 @@ export const contactPageJsonLd = (
   },
 });
 
+// Category FAQ JSON-LD
+export const categoryFaqJsonLd = (data: ProductCategoryShowSite) =>
+  data?.faqs?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: data.faqs.map((f: any) => ({
+          "@type": "Question",
+          name: f.subject,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: f.body,
+          },
+        })),
+      }
+    : null;
+
 export const contactBreadcrumbJsonLd = (): WithContext<BreadcrumbList> => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
