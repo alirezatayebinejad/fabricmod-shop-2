@@ -1810,7 +1810,24 @@ export interface ProductShowSite {
     }[];
   }[];
   quantity_check: boolean;
-  sale_check: boolean;
+  sale_check: 
+      | {
+        id: number;
+        attribute_id: number;
+        product_id: number;
+        value: string;
+        quantity: number;
+        sku: string;
+        price: number;
+        sale_price: number;
+        date_sale_from: string;
+        date_sale_to: string;
+        user_id: number;
+        deleted_at: null;
+        created_at: string;
+        updated_at: string;
+      }
+    | false;
   price_check:
     | {
         id: number;

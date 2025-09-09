@@ -34,9 +34,13 @@ export async function generateMetadata({
     data?.price_check && typeof data.price_check === "object"
       ? data.price_check
       : null;
+  const saleCheck =
+    data?.sale_check && typeof data.sale_check === "object"
+      ? data.sale_check
+      : null;
 
-  const finalPrice = priceCheck?.sale_price || priceCheck?.price;
-  const oldPrice = priceCheck?.sale_price ? priceCheck.price : undefined;
+  const finalPrice = saleCheck ? saleCheck?.sale_price : priceCheck?.price;
+  const oldPrice = priceCheck?.price || undefined;
 
   const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${data?.slug}`;
   return {
