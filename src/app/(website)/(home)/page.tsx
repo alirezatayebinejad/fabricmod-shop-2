@@ -21,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
   })) as Initials;
 
   return {
-    title: initialsRes.setting.title
-      ? initialsRes.setting.title
+    title: initialsRes.setting.seo_title
+      ? initialsRes.setting.seo_title
       : "فابریک مد | خرید اینترنتی روسری، کیف، کفش و لباس زنانه",
-    description: initialsRes.setting.description
-      ? initialsRes.setting.description
+    description: initialsRes.setting.seo_description
+      ? initialsRes.setting.seo_description
       : "خرید آنلاین انواع روسری، کیف، کفش و لباس زنانه در فابریک مد ✅ ارسال سریع، ضمانت اصالت کالا و بهترین قیمت بازار. همین حالا سفارش دهید.",
     keywords: [
       "فابریک مد",
@@ -94,14 +94,13 @@ export default async function HomePage() {
           __html: JSON.stringify(homepageJsonLd(initialsRes)),
         }}
       />
-            <script
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(homeFaqJsonLd(initialsRes)),
         }}
       />
       <div>
-        
         <Slider slidesData={data?.banners?.slider} />
 
         <section className="mt-4 flex gap-4 max-md:flex-col">

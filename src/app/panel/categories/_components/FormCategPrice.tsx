@@ -28,7 +28,7 @@ export default function FormCategPrice({
       },
       async (formValues) => {
         const res = await apiCRUD({
-          urlSuffix: `admin-panel/category-price/63`,
+          urlSuffix: `admin-panel/category-price/${categ?.id}`,
           method: "POST",
           updateCacheByTag: `productCategory-${categ?.slug}`,
           data: { ...formValues },
