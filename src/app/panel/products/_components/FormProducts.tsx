@@ -147,10 +147,15 @@ export default function FormProducts({
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
     async (formValues) => {
-      const payload =
-        formValues?.slug === prod?.slug
-          ? { ...formValues, slug: undefined }
-          : formValues;
+      const payload = {
+        ...formValues,
+        slug: formValues?.slug === prod?.slug ? undefined : formValues.slug,
+        set_ids: formValues.is_set === "1" ? formValues.is_set : undefined,
+        variations: formValues.variations?.map((v) => ({
+          ...v,
+          var_ids: formValues.is_set === "1" ? v.var_ids : undefined,
+        })),
+      };
       const res = await apiCRUD({
         urlSuffix: `admin-panel/products${isEditMode ? `/${productId}` : ""}`,
         method: "POST",

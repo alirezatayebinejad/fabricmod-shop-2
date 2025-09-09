@@ -62,8 +62,6 @@ export default async function CategoryPage({
   });
   const data: ProductCategoryShowSite = dataRes?.data;
 
-  const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/category/${slug}`;
-
   return (
     <main>
       <script
@@ -93,9 +91,9 @@ export default async function CategoryPage({
         />
       )}
 
-        <div>
-          <CategoryLayout categorySlug={slug} initialCategoryData={data} />
-        </div>
-      </main>
+      <div>
+        <CategoryLayout categorySlug={slug} initialCategoryData={data} />
+      </div>
+    </main>
   );
 }
