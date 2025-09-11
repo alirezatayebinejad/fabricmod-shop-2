@@ -84,8 +84,6 @@ export default function TableProducts() {
       urlSuffix: `admin-panel/products/${prod.id}`,
       method: "POST",
       data: {
-        name: prod.name,
-        is_set: prod.is_set,
         is_active: prod.is_active == "1" ? "0" : "1",
         _method: "put",
       },

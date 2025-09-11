@@ -22,19 +22,14 @@ export default function BannerCard({
   return (
     <RevealEffect mode="fade" options={{ triggerOnce: true, fraction: 0.3 }}>
       <div
-        className={cn(
-          "group relative w-full overflow-hidden rounded-[10px]",
-          containerStyle ?? "",
-        )}
+        className={cn("relative w-full", containerStyle ?? "")}
         style={{ height: `${height}px` }}
       >
         <Image
           src={process.env.NEXT_PUBLIC_IMG_BASE + bgImg}
           alt={title || "background image"}
           fill
-          className={
-            "z-0 h-auto w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-          }
+          className={"z-0 h-full w-full rounded-[10px]"}
         />
         <div className="absolute m-[20px] max-w-[50%] max-md:max-w-[80%]">
           {headTitle && (

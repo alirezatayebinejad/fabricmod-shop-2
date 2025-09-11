@@ -44,7 +44,7 @@ export default function Slider({ slidesData }: Props) {
                   priority={i === 0 ? true : false}
                   alt={item?.title || "عکس بنر"}
                   fill
-                  className="h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] object-cover"
+                  className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite]"
                 />
                 {/* content */}
                 {item?.title && (

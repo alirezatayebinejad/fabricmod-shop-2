@@ -13,6 +13,11 @@ type BasketProduct = {
   selectedVariationId: number; //selected variation of the product
 } & ProductShowSite;
 
+type BasketData = {
+  items: BasketProduct[];
+  lastAddedAt: number; //timestamp when any item was last added to basket
+};
+
 interface BasketContextState {
   basket: BasketProduct[];
   addToBasket: (
@@ -42,7 +47,27 @@ export const BasketContext = createContext<BasketContextState | undefined>(
 const getBasketFromLocalStorage = (): BasketProduct[] => {
   if (typeof window !== "undefined") {
     const storedBasket = localStorage.getItem("basket");
-    return storedBasket ? JSON.parse(storedBasket) : [];
+    if (storedBasket) {
+      const basketData: BasketData = JSON.parse(storedBasket);
+
+      // Check if basket has the new format with lastAddedAt
+      if (basketData.lastAddedAt) {
+        const now = Date.now();
+        const oneDayInMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+        // If more than 1 day has passed since last addition, clear entire basket
+        if (now - basketData.lastAddedAt > oneDayInMs) {
+          localStorage.removeItem("basket");
+          return [];
+        }
+
+        return basketData.items || [];
+      } else {
+        // Handle old format - clear the basket since we can't determine when items were added
+        localStorage.removeItem("basket");
+        return [];
+      }
+    }
   }
   return [];
 };
@@ -90,7 +115,13 @@ const BasketProvider = ({ children }: { children: ReactNode }) => {
         ...currentBasket,
         { ...product, countBasket, selectedVariationId },
       ];
-      localStorage.setItem("basket", JSON.stringify(updatedBasket));
+
+      const basketData: BasketData = {
+        items: updatedBasket,
+        lastAddedAt: Date.now(),
+      };
+
+      localStorage.setItem("basket", JSON.stringify(basketData));
       setBasket(updatedBasket);
       return true;
     }
@@ -110,7 +141,13 @@ const BasketProvider = ({ children }: { children: ReactNode }) => {
             product.selectedVariationId === selectedVariationId
           ),
       );
-      localStorage.setItem("basket", JSON.stringify(updatedBasket));
+
+      const basketData: BasketData = {
+        items: updatedBasket,
+        lastAddedAt: Date.now(), // Update timestamp even for removals
+      };
+
+      localStorage.setItem("basket", JSON.stringify(basketData));
       setBasket(updatedBasket);
       return true;
     }
@@ -137,7 +174,13 @@ const BasketProvider = ({ children }: { children: ReactNode }) => {
     );
     if (productIndex !== -1) {
       currentBasket[productIndex].countBasket = countBasket;
-      localStorage.setItem("basket", JSON.stringify(currentBasket));
+
+      const basketData: BasketData = {
+        items: currentBasket,
+        lastAddedAt: Date.now(), // Update timestamp for count changes
+      };
+
+      localStorage.setItem("basket", JSON.stringify(basketData));
       setBasket(currentBasket);
       return true;
     }

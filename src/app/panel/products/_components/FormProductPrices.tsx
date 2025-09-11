@@ -71,7 +71,10 @@ export default function FormProductPrices({
               mutate(
                 `admin-panel/products${filters ? "?" + filters : filters}`,
               );
-            else router.push("/panel/products/lists");
+            else
+              router.push(
+                `/panel/products/lists${filters ? "?" + filters : filters}`,
+              );
           } else {
             router.refresh();
           }
