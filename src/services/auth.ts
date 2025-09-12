@@ -30,7 +30,7 @@ export type GetAuth = {
 };
 export type SetAuth = {
   session: (sessionData: { token: string; isLoggedIn: boolean }) => void;
-  user: (userInfoCookie: Omit<Authme, "permissions">) => void;
+  user: (userInfoCookie: Authme) => void;
   perms: (userPermsCookie: Authme["permissions"]) => void;
 };
 

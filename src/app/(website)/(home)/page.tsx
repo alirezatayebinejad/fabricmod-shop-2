@@ -183,7 +183,7 @@ export default async function HomePage() {
         {data?.carousels?.map((carousel, idx) => (
           <div
             key={carousel.id}
-            className={`${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')] px-5" : ""}`}
+            className={`${idx % 2 === 0 ? "rounded-[20px] bg-[url('/images/offerBg.png')]" : ""}`}
           >
             <Carousel
               title={carousel.name}

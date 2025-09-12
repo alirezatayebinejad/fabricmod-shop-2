@@ -6,7 +6,9 @@ import {
   useContext,
   useEffect,
 } from "react";
-import { getAuth, GetAuth } from "@/services/auth";
+import { getAuth, GetAuth, setAuth } from "@/services/auth";
+import apiCRUD from "@/services/apiCRUD";
+import { Authme } from "@/types/apiTypes";
 
 interface UserContextState {
   user?: ReturnType<GetAuth["user"]>;
@@ -25,12 +27,30 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = getAuth?.session().isLoggedIn;
-    const user = isLoggedIn ? getAuth?.user() : undefined;
-    const permissions = isLoggedIn ? getAuth?.perms() : undefined;
-    setUser(user);
-    setPermissions(permissions);
-    setIsMounted(true);
+    const initializeUser = async () => {
+      const isLoggedIn = getAuth?.session().isLoggedIn;
+
+      // 1) Fast path: hydrate from cookies immediately
+      const cachedUser = isLoggedIn ? getAuth?.user() : undefined;
+      const cachedPerms = isLoggedIn ? getAuth?.perms() : undefined;
+      setUser(cachedUser);
+      setPermissions(cachedPerms);
+      setIsMounted(true);
+
+      // 2) Background refresh: fetch latest and update cookies/state
+      if (!isLoggedIn) return;
+      const res = await apiCRUD({ urlSuffix: "auth/me" });
+      const authme: Authme = res?.data;
+      if (authme) {
+        setAuth.user(authme);
+        setAuth.perms(authme.permissions);
+        // Re-read to ensure we reflect sanitized cookie format
+        setUser(getAuth?.user());
+        setPermissions(getAuth?.perms());
+      }
+    };
+
+    initializeUser();
   }, []);
 
   return (

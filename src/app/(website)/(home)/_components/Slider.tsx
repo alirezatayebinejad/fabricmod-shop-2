@@ -27,24 +27,27 @@ export default function Slider({ slidesData }: Props) {
   }, [emblaApi]);
 
   return (
-    <section className="relative flex items-center justify-center" dir="ltr">
-      <div className="embla !m-0 mx-auto h-[700px] w-full max-md:h-[200px]">
+    <section
+      className="relative flex items-center justify-center overflow-hidden"
+      dir="ltr"
+    >
+      <div className="embla !m-0 mx-auto h-[700px] w-full max-[1450px]:h-[600px] max-[1250px]:h-[520px] max-[1050px]:h-[430px] max-[800px]:h-[320px] max-[600px]:h-[250px] max-[450px]:h-[180px]">
         <div
-          className="embla__viewport -mx-[20px] h-full overflow-hidden rounded-[0px]"
+          className="embla__viewport h-full overflow-hidden rounded-[0px]"
           ref={emblaRef}
         >
           <div className="embla__container flex h-full select-none">
             {slidesData?.map((item, i) => (
               <div
                 key={item?.image}
-                className="embla__slide relative flex min-w-0 flex-[0_0_100%] items-center"
+                className="embla__slide relative flex min-w-0 flex-[0_0_100%] items-center overflow-hidden rounded-[10px]"
               >
                 <Image
                   src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
                   priority={i === 0 ? true : false}
                   alt={item?.title || "عکس بنر"}
                   fill
-                  className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite]"
+                  className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] rounded-[10px]"
                 />
                 {/* content */}
                 {item?.title && (

@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@heroui/button";
-import apiCRUD from "@/services/apiCRUD";
 import ConfirmModal from "@/components/datadisplay/ConfirmModal";
+import { cacheUpdator } from "@/utils/cacheUpdator";
 
 export default function CachesControllTab() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -11,11 +11,7 @@ export default function CachesControllTab() {
 
   const handleRevalidate = async (tag: string) => {
     setLoading(tag);
-    await apiCRUD({
-      fullUrl: "/api/revalidate",
-      method: "POST",
-      data: { tag },
-    });
+    await cacheUpdator(tag);
     setLoading(null);
   };
 

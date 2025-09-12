@@ -13,6 +13,7 @@ import { Spinner } from "@heroui/spinner";
 import RetryError from "@/components/datadisplay/RetryError";
 import { dateConvert } from "@/utils/dateConvert";
 import Edit from "@/components/svg/Edit";
+import { cacheUpdator } from "@/utils/cacheUpdator";
 
 export default function FormProfile() {
   const [imagePreview, setImagePreview] = useState<string | null>("");
@@ -49,6 +50,9 @@ export default function FormProfile() {
         method: "POST",
         data: { ...formdata, _method: "put" },
       });
+      if (res.status === "success") {
+        cacheUpdator("updateusercookies");
+      }
       if (res?.message) setErrors(res.message);
     },
   );
