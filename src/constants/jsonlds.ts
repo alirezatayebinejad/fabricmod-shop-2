@@ -567,7 +567,7 @@ export const categoryBreadcrumbJsonLd = (
       "@type": "ListItem",
       position: 1,
       name: "خانه",
-      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/`,
+      item: `${process.env.NEXT_PUBLIC_BASE_PATH}`,
     },
     {
       "@type": "ListItem",
@@ -653,6 +653,7 @@ export const categoryProductsJsonLd = (
       },
     })) || [],
 });
+
 export const contactPageJsonLd = (
   data: PageShowSite,
   initials: Initials,

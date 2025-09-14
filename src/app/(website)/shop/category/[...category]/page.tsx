@@ -24,8 +24,8 @@ export async function generateMetadata({
   });
   const data: ProductCategoryShowSite = dataRes?.data;
 
-  const pageTitle = "دسته بندی " + data?.name;
-  const pageDescription = "تمامی محصولات مربوط به دسته بندی " + data?.name;
+  const pageTitle = data?.seo_title|| "دسته بندی " + data?.name;
+  const pageDescription = data?.seo_description|| "تمامی محصولات مربوط به دسته بندی " + data?.name;
   const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/category/${slug}`;
 
   return {

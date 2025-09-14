@@ -2079,6 +2079,8 @@ export interface ProductIndexSite {
 export interface ProductCategoryShowSite {
   id: number;
   name: string;
+  seo_title: string;
+  seo_description: string;
   slug: string;
   parent_id: string;
   type: string;
