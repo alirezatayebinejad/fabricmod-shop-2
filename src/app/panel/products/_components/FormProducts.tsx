@@ -84,11 +84,23 @@ export default function FormProducts({
 
   // Initialize selectedSetProducts when prod data is loaded
   useEffect(() => {
-    if (prod?.singles && isEditMode) {
-      // This would need to be populated with actual product data
-      // For now, we'll keep it empty and let the user re-select
+    if (prod?.singles && (isEditMode || isShowMode)) {
+      // Populate selectedSetProducts with the singles data from the product
+      const setProducts = prod.singles.map((single) => ({
+        id: single.id,
+        title: single.name,
+        helperValue: {
+          id: single.id,
+          name: single.name,
+          slug: single.slug,
+          primary_image: single.primary_image,
+          is_set: "0", // singles are not sets themselves
+          variations: [], // Singles don't have variations in the API response
+        } as ProductsWithVariationIndex,
+      }));
+      setSelectedSetProducts(setProducts);
     }
-  }, [prod, isEditMode]);
+  }, [prod, isEditMode, isShowMode]);
 
   const {
     values,

@@ -19,6 +19,7 @@ import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import { currency } from "@/constants/staticValues";
 import FormTransactions from "@/app/panel/transactions/_components/FormTransactions";
 import formatPrice from "@/utils/formatPrice";
+import { dateConvert } from "@/utils/dateConvert";
 
 export default function TableOrders() {
   const { filters, changeFilters } = useFiltersContext();
@@ -52,6 +53,8 @@ export default function TableOrders() {
     headers: [
       { content: "کاربر" },
       { content: "مبلغ پرداختی" },
+      { content: "ایجاد" },
+      { content: "آپدیت" },
       { content: "وضعیت پرداخت" },
       { content: "وضعیت سفارش" },
       { content: <div></div> },
@@ -60,6 +63,24 @@ export default function TableOrders() {
       cells: [
         { data: <p>{order.user?.name}</p> },
         { data: <p>{formatPrice(+order.paying_amount) + " " + currency}</p> },
+        {
+          data: (
+            <p>
+              {dateConvert(order.created_at, "persian", "english", {
+                withTime: true,
+              })}
+            </p>
+          ),
+        },
+        {
+          data: (
+            <p>
+              {dateConvert(order.updated_at, "persian", "english", {
+                withTime: true,
+              })}
+            </p>
+          ),
+        },
         {
           data: (
             <StatusBadge

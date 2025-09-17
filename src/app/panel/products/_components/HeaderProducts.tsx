@@ -13,7 +13,7 @@ import ProtectComponent from "@/components/wrappers/ProtectComponent";
 
 export default function HeaderProducts() {
   const { changeFilters, getFilterValue, deleteFilter } = useFiltersContext();
-  const categFilterValue = getFilterValue("parent_id");
+  const categFilterValue = getFilterValue("category_id");
   const sortByFilterValue = getFilterValue("sortBy");
   const existFilterValue = getFilterValue("exist");
   const offerFilterValue = getFilterValue("offer");
@@ -180,7 +180,7 @@ export default function HeaderProducts() {
                                     ? "کد صعودی"
                                     : sortByFilterValue === "code_desc"
                                       ? "کد نزولی"
-                                  : "",
+                                      : "",
                   },
                 ]
               : undefined

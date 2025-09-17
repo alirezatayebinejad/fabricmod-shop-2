@@ -22,6 +22,7 @@ import {
 import RetryError from "@/components/datadisplay/RetryError";
 import { Spinner } from "@heroui/spinner";
 import { useFiltersContext } from "@/contexts/SearchFilters";
+import { dateConvert } from "@/utils/dateConvert";
 
 type Props = {
   onClose: () => void;
@@ -377,6 +378,30 @@ export default function FormOrders({
             </Button>
           )}
         </div>
+        {isShowMode && (
+          <div className="mb-2 flex flex-col gap-1 text-xs text-gray-500">
+            <div>
+              <span>تاریخ ایجاد: </span>
+              <span>
+                {order?.created_at
+                  ? dateConvert(order.created_at, "persian", "english", {
+                      withTime: true,
+                    })
+                  : "-"}
+              </span>
+            </div>
+            <div>
+              <span>آخرین بروزرسانی: </span>
+              <span>
+                {order?.updated_at
+                  ? dateConvert(order.updated_at, "persian", "english", {
+                      withTime: true,
+                    })
+                  : "-"}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SwitchWrapper

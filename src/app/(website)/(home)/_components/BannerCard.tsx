@@ -3,6 +3,7 @@ import { cn } from "@/utils/twMerge";
 import { Button } from "@heroui/button";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import React from "react";
 
 export default function BannerCard({
   bgImg,
@@ -11,6 +12,10 @@ export default function BannerCard({
   description,
   height = 280,
   containerStyle,
+  fixedImage = true,
+  imageWidth = 769,
+  imageHeight = 325,
+  imageClassName = "",
 }: {
   bgImg: string;
   headTitle: string;
@@ -18,19 +23,67 @@ export default function BannerCard({
   description: string;
   height?: number;
   containerStyle?: string;
+  fixedImage?: boolean;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageClassName?: string;
 }) {
+  // Calculate aspect ratio for padding-bottom hack if fixedImage is true
+  const aspectRatio =
+    fixedImage && imageWidth && imageHeight
+      ? (imageHeight / imageWidth) * 100
+      : undefined;
+
   return (
     <RevealEffect mode="fade" options={{ triggerOnce: true, fraction: 0.3 }}>
       <div
-        className={cn("relative w-full", containerStyle ?? "")}
-        style={{ height: `${height}px` }}
+        className={cn(
+          "relative w-full",
+          fixedImage ? "overflow-hidden" : "",
+          containerStyle ?? "",
+        )}
+        style={
+          fixedImage
+            ? {
+                // Use aspect-ratio for modern browsers, fallback to padding-bottom
+                aspectRatio: `${imageWidth} / ${imageHeight}`,
+                maxWidth: imageWidth,
+                // fallback for older browsers
+                ...(aspectRatio
+                  ? { height: "auto", paddingBottom: `${aspectRatio}%` }
+                  : {}),
+              }
+            : { height: `${height}px` }
+        }
       >
-        <Image
-          src={process.env.NEXT_PUBLIC_IMG_BASE + bgImg}
-          alt={title || "background image"}
-          fill
-          className={"z-0 h-full w-full rounded-[10px]"}
-        />
+        {fixedImage ? (
+          <Image
+            src={process.env.NEXT_PUBLIC_IMG_BASE + bgImg}
+            alt={title || "background image"}
+            width={imageWidth}
+            height={imageHeight}
+            className={cn(
+              "z-0 h-full w-full rounded-[10px] object-cover",
+              imageClassName,
+            )}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            sizes="(max-width: 768px) 100vw, 800px"
+            priority
+          />
+        ) : (
+          <Image
+            src={process.env.NEXT_PUBLIC_IMG_BASE + bgImg}
+            alt={title || "background image"}
+            fill
+            className={"z-0 h-full w-full rounded-[10px]"}
+          />
+        )}
         <div className="absolute m-[20px] max-w-[50%] max-md:max-w-[80%]">
           {headTitle && (
             <h4 className="text-TextSize400 text-TextLow max-md:text-TextSize300">
