@@ -19,6 +19,7 @@ import FormCategories from "@/app/panel/categories/_components/FormCategories";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
 import { DollarSign } from "lucide-react";
 import FormCategPrice from "@/app/panel/categories/_components/FormCategPrice";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function TableCategories() {
   const { filters, changeFilters } = useFiltersContext();
@@ -212,7 +213,7 @@ export default function TableCategories() {
         onRetry={() => mutate()}
       />
 
-      <ModalWrapper
+      <ModalWrapperNative
         disclosures={{
           onOpen: editModal.onOpen,
           onOpenChange: editModal.onOpenChange,

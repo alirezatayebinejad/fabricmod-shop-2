@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import { useDisclosure } from "@heroui/modal";
 import FormPages from "@/app/panel/pages/_components/FormPages";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function HeaderPages() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -23,7 +23,7 @@ export default function HeaderPages() {
           </Button>
         }
       />
-      <ModalWrapper
+      <ModalWrapperNative
         disclosures={{
           isOpen,
           onOpenChange,

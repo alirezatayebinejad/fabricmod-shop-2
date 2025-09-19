@@ -31,7 +31,7 @@ export default function Slider({ slidesData }: Props) {
       className="relative flex items-center justify-center overflow-hidden"
       dir="ltr"
     >
-      <div className="embla !m-0 mx-auto h-[700px] w-full max-[1450px]:h-[600px] max-[1250px]:h-[520px] max-[1050px]:h-[430px] max-[800px]:h-[320px] max-[600px]:h-[250px] max-[450px]:h-[180px]">
+      <div className="embla !m-0 mx-auto h-[810px] w-full max-[1450px]:h-[700px] max-[1250px]:h-[600px] max-[1050px]:h-[500px] max-[850px]:h-[420px] max-[750px]:h-[380px] max-[620px]:h-[300px] max-[500px]:h-[230px] max-[450px]:h-[210px] max-[390px]:h-[180px]">
         <div
           className="embla__viewport h-full overflow-hidden rounded-[0px]"
           ref={emblaRef}

@@ -17,6 +17,7 @@ import FormBrands from "@/app/panel/brands/_components/FormBrands";
 import Image from "next/image";
 import SwitchWrapper from "@/components/inputs/SwitchWrapper";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function TableBrands() {
   const { filters, changeFilters } = useFiltersContext();
@@ -165,7 +166,7 @@ export default function TableBrands() {
         onRetry={() => mutate()}
       />
 
-      <ModalWrapper
+      <ModalWrapperNative
         disclosures={{
           onOpen: editModal.onOpen,
           onOpenChange: editModal.onOpenChange,

@@ -9,10 +9,10 @@ export default function CategoriesCarousel() {
 
   const childCategories =
     gd?.initials?.categories
-      ?.map((cat) =>
-        Array.isArray(cat.childs) && cat.childs.length > 0 ? cat.childs : [cat],
-      )
+      ?.filter((cat) => Array.isArray(cat.childs) && cat.childs.length > 0)
+      .map((cat) => cat.childs)
       .flat() || [];
+  console.log("c", gd?.initials?.categories);
 
   return (
     <Carousel

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import { useDisclosure } from "@heroui/modal";
 import FormBrands from "@/app/panel/brands/_components/FormBrands";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
@@ -9,6 +8,7 @@ import { useFiltersContext } from "@/contexts/SearchFilters";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import InputBasic from "@/components/inputs/InputBasic";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function HeaderBrands() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -36,7 +36,7 @@ export default function HeaderBrands() {
           </Button>
         }
       />
-      <ModalWrapper
+      <ModalWrapperNative
         disclosures={{
           isOpen,
           onOpenChange,

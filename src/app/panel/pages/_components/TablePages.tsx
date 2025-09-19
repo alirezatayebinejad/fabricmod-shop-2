@@ -20,6 +20,7 @@ import FormPages from "@/app/panel/pages/_components/FormPages";
 import ConfirmModal from "@/components/datadisplay/ConfirmModal";
 import { Trash2 } from "lucide-react";
 import ProtectComponent from "@/components/wrappers/ProtectComponent";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function TablePages() {
   const { filters, changeFilters } = useFiltersContext();
@@ -187,7 +188,7 @@ export default function TablePages() {
         onRetry={() => mutate()}
       />
 
-      <ModalWrapper
+      <ModalWrapperNative
         disclosures={{
           onOpen: editModal.onOpen,
           onOpenChange: editModal.onOpenChange,

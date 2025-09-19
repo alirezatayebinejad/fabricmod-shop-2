@@ -218,3 +218,15 @@ a.ck.ck-button.ck-on {
 .ck.ck-balloon-panel {
   z-index: 1300 !important;
 }
+
+.ck.ck-editor__top
+  .ck-sticky-panel
+  .ck-sticky-panel__content.ck-sticky-panel__content_sticky {
+  background-color: var(--boxBg100);
+}
+
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  max-height: 60dvh;
+  overflow: auto;
+}

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button, ButtonGroup } from "@heroui/button";
-import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import { useDisclosure } from "@heroui/modal";
 import FormCategories from "@/app/panel/categories/_components/FormCategories";
 import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
@@ -11,6 +10,7 @@ import { cn } from "@/utils/twMerge";
 import InputBasic from "@/components/inputs/InputBasic";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import ModalWrapperNative from "@/components/datadisplay/ModalWrapperNative";
 
 export default function HeaderCategories() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -80,7 +80,7 @@ export default function HeaderCategories() {
               پست ها
             </Button>
           </ButtonGroup>
-          <ModalWrapper
+          <ModalWrapperNative
             disclosures={{
               isOpen,
               onOpenChange,
