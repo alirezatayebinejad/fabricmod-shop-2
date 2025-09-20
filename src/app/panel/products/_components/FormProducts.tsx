@@ -115,8 +115,10 @@ export default function FormProducts({
     {
       /* update doesn't do faqs/images and it is handled in a separated form  */
       name: prod?.name || undefined,
+      code: prod?.code || undefined,
       slug: prod?.slug || undefined,
       primary_image: undefined as undefined | string,
+      back_image: undefined as undefined | string,
       brand_id: prod?.brand_id || undefined,
       country_id: prod?.country_id || undefined,
       details: prod?.details || undefined,
@@ -154,7 +156,7 @@ export default function FormProducts({
           date_sale_to: v.date_sale_to || undefined,
           sku: v.sku || undefined,
           var_ids:
-            v.set_var_ids?.split("-").filter((i) => i !== "") || undefined,
+            v.set_var_ids?.split(",").filter((i) => i !== "") || undefined,
         })) || undefined,
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
@@ -162,7 +164,7 @@ export default function FormProducts({
       const payload = {
         ...formValues,
         slug: formValues?.slug === prod?.slug ? undefined : formValues.slug,
-        set_ids: formValues.is_set === "1" ? formValues.is_set : undefined,
+        set_ids: formValues.is_set === "1" ? formValues.set_ids : undefined,
         variations: formValues.variations?.map((v) => ({
           ...v,
           var_ids: formValues.is_set === "1" ? v.var_ids : undefined,
@@ -238,6 +240,14 @@ export default function FormProducts({
             value={values.name || ""}
             onChange={handleChange("name")}
             errorMessage={errors.name}
+            isDisabled={isShowMode}
+          />
+          <InputBasic
+            name="code"
+            label="کد"
+            value={values.code || ""}
+            onChange={handleChange("code")}
+            errorMessage={errors.code}
             isDisabled={isShowMode}
           />
           <InputBasic
@@ -904,13 +914,13 @@ export default function FormProducts({
                             placeholder="انتخاب متغیر"
                           />
                           {(errors.variations as any)?.[
-                            `variations.${i}.var_ids.${setIdx}`
-                          ] && (
+                            `variations.${i}.var_ids`
+                          ]?.[setIdx] && (
                             <p className="mb-5 text-destructive-foreground">
                               {
                                 (errors.variations as any)[
-                                  `variations.${i}.var_ids.${setIdx}`
-                                ]
+                                  `variations.${i}.var_ids`
+                                ]?.[setIdx]
                               }
                             </p>
                           )}
@@ -1001,6 +1011,21 @@ export default function FormProducts({
                             className="max-h-[90px] rounded-[8px]"
                           />
                         </div>
+                        <div className="my-5 flex flex-wrap gap-2">
+                          <p>عکس پشت:</p>
+                          <Image
+                            src={
+                              prod?.back_image
+                                ? process.env.NEXT_PUBLIC_IMG_BASE +
+                                  prod.back_image
+                                : "/images/imageplaceholder.png"
+                            }
+                            alt="back image"
+                            width={82}
+                            height={90}
+                            className="max-h-[90px] rounded-[8px]"
+                          />
+                        </div>
                         <div className="flex flex-wrap gap-2">
                           <p>عکس‌ها:</p>
                           {prod?.images?.map((image, index) => (
@@ -1018,7 +1043,7 @@ export default function FormProducts({
                         </div>
                       </>
                     ) : (
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         <DropZone
                           type="image"
                           isMulti={false}
@@ -1034,6 +1059,21 @@ export default function FormProducts({
                             }));
                           }}
                           errorMessage={errors.primary_image}
+                          maxUploads={1}
+                        />
+                        <DropZone
+                          type="image"
+                          isMulti={false}
+                          maxSize={5}
+                          title="عکس پشت:"
+                          urls={values.back_image ? [values.back_image] : []}
+                          onUrlChange={(urls) => {
+                            setValues((prev) => ({
+                              ...prev,
+                              back_image: urls?.[0],
+                            }));
+                          }}
+                          errorMessage={errors.back_image}
                           maxUploads={1}
                         />
                         <DropZone

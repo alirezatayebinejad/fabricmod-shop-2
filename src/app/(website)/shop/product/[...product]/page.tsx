@@ -168,7 +168,7 @@ export default async function ProductPage({
               <PicGallery
                 sources={[
                   data?.back_image &&
-                    process.env.NEXT_PUBLIC_IMG_BASE + data?.primary_image,
+                    process.env.NEXT_PUBLIC_IMG_BASE + data?.back_image,
                   data?.primary_image &&
                     process.env.NEXT_PUBLIC_IMG_BASE + data?.primary_image,
                   ...(data?.images?.map(

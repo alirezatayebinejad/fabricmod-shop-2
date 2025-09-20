@@ -416,6 +416,7 @@ export interface ProductShow {
   is_offer: string;
   code: string;
   primary_image: string;
+  back_image: string;
   seo_title: null | string;
   seo_description: null | string;
   weight: string;
@@ -645,6 +646,7 @@ export interface ProductImages {
   id: number;
   name: string;
   primary_image: string;
+  back_image: string;
   images: {
     id: number;
     product_id: number;
@@ -1810,8 +1812,8 @@ export interface ProductShowSite {
     }[];
   }[];
   quantity_check: boolean;
-  sale_check: 
-      | {
+  sale_check:
+    | {
         id: number;
         attribute_id: number;
         product_id: number;
@@ -2084,7 +2086,7 @@ export interface ProductCategoryShowSite {
   slug: string;
   parent_id: string;
   type: string;
-  content:string;
+  content: string;
   banners: {
     id: number;
     title: string;
@@ -2170,7 +2172,7 @@ export interface ProductCategoryShowSite {
       value: string;
     }[];
   }[];
-    faqs: {
+  faqs: {
     id: number;
     subject: string;
     body: string;

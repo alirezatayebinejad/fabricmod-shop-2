@@ -46,20 +46,29 @@ export default function FormProductPics({
     useMyForm(
       {
         primary_image: undefined as undefined | string,
+        back_image: undefined as undefined | string,
         images: undefined as undefined | string[],
       },
       async (formValues) => {
         const requests = [];
         let mutateneeded = false;
-        if (formValues.primary_image) {
+        if (formValues.primary_image || formValues.back_image) {
           requests.push(
             apiCRUD({
               urlSuffix: `admin-panel/products/${`${productId}`}`,
               method: "POST",
-              data: { primary_image: formValues.primary_image, _method: "put" },
+              data: {
+                back_image: formValues.back_image || undefined,
+                primary_image: formValues.primary_image || undefined,
+                _method: "put",
+              },
             }).then((res) => {
               if (res?.status === "success") {
-                setValues((prev) => ({ ...prev, primary_image: undefined }));
+                setValues((prev) => ({
+                  ...prev,
+                  primary_image: undefined,
+                  back_image: undefined,
+                }));
                 mutateneeded = true;
               } else setErrors((prev) => ({ ...prev, images: res.message }));
             }),
@@ -151,6 +160,20 @@ export default function FormProductPics({
                 className="max-h-[90px] rounded-[8px]"
               />
             </div>
+            <div className="my-5 flex flex-wrap gap-2">
+              <p>عکس پشت:</p>
+              <Image
+                src={
+                  prodImages.back_image
+                    ? process.env.NEXT_PUBLIC_IMG_BASE + prodImages.back_image
+                    : "/images/imageplaceholder.png"
+                }
+                alt="back image"
+                width={82}
+                height={90}
+                className="max-h-[90px] rounded-[8px]"
+              />
+            </div>
             <div className="flex flex-wrap gap-6">
               <p>عکس‌ها:</p>
               {prodImages?.images?.map((image, index) => (
@@ -201,6 +224,21 @@ export default function FormProductPics({
           />
           <DropZone
             type="image"
+            isMulti={false}
+            maxSize={5}
+            title="عکس پشت:"
+            urls={values.back_image ? [values.back_image] : []}
+            onUrlChange={(urls) => {
+              setValues((prev) => ({
+                ...prev,
+                back_image: urls?.[0],
+              }));
+            }}
+            errorMessage={errors.back_image}
+            maxUploads={1}
+          />
+          <DropZone
+            type="image"
             isMulti={true}
             maxSize={5}
             title="عکس ها:"
@@ -237,6 +275,7 @@ export default function FormProductPics({
             </Button>
           )}
           {(values.primary_image ||
+            values.back_image ||
             (values.images && values.images.length > 0)) && (
             <Button
               type="submit"

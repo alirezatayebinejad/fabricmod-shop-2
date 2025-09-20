@@ -68,7 +68,8 @@ export default function ProductCard({
             <Image
               src={
                 product?.primary_image
-                  ? process.env.NEXT_PUBLIC_IMG_BASE + product.primary_image
+                  ? (process.env.NEXT_PUBLIC_IMG_BASE || "") +
+                    product.primary_image
                   : "/images/imageplaceholder.png"
               }
               alt="banner"
@@ -77,15 +78,28 @@ export default function ProductCard({
               className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
               style={{ objectPosition: "center" }}
             />
-            {product?.images?.[0]?.image && (
+            {"back_image" in product && product?.back_image ? (
               <Image
-                src={process.env.NEXT_PUBLIC_IMG_BASE + product.images[0].image}
+                src={process.env.NEXT_PUBLIC_IMG_BASE! + product.back_image}
                 alt="banner"
                 height={285}
                 width={270}
                 className="absolute left-0 top-0 h-full w-full object-cover object-center"
                 style={{ objectPosition: "center" }}
               />
+            ) : (
+              product?.images?.[0]?.image && (
+                <Image
+                  src={
+                    process.env.NEXT_PUBLIC_IMG_BASE! + product.images[0].image
+                  }
+                  alt="banner"
+                  height={285}
+                  width={270}
+                  className="absolute left-0 top-0 h-full w-full object-cover object-center"
+                  style={{ objectPosition: "center" }}
+                />
+              )
             )}
           </div>
           {product?.sale_check && (
