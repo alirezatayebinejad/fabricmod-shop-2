@@ -87,7 +87,12 @@ export default function FormProductPics({
                },
             }).then((res) => {
               if (res?.status === "success") {
-                setValues((prev) => ({ ...prev, images: undefined }));
+                setValues((prev) => ({ 
+                  ...prev,
+                   images: undefined,
+                  primary_image: undefined,
+                  back_image: undefined,
+                 }));
                 mutateneeded = true;
               } else setErrors((prev) => ({ ...prev, images: res.message }));
             }),
