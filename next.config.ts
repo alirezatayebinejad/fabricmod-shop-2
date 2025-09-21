@@ -40,6 +40,21 @@ const nextConfig: NextConfig = {
         destination: '/shop/product/:slug',
         permanent: true, // 301 redirect for SEO
       },
+      {
+        source: '/blog/:slug',
+        destination: '/blog/post/:slug',
+        permanent: true, // 301 redirect for SEO
+      },
+      {
+        source: '/contact-us',
+        destination: '/contact',
+        permanent: true, // 301 redirect for SEO
+      },
+      {
+        source: '/about-us',
+        destination: '/about',
+        permanent: true, // 301 redirect for SEO
+      },
     ];
   },
 };

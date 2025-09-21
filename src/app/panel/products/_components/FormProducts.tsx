@@ -94,7 +94,7 @@ export default function FormProducts({
           name: single.name,
           slug: single.slug,
           primary_image: single.primary_image,
-          is_set: "0", // singles are not sets themselves
+          is_set: "0", 
           variations: single.variations, 
         } as ProductsWithVariationIndex,
       }));

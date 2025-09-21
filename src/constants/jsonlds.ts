@@ -224,7 +224,7 @@ export const postBreadcrumbJsonLd = (
       "@type": "ListItem",
       position: 3,
       name: data?.title,
-      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${data?.slug}`,
+      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/post/${data?.slug}`,
     },
   ],
 });
@@ -241,7 +241,7 @@ export const relatedPostsJsonLd = (
     item: {
       "@type": "BlogPosting",
       headline: post.title,
-      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${post.slug}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/post/${post.slug}`,
     },
   })),
 });
@@ -665,7 +665,7 @@ export const contactPageJsonLd = (
     data?.seo_description ||
     data?.description ||
     "برای ارتباط با تیم فابریک مد با ما در تماس باشید.",
-  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact-us`,
+  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact`,
   mainEntity: {
     "@type": "Organization",
     name: "فابریک مد",
@@ -711,7 +711,7 @@ export const contactBreadcrumbJsonLd = (): WithContext<BreadcrumbList> => ({
       "@type": "ListItem",
       position: 2,
       name: "تماس با ما",
-      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact-us`,
+      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact`,
     },
   ],
 });
@@ -765,5 +765,5 @@ export const rulesPageJsonLd = (data: PageShowSite): WithContext<WebPage> => ({
     data?.seo_description ||
     data?.description ||
     "مطالعه قوانین و مقررات فابریک مد برای خرید و استفاده از خدمات سایت.",
-  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/regulations`,
+  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/rules`,
 });
