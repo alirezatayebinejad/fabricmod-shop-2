@@ -639,6 +639,27 @@ export interface ProductShow {
       parent_id: string;
       product_id: string;
     };
+    variations: {
+      id: number;
+      attribute_id: null;
+      product_id: string;
+      value: string;
+      quantity: string;
+      sku: null | string;
+      price: string;
+      sale_price: string;
+      date_sale_from: null | string;
+      date_sale_to: null | string;
+      set_var_ids: string;
+      user_id: string;
+      deleted_at: null;
+      created_at: string;
+      updated_at: string;
+      attribute: null | {
+        id: number;
+        name: string;
+      };
+    }[];
   }[];
 }
 

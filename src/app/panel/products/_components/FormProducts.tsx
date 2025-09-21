@@ -95,7 +95,7 @@ export default function FormProducts({
           slug: single.slug,
           primary_image: single.primary_image,
           is_set: "0", // singles are not sets themselves
-          variations: [], // Singles don't have variations in the API response
+          variations: single.variations, 
         } as ProductsWithVariationIndex,
       }));
       setSelectedSetProducts(setProducts);
@@ -161,6 +161,7 @@ export default function FormProducts({
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
     async (formValues) => {
+      console.log(formValues.set_ids);
       const payload = {
         ...formValues,
         slug: formValues?.slug === prod?.slug ? undefined : formValues.slug,
@@ -679,7 +680,7 @@ export default function FormProducts({
                     <h4 className="border-r-3 border-accent-4 pr-2 text-lg font-semibold">
                       متغیر {i + 1}
                     </h4>
-                    {!isShowMode && (
+                    {!isShowMode || !isEditMode  && (
                       <Button
                         type="button"
                         isIconOnly
@@ -891,7 +892,7 @@ export default function FormProducts({
                                             values.variations[i].var_ids[
                                               setIdx
                                             ]?.toString(),
-                                        )?.value || "",
+                                        )?.value || "بدونه نام",
                                     },
                                   ]
                                 : []
