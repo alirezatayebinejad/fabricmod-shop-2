@@ -395,7 +395,7 @@ export interface ProductsWithVariationIndex {
     sale_price: string;
     date_sale_from: null;
     date_sale_to: null;
-    set_var_ids: null;
+    // set_var_ids: null;
     user_id: string;
     deleted_at: null;
     created_at: string;
