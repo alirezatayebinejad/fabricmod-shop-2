@@ -2018,7 +2018,7 @@ export interface ProductIndexSite {
     primary_image: null | string;
     category_id: number;
     brand_id: null | number;
-    quantity_check: boolean | number;
+    quantity_check: false | string | number;
     sale_check: boolean;
     price_check:
       | {

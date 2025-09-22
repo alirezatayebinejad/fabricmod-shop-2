@@ -42,13 +42,25 @@ export default function Slider({ slidesData }: Props) {
                 key={item?.image}
                 className="embla__slide relative flex min-w-0 flex-[0_0_100%] items-center overflow-hidden rounded-[10px]"
               >
-                <Image
-                  src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
-                  priority={i === 0 ? true : false}
-                  alt={item?.title || "عکس بنر"}
-                  fill
-                  className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] rounded-[10px]"
-                />
+                {item.url ? (
+                  <Link href={item.url}>
+                    <Image
+                      src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
+                      priority={i === 0 ? true : false}
+                      alt={item?.title || "عکس بنر"}
+                      fill
+                      className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] rounded-[10px]"
+                    />
+                  </Link>
+                ) : (
+                  <Image
+                    src={process.env.NEXT_PUBLIC_IMG_BASE + item.image}
+                    priority={i === 0 ? true : false}
+                    alt={item?.title || "عکس بنر"}
+                    fill
+                    className="!h-auto w-full animate-[scaleImage_5s_ease-in-out_infinite] rounded-[10px]"
+                  />
+                )}
                 {/* content */}
                 {item?.title && (
                   <div className="absolute left-[6%] top-[23%] h-[360px] w-[42%] bg-black/35 blur-[69px]"></div>

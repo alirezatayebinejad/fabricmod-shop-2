@@ -1,15 +1,17 @@
 import RevealEffect from "@/components/wrappers/RevealEffect";
+import { Index } from "@/types/apiTypes";
 import { cn } from "@/utils/twMerge";
 import { Button } from "@heroui/button";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import Link from "next/link";
 
 export default function BannerCard({
   bgImg,
   headTitle,
   title,
   description,
+  data,
   height = 280,
   containerStyle,
   fixedImage = true,
@@ -21,6 +23,7 @@ export default function BannerCard({
   headTitle: string;
   title: string;
   description: string;
+  data: Index["banners"]["three"][number];
   height?: number;
   containerStyle?: string;
   fixedImage?: boolean;
@@ -103,8 +106,12 @@ export default function BannerCard({
         </div>
         <div className="absolute bottom-0 right-0 h-auto rounded-tl-[33px] bg-bodyBg pl-3 pt-3">
           <div className="relative">
-            <Button className="h-[45px] rounded-full bg-primary px-3 !text-TextSize400 text-primary-foreground">
-              خرید کنید
+            <Button
+              as={Link}
+              href={data.url}
+              className="h-[45px] rounded-full bg-primary px-3 !text-TextSize400 text-primary-foreground"
+            >
+              {data.btn_text || "خرید کنید"}
               <ArrowLeft className="w-5" />
             </Button>
             {/* fake round corner */}

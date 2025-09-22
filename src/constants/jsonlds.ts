@@ -23,7 +23,7 @@ import {
 } from "schema-dts";
 
 // Price helpers
-const toRial = (val?: any) => Number(val || 0) * 10;
+const toRial = (val?: string | number) => Number(val || 0) * 10;
 // default priceValidUntil -> end of next year (YYYY-MM-DD)
 const defaultPriceValidUntil = () =>
   new Date(new Date().setFullYear(new Date().getFullYear() + 1))
@@ -49,9 +49,9 @@ export const homepageJsonLd = (
     potentialAction: {
       "@type": "SearchAction",
       target: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop?search={search_term_string}`,
-      ...({
+      ...{
         "query-input": "required name=search_term_string",
-      } as any),
+      },
     },
   },
   about: {
@@ -82,7 +82,7 @@ export const homeFaqJsonLd = (data: Initials) =>
     ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: data.setting?.faqs.map((faq: any) => ({
+        mainEntity: data.setting?.faqs.map((faq) => ({
           "@type": "Question",
           name: faq.subject,
           acceptedAnswer: {
@@ -170,7 +170,7 @@ export const blogPostJsonLd = (
   datePublished: data?.created_at,
   dateModified: data?.updated_at,
   url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${data?.slug}`,
-  keywords: data?.tags?.map((tag: any) => tag.name).join(", "),
+  keywords: data?.tags?.map((tag) => tag.name).join(", "),
   commentCount: data?.comments_count,
   aggregateRating:
     data?.rate > 0
@@ -190,7 +190,7 @@ export const blogFaqJsonLd = (data: PostShowSite) =>
     ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: data.faqs.map((faq: any) => ({
+        mainEntity: data.faqs.map((faq) => ({
           "@type": "Question",
           name: faq.subject,
           acceptedAnswer: {
@@ -235,7 +235,7 @@ export const relatedPostsJsonLd = (
 ): WithContext<ItemList> | null => ({
   "@context": "https://schema.org",
   "@type": "ItemList",
-  itemListElement: data.related_posts.map((post: any, index: number) => ({
+  itemListElement: data.related_posts.map((post, index: number) => ({
     "@type": "ListItem",
     position: index + 1,
     item: {
@@ -252,7 +252,7 @@ export const faqJsonLd = (
 ): WithContext<FAQPage> => ({
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: faqs?.map((faq: any) => ({
+  mainEntity: faqs?.map((faq) => ({
     "@type": "Question",
     name: faq.subject,
     acceptedAnswer: {
@@ -270,7 +270,7 @@ export const productsJsonLd = (
   "@type": "ItemList",
   name: "محصولات فروشگاه فابریک مد",
   description: "تمام محصولات موجود در فروشگاه فابریک مد",
-  itemListElement: products?.products?.map((p: any, index: number) => ({
+  itemListElement: products?.products?.map((p, index: number) => ({
     "@type": "ListItem",
     position: index + 1,
     url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${p.slug}`,
@@ -283,11 +283,17 @@ export const productsJsonLd = (
     // description: p.description || "",
     offers: {
       "@type": "Offer",
-      price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
+      price: toRial(
+        p.price_check
+          ? p.price_check.sale_price || p.price_check.price
+          : undefined,
+      ),
       priceCurrency: "IRR",
-      priceValidUntil: p?.date_sale_to || defaultPriceValidUntil(),
+      priceValidUntil:
+        (p?.price_check && p?.price_check?.date_sale_to) ||
+        defaultPriceValidUntil(),
       availability:
-        parseInt(p.quantity_check || "0") > 0
+        p.price_check && +p.price_check.quantity > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
@@ -336,7 +342,7 @@ export const productsJsonLd = (
             ratingValue: Number((p.rate || 0).toFixed(1)),
             bestRating: 5,
             worstRating: 1,
-            ratingCount: Number(p?.views_count?.toFixed?.(1)) || 1,
+            ratingCount: Number(p?.rate?.toFixed?.(1)) || 1,
           }
         : undefined,
   })),
@@ -369,15 +375,21 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
       ? [process.env.NEXT_PUBLIC_IMG_BASE + data.primary_image]
       : []),
     ...(data?.images?.map(
-      (img: any) => process.env.NEXT_PUBLIC_IMG_BASE + img.image,
+      (img) => process.env.NEXT_PUBLIC_IMG_BASE + img.image,
     ) || []),
   ];
 
-  const priceValue =toRial(data.sale_check ? data.sale_check.sale_price : (data.price_check?data.price_check.price:data.variations[0].price));
+  const priceValue = toRial(
+    data.sale_check
+      ? data.sale_check.sale_price
+      : data.price_check
+        ? data.price_check.price
+        : data.variations[0].price,
+  );
 
-    // data?.price_check && typeof data.price_check === "object"
-    //   ? toRial(data.price_check.sale_price || data.variations[0].price)
-    //   : undefined;
+  // data?.price_check && typeof data.price_check === "object"
+  //   ? toRial(data.price_check.sale_price || data.variations[0].price)
+  //   : undefined;
 
   const jsonLd: WithContext<Product> = {
     "@context": "https://schema.org",
@@ -405,12 +417,13 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
       url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${data?.slug}`,
       priceCurrency: "IRR",
       price: priceValue,
-      priceValidUntil: (data as any)?.date_sale_to || defaultPriceValidUntil(),
+      priceValidUntil:
+        (data?.price_check && data?.price_check.date_sale_to) ||
+        defaultPriceValidUntil(),
       itemCondition: "https://schema.org/NewCondition",
-      availability:
-        data?.quantity_check
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
+      availability: data?.quantity_check
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         name: "Return & Warranty Policy",
@@ -458,8 +471,8 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
       ratingValue: Number(data.rate.toFixed(1)),
       bestRating: 5,
       worstRating: 1,
-      ratingCount: Number((data as any)?.views_count) || 1,
-    } as any;
+      ratingCount: Number(data?.rate) || 1,
+    };
   }
 
   return jsonLd;
@@ -479,7 +492,7 @@ export const shopPageJsonLd = (
     ? {
         "@type": "ItemList",
         itemListElement:
-          products.products?.map((p: any, index: number) => ({
+          products.products?.map((p, index: number) => ({
             "@type": "ListItem",
             position: index + 1,
             url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${p.slug}`,
@@ -495,7 +508,7 @@ export const productFaqJsonLd = (data: ProductShowSite) =>
     ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: data.faqs.map((faq: any) => ({
+        mainEntity: data.faqs.map((faq) => ({
           "@type": "Question",
           name: faq.subject,
           acceptedAnswer: {
@@ -545,13 +558,13 @@ export const categoryJsonLd = (
 ): WithContext<CollectionPage> => ({
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: (data as any)?.seo_title || `خرید ${data?.name}`,
-  description: (data as any)?.seo_description || `لیست محصولات ${data?.name}`,
+  name: data?.seo_title || `خرید ${data?.name}`,
+  description: data?.seo_description || `لیست محصولات ${data?.name}`,
   url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/category/${data.slug}`,
   mainEntity: {
     "@type": "ItemList",
     itemListElement:
-      data?.data?.products?.map((p: any, index: number) => ({
+      data?.data?.products?.map((p, index: number) => ({
         "@type": "ListItem",
         position: index + 1,
         url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${p.slug}`,
@@ -597,7 +610,7 @@ export const categoryProductsJsonLd = (
   name: `لیست محصولات دسته ${data?.name}`,
   description: `محصولات مرتبط با دسته‌بندی ${data?.name}`,
   itemListElement:
-    data?.data?.products?.map((p: any, index: number) => ({
+    data?.data?.products?.map((p, index: number) => ({
       "@type": "ListItem",
       position: index + 1,
       url: `${process.env.NEXT_PUBLIC_BASE_PATH}/shop/product/${p.slug}`,
@@ -609,11 +622,17 @@ export const categoryProductsJsonLd = (
       ],
       offers: {
         "@type": "Offer",
-        price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
+        price: toRial(
+          p.price_check
+            ? p.price_check.sale_price || p.price_check.price
+            : undefined,
+        ),
         priceCurrency: "IRR",
-        priceValidUntil: (p as any)?.date_sale_to || defaultPriceValidUntil(),
+        priceValidUntil:
+          (p?.price_check && p?.price_check?.date_sale_to) ||
+          defaultPriceValidUntil(),
         availability:
-          Number((p as any).quantity_check) > 0
+          Number(p.quantity_check) > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
         hasMerchantReturnPolicy: {
@@ -686,11 +705,11 @@ export const contactPageJsonLd = (
 
 // Category FAQ JSON-LD
 export const categoryFaqJsonLd = (data: ProductCategoryShowSite) =>
-  data?.faqs?.length
+  data?.faqs?.length > 0
     ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: data.faqs.map((f: any) => ({
+        mainEntity: data.faqs.map((f) => ({
           "@type": "Question",
           name: f.subject,
           acceptedAnswer: {
