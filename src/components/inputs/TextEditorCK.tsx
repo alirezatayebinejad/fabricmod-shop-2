@@ -37,12 +37,10 @@ import {
   TableToolbar,
   TextTransformation,
   Undo,
-  Base64UploadAdapter,
   WordCount,
   Plugin,
   ButtonView,
   Link,
-  HtmlDataProcessor,
   Strikethrough,
   Subscript,
   Superscript,
@@ -63,7 +61,6 @@ type Props = {
   errorMessage?: string;
   mode?: "simple" | "full";
 };
-/* TODO: file manager need tests */
 export default function TextEditorCK({
   title,
   value,
@@ -92,7 +89,7 @@ export default function TextEditorCK({
             apiKey: "FLMNFLMN", // default free key
             urlFileManager:
               process.env.NEXT_PUBLIC_BACKEND_BASE + "/api/admin-panel/flmngr",
-            urlFiles: process.env.NEXT_PUBLIC_BACKEND_STORAGE,
+            urlFiles: process.env.NEXT_PUBLIC_IMG_BASE,
             isMultiple: false,
             acceptExtensions: [
               "png",
@@ -122,19 +119,18 @@ export default function TextEditorCK({
               const fileUrl = files[0]?.url;
               const fileExtension = fileUrl?.split(".").pop();
 
-              if (files) {
+              if (files && fileUrl) {
+                // Ensure the editor is focused before inserting content
+                editor.editing.view.focus();
+
                 editor.model?.change(() => {
                   const htmlString =
                     fileExtension === "pdf" || fileExtension === "mkv"
                       ? `<a href="${fileUrl}" target="_blank"><img src="${"/images/downloadimg.png"}"/></a>`
                       : `<img src="${fileUrl}" />`;
 
-                  const htmlDP = new HtmlDataProcessor(
-                    editor.editing.view.document,
-                  );
-                  const viewFragment = htmlDP.toView(htmlString);
-
-                  const modelFragment = editor.data.toModel(viewFragment);
+                  // Use the editor's HTML parser to convert HTML to a model fragment
+                  const modelFragment = editor.data.parse(htmlString);
 
                   editor.model?.insertContent(
                     modelFragment,
@@ -253,7 +249,6 @@ export default function TextEditorCK({
             Link,
             AutoLink,
             Autoformat,
-            Base64UploadAdapter,
             BlockQuote,
             Bold,
             Essentials,

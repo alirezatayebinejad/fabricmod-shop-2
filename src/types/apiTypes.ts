@@ -382,29 +382,29 @@ export interface ProductsWithVariationIndex {
   id: number;
   name: string;
   slug: string;
-  primary_image: null;
+  primary_image: string | null;
   is_set: string;
   variations: {
     id: number;
-    attribute_id: null;
+    attribute_id: null | string;
     product_id: string;
     value: string;
     quantity: string;
-    sku: null;
+    sku: null | string;
     price: string;
     sale_price: string;
-    date_sale_from: null;
-    date_sale_to: null;
-    // set_var_ids: null;
+    date_sale_from: null | string;
+    date_sale_to: null | string;
+    // set_var_ids: null |string;
     user_id: string;
-    deleted_at: null;
+    deleted_at: null | string;
     created_at: string;
     updated_at: string;
 
     attribute: {
       id: number;
       name: string;
-    };
+    } | null;
   }[];
 }
 

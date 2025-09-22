@@ -566,7 +566,7 @@ export default function FormOrders({
                       id: variation.id,
                       title: product.name,
                       description:
-                        variation.attribute.name + ": " + variation.value,
+                        variation?.attribute?.name + ": " + variation.value,
                     });
                   });
                 }

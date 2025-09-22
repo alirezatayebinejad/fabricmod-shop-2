@@ -7,17 +7,25 @@ import React from "react";
 export default function CategoriesCarousel() {
   const gd = useGlobalData();
 
+  // Collect all child categories
   const childCategories =
     gd?.initials?.categories
       ?.filter((cat) => Array.isArray(cat.childs) && cat.childs.length > 0)
       .map((cat) => cat.childs)
       .flat() || [];
-  console.log("c", gd?.initials?.categories);
+
+  // Collect parent categories that have no childs
+  const parentCategoriesWithNoChilds =
+    gd?.initials?.categories?.filter(
+      (cat) => !Array.isArray(cat.childs) || cat.childs.length === 0,
+    ) || [];
+
+  const allCategories = [...childCategories, ...parentCategoriesWithNoChilds];
 
   return (
     <Carousel
       title="دسته بندي ها"
-      cards={childCategories.map((child) => (
+      cards={allCategories.map((child) => (
         <CategoryCard key={child.id} categ={child} />
       ))}
     />
