@@ -224,7 +224,7 @@ export const postBreadcrumbJsonLd = (
       "@type": "ListItem",
       position: 3,
       name: data?.title,
-      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${data?.slug}`,
+      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/post/${data?.slug}`,
     },
   ],
 });
@@ -241,7 +241,7 @@ export const relatedPostsJsonLd = (
     item: {
       "@type": "BlogPosting",
       headline: post.title,
-      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/${post.slug}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/blog/post/${post.slug}`,
     },
   })),
 });
@@ -283,11 +283,11 @@ export const productsJsonLd = (
     // description: p.description || "",
     offers: {
       "@type": "Offer",
-      price: toRial(p.sale_check ? p.sale_price : p.price),
+      price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
       priceCurrency: "IRR",
       priceValidUntil: p?.date_sale_to || defaultPriceValidUntil(),
       availability:
-        parseInt(p.quantity || "0") > 0
+        parseInt(p.quantity_check || "0") > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
@@ -373,10 +373,11 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
     ) || []),
   ];
 
-  const priceValue =
-    data?.price_check && typeof data.price_check === "object"
-      ? toRial(data.price_check.sale_price || data.price_check.price)
-      : undefined;
+  const priceValue =toRial(data.sale_check ? data.sale_check.sale_price : (data.price_check?data.price_check.price:data.variations[0].price));
+
+    // data?.price_check && typeof data.price_check === "object"
+    //   ? toRial(data.price_check.sale_price || data.variations[0].price)
+    //   : undefined;
 
   const jsonLd: WithContext<Product> = {
     "@context": "https://schema.org",
@@ -406,7 +407,10 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
       price: priceValue,
       priceValidUntil: (data as any)?.date_sale_to || defaultPriceValidUntil(),
       itemCondition: "https://schema.org/NewCondition",
-      availability: "https://schema.org/InStock",
+      availability:
+        data?.quantity_check
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         name: "Return & Warranty Policy",
@@ -605,11 +609,11 @@ export const categoryProductsJsonLd = (
       ],
       offers: {
         "@type": "Offer",
-        price: toRial(p.sale_check ? p.sale_price : p.price),
+        price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
         priceCurrency: "IRR",
         priceValidUntil: (p as any)?.date_sale_to || defaultPriceValidUntil(),
         availability:
-          Number((p as any).quantity) > 0
+          Number((p as any).quantity_check) > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
         hasMerchantReturnPolicy: {
@@ -665,7 +669,7 @@ export const contactPageJsonLd = (
     data?.seo_description ||
     data?.description ||
     "برای ارتباط با تیم فابریک مد با ما در تماس باشید.",
-  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact-us`,
+  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact`,
   mainEntity: {
     "@type": "Organization",
     name: "فابریک مد",
@@ -711,7 +715,7 @@ export const contactBreadcrumbJsonLd = (): WithContext<BreadcrumbList> => ({
       "@type": "ListItem",
       position: 2,
       name: "تماس با ما",
-      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact-us`,
+      item: `${process.env.NEXT_PUBLIC_BASE_PATH}/contact`,
     },
   ],
 });
@@ -765,5 +769,5 @@ export const rulesPageJsonLd = (data: PageShowSite): WithContext<WebPage> => ({
     data?.seo_description ||
     data?.description ||
     "مطالعه قوانین و مقررات فابریک مد برای خرید و استفاده از خدمات سایت.",
-  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/regulations`,
+  url: `${process.env.NEXT_PUBLIC_BASE_PATH}/rules`,
 });
