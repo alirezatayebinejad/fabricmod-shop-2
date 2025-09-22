@@ -287,7 +287,7 @@ export const productsJsonLd = (
       priceCurrency: "IRR",
       priceValidUntil: p?.date_sale_to || defaultPriceValidUntil(),
       availability:
-        parseInt(p.quantity || "0") > 0
+        parseInt(p.quantity_check || "0") > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
@@ -375,7 +375,7 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
 
   const priceValue =
     data?.price_check && typeof data.price_check === "object"
-      ? toRial(data.price_check.sale_price || data.price_check.price)
+      ? toRial(data.price_check.sale_price || data.variations[0].price)
       : undefined;
 
   const jsonLd: WithContext<Product> = {
@@ -406,7 +406,10 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
       price: priceValue,
       priceValidUntil: (data as any)?.date_sale_to || defaultPriceValidUntil(),
       itemCondition: "https://schema.org/NewCondition",
-      availability: "https://schema.org/InStock",
+      availability:
+        data?.quantity_check
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         name: "Return & Warranty Policy",
@@ -609,7 +612,7 @@ export const categoryProductsJsonLd = (
         priceCurrency: "IRR",
         priceValidUntil: (p as any)?.date_sale_to || defaultPriceValidUntil(),
         availability:
-          Number((p as any).quantity) > 0
+          Number((p as any).quantity_check) > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
         hasMerchantReturnPolicy: {
