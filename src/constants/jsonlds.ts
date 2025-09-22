@@ -283,7 +283,7 @@ export const productsJsonLd = (
     // description: p.description || "",
     offers: {
       "@type": "Offer",
-      price: toRial(p.sale_check ? p.sale_price : p.price),
+      price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
       priceCurrency: "IRR",
       priceValidUntil: p?.date_sale_to || defaultPriceValidUntil(),
       availability:
@@ -373,10 +373,11 @@ export const productJsonLd = (data: ProductShowSite): WithContext<Product> => {
     ) || []),
   ];
 
-  const priceValue =
-    data?.price_check && typeof data.price_check === "object"
-      ? toRial(data.price_check.sale_price || data.variations[0].price)
-      : undefined;
+  const priceValue =toRial(data.sale_check ? data.sale_check.sale_price : (data.price_check?data.price_check.price:data.variations[0].price));
+
+    // data?.price_check && typeof data.price_check === "object"
+    //   ? toRial(data.price_check.sale_price || data.variations[0].price)
+    //   : undefined;
 
   const jsonLd: WithContext<Product> = {
     "@context": "https://schema.org",
@@ -608,7 +609,7 @@ export const categoryProductsJsonLd = (
       ],
       offers: {
         "@type": "Offer",
-        price: toRial(p.sale_check ? p.sale_price : p.price),
+        price: toRial(p.sale_check ? p.sale_check.sale_price : (p.price_check?p.price_check.price:p.variations[0].price)),
         priceCurrency: "IRR",
         priceValidUntil: (p as any)?.date_sale_to || defaultPriceValidUntil(),
         availability:
