@@ -75,7 +75,7 @@ export default function FormCategPrice({
           />
           <InputBasic
             name="whole_old_price"
-            label="قیمت تخفیف خورده"
+            label="قیمت قبل عمده"
             type="number"
             value={values.whole_old_price}
             onChange={(e) =>
@@ -88,7 +88,7 @@ export default function FormCategPrice({
           />
           <InputBasic
             name="whole_new_price"
-            label="قیمت تخفیف خورده"
+            label="قیمت جدید عمده"
             type="number"
             value={values.whole_new_price}
             onChange={(e) =>
