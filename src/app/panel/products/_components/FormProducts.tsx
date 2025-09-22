@@ -86,18 +86,19 @@ export default function FormProducts({
   useEffect(() => {
     if (prod?.singles && (isEditMode || isShowMode)) {
       // Populate selectedSetProducts with the singles data from the product
-      const setProducts = prod.singles.map((single) => ({
-        id: single.id,
-        title: single.name,
-        helperValue: {
+      const setProducts: SelectSearchItem<ProductsWithVariationIndex>[] =
+        prod.singles.map((single) => ({
           id: single.id,
-          name: single.name,
-          slug: single.slug,
-          primary_image: single.primary_image,
-          is_set: "0", // singles are not sets themselves
-          variations: single.variations, 
-        } as ProductsWithVariationIndex,
-      }));
+          title: single.name,
+          helperValue: {
+            id: single.id,
+            name: single.name,
+            slug: single.slug,
+            primary_image: single.primary_image,
+            is_set: "0", // singles are not sets themselves
+            variations: single.variations,
+          },
+        }));
       setSelectedSetProducts(setProducts);
     }
   }, [prod, isEditMode, isShowMode]);
@@ -680,7 +681,7 @@ export default function FormProducts({
                     <h4 className="border-r-3 border-accent-4 pr-2 text-lg font-semibold">
                       متغیر {i + 1}
                     </h4>
-                    {!isShowMode || !isEditMode  && (
+                    {!isShowMode && !isEditMode && (
                       <Button
                         type="button"
                         isIconOnly
@@ -880,7 +881,7 @@ export default function FormProducts({
                                 title: v.value || "بی نام",
                               })) || []
                             }
-                            value={
+                            defaultValue={
                               values.variations?.[i]?.var_ids?.[setIdx]
                                 ? [
                                     {
