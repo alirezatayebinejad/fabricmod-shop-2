@@ -354,18 +354,65 @@ export default function FormOrders({
       <div ref={formRef} />
       <div className="mb-4">
         <div className="mb-2">
-          <b>کاربر:</b>{" "}
+          <b>کاربر:</b>
           {selectedUser?.title ||
             (selectedData?.user
               ? order?.user?.name + " - " + order?.user?.cellphone
               : "")}
         </div>
         <div className="mb-2 flex items-center gap-2">
-          <b>آدرس:</b>{" "}
-          {selectedAddress?.title ||
-            selectedAddress?.address ||
-            order?.address?.title ||
-            order?.address?.address}
+          <b>آدرس:</b>
+          {/* Address info rendering with robust fallback for missing/invalid fields */}
+          {selectedAddress || order?.address ? (
+            <div className="flex flex-wrap gap-1">
+              <span>
+                {selectedAddress?.title || order?.address?.title || ""}
+              </span>
+              {(selectedAddress?.address || order?.address?.address) && (
+                <span>
+                  {" - " +
+                    (selectedAddress?.address || order?.address?.address || "")}
+                </span>
+              )}
+              {(selectedAddress?.postal_code ||
+                order?.address?.postal_code) && (
+                <span>
+                  کد پستی:
+                  {selectedAddress?.postal_code ||
+                    order?.address?.postal_code ||
+                    "-"}
+                </span>
+              )}
+              {(selectedAddress?.receiver_name ||
+                order?.address?.receiver_name) && (
+                <span>
+                  گیرنده:
+                  {selectedAddress?.receiver_name ||
+                    order?.address?.receiver_name ||
+                    "-"}
+                </span>
+              )}
+              {(selectedAddress?.city?.name || order?.address?.city?.name) && (
+                <span>
+                  شهر:
+                  {selectedAddress?.city?.name ||
+                    order?.address?.city?.name ||
+                    "-"}
+                </span>
+              )}
+              {(selectedAddress?.province?.name ||
+                order?.address?.province?.name) && (
+                <span>
+                  استان:
+                  {selectedAddress?.province?.name ||
+                    order?.address?.province?.name ||
+                    "-"}
+                </span>
+              )}
+            </div>
+          ) : (
+            <span>-</span>
+          )}
           {isEditMode && (
             <Button
               type="button"

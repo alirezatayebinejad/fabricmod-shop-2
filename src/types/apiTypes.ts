@@ -1209,6 +1209,21 @@ export interface OrderShow {
     user_id: string;
     longitude: null | string;
     latitude: null | string;
+    province: {
+      id: number;
+      name: string;
+      slug: string;
+      created_at: null;
+      updated_at: null;
+    };
+    city: {
+      id: number;
+      name: string;
+      slug: string;
+      province_id: number;
+      created_at: null;
+      updated_at: null;
+    };
     deleted_at: null | string;
     created_at: string;
     updated_at: string;
@@ -2470,6 +2485,21 @@ export interface AddressUser {
   user_id: string | number;
   longitude: null | string;
   latitude: null | string;
+  province: {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: null;
+    updated_at: null;
+  };
+  city: {
+    id: number;
+    name: string;
+    slug: string;
+    province_id: number;
+    created_at: null;
+    updated_at: null;
+  };
   deleted_at: null;
   created_at: string;
   updated_at: string;
