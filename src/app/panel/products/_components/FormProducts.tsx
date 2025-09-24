@@ -156,8 +156,7 @@ export default function FormProducts({
           date_sale_from: v.date_sale_from || undefined,
           date_sale_to: v.date_sale_to || undefined,
           sku: v.sku || undefined,
-          var_ids:
-            v.set_var_ids?.split(",").filter((i) => i !== "") || undefined,
+          var_ids: v.set_var_ids?.split(",").filter((i) => i !== "") || [],
         })) || undefined,
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
@@ -185,13 +184,75 @@ export default function FormProducts({
         onClose?.();
         if (isModal)
           mutate(`admin-panel/products${filters ? "?" + filters : filters}`);
-        else
+        else if (!isEditMode)
           router.push(
             `/panel/products/lists${filters ? "?" + filters : filters}`,
           );
       }
     },
   );
+  console.log("values.set_ids", values.variations);
+
+  // Update var_ids arrays when selectedSetProducts changes
+  useEffect(() => {
+    if (
+      values.is_set === "1" &&
+      values.variations &&
+      selectedSetProducts.length > 0
+    ) {
+      const newLength = selectedSetProducts.length;
+      setValues((prev) => ({
+        ...prev,
+        variations: prev.variations?.map((variation) => ({
+          ...variation,
+          var_ids: variation.var_ids
+            ? [
+                ...variation.var_ids.slice(0, newLength),
+                ...Array(
+                  Math.max(0, newLength - variation.var_ids.length),
+                ).fill(""),
+              ]
+            : Array(newLength).fill(""),
+        })),
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSetProducts.length, values.is_set]);
+
+  // SWR hooks for category data caching
+  const { data: categoriesData, isLoading: categoriesLoading } = useSWR(
+    `admin-panel/categories?per_page=all&type=product&is_set=${values.is_set == "1" ? "1" : "0"}`,
+    (url: string) =>
+      apiCRUD({
+        urlSuffix: url,
+      }),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  const { data: categoryDetailsData, isLoading: categoryDetailsLoading } =
+    useSWR(
+      values.category_id
+        ? `admin-panel/categories/${values.category_id}`
+        : null,
+      (url: string) =>
+        apiCRUD({
+          urlSuffix: url,
+        }),
+      {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+      },
+    );
+
+  // Update selectedCateg when category details data changes
+  useEffect(() => {
+    if (categoryDetailsData?.status === "success") {
+      setSelectedCateg(categoryDetailsData.data);
+    }
+  }, [categoryDetailsData]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -402,22 +463,17 @@ export default function FormProducts({
           </div>
           <SelectSearchCustom
             title="دسته‌بندی‌ها"
-            revalidatorValue={values.is_set}
-            requestSelectOptions={async () => {
-              const categoriesRes = await apiCRUD({
-                urlSuffix: `admin-panel/categories?per_page=all&type=product&is_set=${values.is_set == "1" ? "1" : "0"}`,
-              });
-              if (categoriesRes?.status === "success") {
-                return categoriesRes.data?.categories?.map(
-                  (item: CategoryIndex) => ({
-                    id: item.id,
-                    title: item.name,
-                  }),
-                );
-              }
-              return [];
-            }}
-            isDisable={isShowMode}
+            options={
+              categoriesData?.status === "success"
+                ? categoriesData.data?.categories?.map(
+                    (item: CategoryIndex) => ({
+                      id: item.id,
+                      title: item.name,
+                    }),
+                  )
+                : []
+            }
+            isDisable={isShowMode || categoriesLoading}
             defaultValue={
               prod?.category?.id
                 ? [
@@ -438,7 +494,7 @@ export default function FormProducts({
               }));
             }}
             errorMessage={errors.category_id}
-            placeholder="انتخاب"
+            placeholder={categoriesLoading ? "در حال بارگذاری..." : "انتخاب"}
           />
           {values.is_set == "1" && (
             <>
@@ -565,32 +621,29 @@ export default function FormProducts({
           <SelectSearchCustom
             title="ویژگی ها"
             placeholder={
-              values.category_id ? "انتخاب" : "دسته بندی را انتخاب کنید"
+              values.category_id
+                ? categoryDetailsLoading
+                  ? "در حال بارگذاری..."
+                  : "انتخاب"
+                : "دسته بندی را انتخاب کنید"
             }
             isMultiSelect
-            revalidatorValue={values.category_id}
-            requestSelectOptions={async () => {
-              const catShowRes = await apiCRUD({
-                urlSuffix: `admin-panel/categories/${values.category_id}`,
-              });
-              if (catShowRes?.status === "success") {
-                const attrs = (catShowRes?.data as CategoryShow)?.attributes
-                  ?.map((item) => {
-                    if (item.pivot.is_variation == "0") {
-                      return {
-                        id: item.id.toString(),
-                        title: item.name,
-                      };
-                    }
-                    return undefined;
-                  })
-                  .filter(Boolean) as SelectSearchItem[];
-                setSelectedCateg(catShowRes?.data);
-                return attrs;
-              }
-              return [];
-            }}
-            isDisable={isShowMode || !values?.category_id}
+            options={
+              (selectedCateg?.attributes
+                ?.map((item) => {
+                  if (item.pivot.is_variation == "0") {
+                    return {
+                      id: item.id.toString(),
+                      title: item.name,
+                    };
+                  }
+                  return undefined;
+                })
+                .filter(Boolean) as SelectSearchItem[]) || []
+            }
+            isDisable={
+              isShowMode || !values?.category_id || categoryDetailsLoading
+            }
             value={
               Object.keys(values.attr_ids)?.length > 0
                 ? Object.keys(values.attr_ids).map((id) => {
@@ -881,7 +934,7 @@ export default function FormProducts({
                                 title: v.value || "بی نام",
                               })) || []
                             }
-                            defaultValue={
+                            value={
                               values.variations?.[i]?.var_ids?.[setIdx]
                                 ? [
                                     {
@@ -903,10 +956,12 @@ export default function FormProducts({
                               setValues((prev) => {
                                 const variations = [...(prev.variations || [])];
                                 if (!variations[i].var_ids) {
-                                  variations[i].var_ids = [];
+                                  variations[i].var_ids = Array(
+                                    selectedSetProducts.length,
+                                  ).fill("");
                                 }
                                 variations[i].var_ids[setIdx] =
-                                  selected?.[0]?.id?.toString();
+                                  selected?.[0]?.id?.toString() || "";
                                 return {
                                   ...prev,
                                   variations,
@@ -915,17 +970,11 @@ export default function FormProducts({
                             }}
                             placeholder="انتخاب متغیر"
                           />
-                          {(errors.variations as any)?.[
-                            `variations.${i}.var_ids`
-                          ]?.[setIdx] && (
-                            <p className="mb-5 text-destructive-foreground">
-                              {
-                                (errors.variations as any)[
-                                  `variations.${i}.var_ids`
-                                ]?.[setIdx]
-                              }
-                            </p>
-                          )}
+                          {
+                            (errors as any)?.[
+                              `variations.${i}.var_ids.${setIdx}`
+                            ]
+                          }
                         </div>
                       ))}
                     </div>

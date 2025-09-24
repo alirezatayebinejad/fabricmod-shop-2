@@ -72,7 +72,7 @@ export default function ProductCard({
                     product.primary_image
                   : "/images/imageplaceholder.png"
               }
-              alt="banner"
+              alt={product?.name || "product image"}
               height={345}
               width={270}
               className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
@@ -81,7 +81,7 @@ export default function ProductCard({
             {"back_image" in product && product?.back_image ? (
               <Image
                 src={process.env.NEXT_PUBLIC_IMG_BASE! + product.back_image}
-                alt="banner"
+                alt={product?.name || "product image"}
                 height={285}
                 width={270}
                 className="absolute left-0 top-0 h-full w-full object-cover object-center"

@@ -26,11 +26,18 @@ import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import AddressForm from "@/app/(website)/dashboard/_components/Tabs/AddressForm";
 
 export default function CheckoutPage() {
-  const { basket } = useBasket();
+  const { basket, isMounted } = useBasket();
   const [checkout, setCheckout] = useState<Checkout>();
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | { [key: string]: string }>();
+  const [paymentError, setPaymentError] = useState<
+    string | { [key: string]: string }
+  >();
+  const [paymentFieldErrors, setPaymentFieldErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const [scrollToError, setScrollToError] = useState(false);
   const [couponRes, setCouponRes] = useState<CheckCoupon>();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
@@ -99,7 +106,8 @@ export default function CheckoutPage() {
   const handlePayment = async () => {
     if (!checkout) return;
     setPayLoading(true);
-    setError(undefined);
+    setPaymentError(undefined);
+    setPaymentFieldErrors({});
 
     const paymentData = {
       shipping_method: checkout.selected_shipping_method?.code,
@@ -123,7 +131,14 @@ export default function CheckoutPage() {
     if (res?.status === "success" && res.data?.redirect_url) {
       window.location.href = res.data.redirect_url;
     } else {
-      setError(res?.message || "خطا در پرداخت");
+      // Handle field-specific errors
+      if (typeof res?.message === "object" && res.message) {
+        setPaymentFieldErrors(res.message);
+        setScrollToError(true);
+      } else {
+        setPaymentError(res?.message || "خطا در پرداخت");
+        setScrollToError(true);
+      }
     }
     setPayLoading(false);
   };
@@ -155,11 +170,30 @@ export default function CheckoutPage() {
   }, [error, router]);
 
   useEffect(() => {
+    // Wait for basket context to be mounted before checking basket
+    if (!isMounted) return;
+
     if (basket?.length > 0) {
       checkoutHandler();
-    } else router.push("/cart");
+    } else {
+      router.push("/cart");
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [isMounted, basket]);
+
+  useEffect(() => {
+    if (scrollToError) {
+      // Find the first error element and scroll to it
+      const errorElements = document.querySelectorAll("[data-payment-error]");
+      if (errorElements.length > 0) {
+        errorElements[0].scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+      setScrollToError(false);
+    }
+  }, [scrollToError, paymentFieldErrors, paymentError]);
 
   return (
     <main className="relative">
@@ -243,6 +277,11 @@ export default function CheckoutPage() {
                   container: "shadow-none border-1 rounded-none",
                 }}
               />
+              {paymentFieldErrors.products && (
+                <p className="mt-2 text-sm text-danger-600" data-payment-error>
+                  {paymentFieldErrors.products}
+                </p>
+              )}
               <div className="mt-5 flex flex-col gap-5">
                 <h2 className="font-bold">آدرس شما:</h2>
                 <div className="flex gap-1 focus-within:border-b-TextColor max-sm:flex-col">
@@ -277,19 +316,25 @@ export default function CheckoutPage() {
                         isSearchDisable
                         showNoOneOption={false}
                         onChange={(val) => {
-                          if (val?.[0])
+                          if (val?.[0]) {
                             checkoutHandler(
                               true,
                               undefined,
                               undefined,
                               parseInt(val[0].id.toString()),
                             );
+                            if (paymentFieldErrors.address_id) {
+                              setPaymentFieldErrors((prev) => ({
+                                ...prev,
+                                address_id: "",
+                              }));
+                            }
+                          }
                         }}
                       />
                     )
                   )}
                   <div>
-                    {" "}
                     <Button
                       onPress={() => setIsFormModalOpen(true)}
                       className="min-h-full !rounded-[5px] border-border"
@@ -299,6 +344,14 @@ export default function CheckoutPage() {
                     </Button>
                   </div>
                 </div>
+                {paymentFieldErrors.address_id && (
+                  <p
+                    className="mt-2 text-sm text-danger-600"
+                    data-payment-error
+                  >
+                    {paymentFieldErrors.address_id}
+                  </p>
+                )}
                 <ModalWrapper
                   disclosures={{
                     isOpen: isFormModalOpen,
@@ -341,6 +394,14 @@ export default function CheckoutPage() {
                     کد تخفیف اعمال شده: {couponRes.name}
                   </p>
                 )}
+                {paymentFieldErrors.coupon && (
+                  <p
+                    className="mt-2 text-sm text-danger-600"
+                    data-payment-error
+                  >
+                    {paymentFieldErrors.coupon}
+                  </p>
+                )}
                 <h3 className="mb-2 mt-5 font-bold">روش ارسال:</h3>
 
                 {shippingsLoading ? (
@@ -363,8 +424,22 @@ export default function CheckoutPage() {
                     }
                     onChange={(name) => {
                       checkoutHandler(true, name);
+                      if (paymentFieldErrors.shipping_method) {
+                        setPaymentFieldErrors((prev) => ({
+                          ...prev,
+                          shipping_method: "",
+                        }));
+                      }
                     }}
                   />
+                )}
+                {paymentFieldErrors.shipping_method && (
+                  <p
+                    className="mt-2 text-sm text-danger-600"
+                    data-payment-error
+                  >
+                    {paymentFieldErrors.shipping_method}
+                  </p>
                 )}
                 <div className="flex flex-wrap gap-20">
                   <div>
@@ -377,11 +452,27 @@ export default function CheckoutPage() {
                             ? { backgroundColor: "var(--boxBg500)" }
                             : { backgroundColor: "var(--boxBg200)" }
                         }
-                        onPress={() => setPaymentMethod("online")}
+                        onPress={() => {
+                          setPaymentMethod("online");
+                          if (paymentFieldErrors.payment_method) {
+                            setPaymentFieldErrors((prev) => ({
+                              ...prev,
+                              payment_method: "",
+                            }));
+                          }
+                        }}
                       >
                         آنلاین
                       </Button>
                     </div>
+                    {paymentFieldErrors.payment_method && (
+                      <p
+                        className="mt-2 text-sm text-danger-600"
+                        data-payment-error
+                      >
+                        {paymentFieldErrors.payment_method}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <h3 className="mb-5 mt-5 font-bold">درگاه پرداخت:</h3>
@@ -393,11 +484,27 @@ export default function CheckoutPage() {
                             ? { backgroundColor: "var(--boxBg500)" }
                             : { backgroundColor: "var(--boxBg200)" }
                         }
-                        onPress={() => setGatewayName("sep")}
+                        onPress={() => {
+                          setGatewayName("sep");
+                          if (paymentFieldErrors.gateway_name) {
+                            setPaymentFieldErrors((prev) => ({
+                              ...prev,
+                              gateway_name: "",
+                            }));
+                          }
+                        }}
                       >
                         سامان (سپ)
                       </Button>
                     </div>
+                    {paymentFieldErrors.gateway_name && (
+                      <p
+                        className="mt-2 text-sm text-danger-600"
+                        data-payment-error
+                      >
+                        {paymentFieldErrors.gateway_name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -459,6 +566,16 @@ export default function CheckoutPage() {
                   container: "shadow-none border-1 rounded-none",
                 }}
               />
+              {paymentError && Object.keys(paymentFieldErrors).length === 0 && (
+                <div
+                  className="my-4 rounded-md bg-danger-50 p-4 text-danger-600"
+                  data-payment-error
+                >
+                  {typeof paymentError === "string"
+                    ? paymentError
+                    : "لطفا خطای های موجود در این صفحه را بررسی کنید"}
+                </div>
+              )}
               <Button
                 className="my-10 min-h-[50px] w-full !rounded-[5px] border-border bg-primary text-primary-foreground"
                 isDisabled={payLoading || !checkout}
