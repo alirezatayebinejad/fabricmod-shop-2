@@ -27,15 +27,18 @@ import AddressForm from "@/app/(website)/dashboard/_components/Tabs/AddressForm"
 
 export default function CheckoutPage() {
   const { basket } = useBasket();
-  const [checkout, setCheckout] = useState<Checkout>();
+  const [checkout, setCheckout] = useState<Checkout | undefined>();
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | { [key: string]: string }>();
-  const [couponRes, setCouponRes] = useState<CheckCoupon>();
+  const [error, setError] = useState<string | { [key: string]: string } | undefined>();
+  const [couponRes, setCouponRes] = useState<CheckCoupon | undefined>();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [gatewayName, setGatewayName] = useState("sep");
+
+  // NEW: products collapsible state (default: open on desktop, closed on small screens)
+  const [productsOpen, setProductsOpen] = useState(true);
 
   const router = useRouter();
   const {
@@ -43,21 +46,24 @@ export default function CheckoutPage() {
     isLoading: shippingsLoading,
     error: shippingsError,
     mutate: shippingsMutate,
-  } = useSWR(
-    `next/cart/shipping-methods`,
-    (url) => url && apiCRUD({ urlSuffix: url }),
-  );
+  } = useSWR(`next/cart/shipping-methods`, (url) => url && apiCRUD({ urlSuffix: url }));
   const shippings: ShippingmethodIndexSite[] = shippingsRes?.data;
+
   const {
     data: addressRes,
     isLoading: addressLoading,
     error: addressError,
     mutate: addressMutate,
-  } = useSWR(
-    `next/profile/addresses`,
-    (url) => url && apiCRUD({ urlSuffix: url }),
-  );
+  } = useSWR(`next/profile/addresses`, (url) => url && apiCRUD({ urlSuffix: url }));
   const addresses: Address[] = addressRes?.data;
+
+  // Set initial productsOpen based on screen width (client-side)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // اگر کوچکتر از 1100 باشه، collapse پیش‌فرض بسته باشه
+      setProductsOpen(window.innerWidth > 1100);
+    }
+  }, []);
 
   const checkoutHandler = async (
     refreshMode = false,
@@ -150,7 +156,8 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (error) {
-      router.push(`/cart?errors=${error}`);
+      // redirect to cart with error param (optional)
+      router.push(`/cart?errors=${encodeURIComponent(JSON.stringify(error))}`);
     }
   }, [error, router]);
 
@@ -190,59 +197,138 @@ export default function CheckoutPage() {
             />
           </div>
         ) : (
-          <div className="flex gap-8 max-[1100px]:flex-col-reverse">
-            <div className="flex-[0.7]">
-              <h2 className="mb-5 font-bold">سفارش شما</h2>
-              <TableGenerate
-                data={{
-                  headers: [
-                    { content: "عکس" },
-                    { content: "محصول" },
-                    { content: "نوع" },
-                    { content: "تعداد" },
-                    { content: "قیمت کل" },
-                  ],
-                  body: checkout?.items?.map((item) => ({
-                    cells: [
-                      {
-                        data: (
-                          <Image
-                            src={
-                              item.product?.primary_image
-                                ? process.env.NEXT_PUBLIC_IMG_BASE +
-                                  item.product?.primary_image
-                                : "/images/imageplaceholder.png"
-                            }
-                            alt={item.product?.name}
-                            height={100}
-                            width={100}
-                            className={
-                              "z-0 object-cover transition-transform duration-400 group-hover:scale-110"
-                            }
-                          />
-                        ),
-                      },
-                      { data: item.product.name },
-                      {
-                        data: (
-                          <p>
-                            {item.variation.attribute.name +
-                              ": " +
-                              item.variation.value}
-                          </p>
-                        ),
-                      },
-                      { data: <p>{item.quantity}</p> },
-                      { data: <p>{formatPrice(item.price)}</p> },
+          <div className="flex gap-8 max-[1100px]:flex-col">
+            {/* PRODUCTS COLUMN */}
+            <div className="flex-[0.7] max-[1100px]:w-full">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="mb-5 font-bold">سفارش شما</h2>
+
+                {/* Toggle button: only visible on small screens */}
+                <button
+                  onClick={() => setProductsOpen((s) => !s)}
+                  className="hidden items-center gap-2 rounded-md border px-3 py-2 text-sm max-[1100px]:flex"
+                  aria-expanded={productsOpen}
+                  aria-controls="products-collapse"
+                >
+                  <span>{productsOpen ? "بستن محصولات" : `مشاهده محصولات (${checkout?.items?.length || 0})`}</span>
+                  <svg
+                    className={`h-4 w-4 transform transition-transform ${productsOpen ? "rotate-180" : "rotate-0"}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Desktop: always visible */}
+              <div className="block max-[1100px]:hidden">
+                <TableGenerate
+                  data={{
+                    headers: [
+                      { content: "عکس" },
+                      { content: "محصول" },
+                      { content: "نوع" },
+                      { content: "تعداد" },
+                      { content: "قیمت کل" },
                     ],
-                    className: "",
-                  })),
+                    body: checkout?.items?.map((item) => ({
+                      cells: [
+                        {
+                          data: (
+                            <Image
+                              src={
+                                item.product?.primary_image
+                                  ? process.env.NEXT_PUBLIC_IMG_BASE + item.product?.primary_image
+                                  : "/images/imageplaceholder.png"
+                              }
+                              alt={item.product?.name}
+                              height={100}
+                              width={100}
+                              className={"z-0 object-cover transition-transform duration-400 group-hover:scale-110"}
+                            />
+                          ),
+                        },
+                        { data: item.product.name },
+                        {
+                          data: (
+                            <p>
+                              {item.variation.attribute.name + ": " + item.variation.value}
+                            </p>
+                          ),
+                        },
+                        { data: <p>{item.quantity}</p> },
+                        { data: <p>{formatPrice(item.price)}</p> },
+                      ],
+                      className: "",
+                    })) || [],
+                  }}
+                  styles={{
+                    theads: "!bg-boxBg300 font-[400]",
+                    container: "shadow-none border-1 rounded-none",
+                  }}
+                />
+              </div>
+
+              {/* Mobile: collapsible wrapper (visible on small screens) */}
+              <div
+                id="products-collapse"
+                className={`hidden max-[1100px]:block overflow-hidden transition-all duration-300`}
+                style={{
+                  maxHeight: productsOpen ? "2000px" : "0px", // adjust if necessary
                 }}
-                styles={{
-                  theads: "!bg-boxBg300 font-[400]",
-                  container: "shadow-none border-1 rounded-none",
-                }}
-              />
+                aria-hidden={!productsOpen}
+              >
+                <TableGenerate
+                  data={{
+                    headers: [
+                      { content: "عکس" },
+                      { content: "محصول" },
+                      { content: "نوع" },
+                      { content: "تعداد" },
+                      { content: "قیمت کل" },
+                    ],
+                    body: checkout?.items?.map((item) => ({
+                      cells: [
+                        {
+                          data: (
+                            <Image
+                              src={
+                                item.product?.primary_image
+                                  ? process.env.NEXT_PUBLIC_IMG_BASE + item.product?.primary_image
+                                  : "/images/imageplaceholder.png"
+                              }
+                              alt={item.product?.name}
+                              height={100}
+                              width={100}
+                              className={"z-0 object-cover transition-transform duration-400 group-hover:scale-110"}
+                            />
+                          ),
+                        },
+                        { data: item.product.name },
+                        {
+                          data: (
+                            <p>
+                              {item.variation.attribute.name + ": " + item.variation.value}
+                            </p>
+                          ),
+                        },
+                        { data: <p>{item.quantity}</p> },
+                        { data: <p>{formatPrice(item.price)}</p> },
+                      ],
+                      className: "",
+                    })) || [],
+                  }}
+                  styles={{
+                    theads: "!bg-boxBg300 font-[400]",
+                    container: "shadow-none border-1 rounded-none",
+                  }}
+                />
+              </div>
+
+              {/* ادامه محتوای محصولات (آدرس، کد تخفیف، روش ارسال و ...) */}
               <div className="mt-5 flex flex-col gap-5">
                 <h2 className="font-bold">آدرس شما:</h2>
                 <div className="flex gap-1 focus-within:border-b-TextColor max-sm:flex-col">
@@ -289,7 +375,6 @@ export default function CheckoutPage() {
                     )
                   )}
                   <div>
-                    {" "}
                     <Button
                       onPress={() => setIsFormModalOpen(true)}
                       className="min-h-full !rounded-[5px] border-border"
@@ -299,6 +384,7 @@ export default function CheckoutPage() {
                     </Button>
                   </div>
                 </div>
+
                 <ModalWrapper
                   disclosures={{
                     isOpen: isFormModalOpen,
@@ -319,6 +405,7 @@ export default function CheckoutPage() {
                     />
                   }
                 />
+
                 <div className="flex gap-1 focus-within:border-b-TextColor">
                   <InputBasic
                     name="coupon"
@@ -341,6 +428,7 @@ export default function CheckoutPage() {
                     کد تخفیف اعمال شده: {couponRes.name}
                   </p>
                 )}
+
                 <h3 className="mb-2 mt-5 font-bold">روش ارسال:</h3>
 
                 {shippingsLoading ? (
@@ -358,14 +446,13 @@ export default function CheckoutPage() {
                 ) : (
                   <PayMethods
                     data={shippings}
-                    selectedMethodCode={
-                      checkout?.selected_shipping_method?.code
-                    }
+                    selectedMethodCode={checkout?.selected_shipping_method?.code}
                     onChange={(name) => {
                       checkoutHandler(true, name);
                     }}
                   />
                 )}
+
                 <div className="flex flex-wrap gap-20">
                   <div>
                     <h3 className="mb-5 mt-5 font-bold">روش پرداخت:</h3>
@@ -402,7 +489,9 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-            <div className="flex-[0.3]">
+
+            {/* INVOICE / SUMMARY COLUMN */}
+            <div className="flex-[0.3] max-[1100px]:w-full">
               <TableGenerate
                 data={{
                   headers: [],
