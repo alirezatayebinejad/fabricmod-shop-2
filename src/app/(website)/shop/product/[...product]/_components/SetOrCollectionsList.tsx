@@ -21,12 +21,12 @@ export default function SetOrCollectionsList({
       <h3 className="font-bold">
         {isCollection ? "محصولات ست:" : "محصولات تکی:"}
       </h3>
-      <div className="flex w-full justify-center gap-4">
+      <div className="flex w-full flex-wrap justify-center gap-4">
         {(isCollection ? data.collections : data.singles)?.map((d) => (
           <Link href={"/shop/product/" + d.slug} key={d.id}>
             <div
               key={d.id}
-              className="flex flex-row gap-0 rounded-lg border border-border bg-boxBg250 p-2"
+              className="flex flex-row gap-1 rounded-lg border border-border bg-boxBg250 p-2"
             >
               <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-50">
                 <Image

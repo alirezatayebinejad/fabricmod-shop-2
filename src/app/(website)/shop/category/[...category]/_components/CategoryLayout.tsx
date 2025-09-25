@@ -39,7 +39,7 @@ export default function CategoryLayout({
   };
 
   const category: ProductCategoryShowSite = data?.data || initialCategoryData;
-console.log(category);
+  console.log(category);
   if (isLoading && !category)
     return (
       <div className="grid h-[200px] w-full place-content-center">
@@ -100,46 +100,45 @@ console.log(category);
           </div>
         </div>
       </div>
-      
+
       <div className="mt-16 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
           درباره {category?.name}
         </h2>
-        <div className="prose prose-lg max-w-none leading-8 text-gray-700 prose-headings:mb-4 prose-headings:mt-8 prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-p:mb-4 prose-li:marker:text-primary dark:prose-invert">
+        <div className="prose prose-lg prose-headings:mb-4 prose-headings:mt-8 prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-p:mb-4 prose-li:marker:text-primary dark:prose-invert max-w-none leading-8 text-gray-700">
           <ParseHTML htmlContent={category?.content} />
         </div>
 
-        { category?.faqs && category?.faqs.length > 0 && (
+        {category?.faqs && category?.faqs.length > 0 && (
           <div className="mt-12">
-                <h2 className="mt-12 mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-                  سوالات متداول درباره {category?.name}
-                </h2>
-                <RevealEffect mode="customFadeUp" options={{ triggerOnce: true }}>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-1 mx-5">
-                      {category?.faqs?.map((faq, index) => (
-                        <Accordion key={index} variant="splitted">
-                          <AccordionItem
-                            aria-label={faq.subject}
-                            title={faq.subject}
-                            classNames={{
-                              base: "rounded-[5px] shadow-none border-1 border-border bg-boxBg250",
-                              indicator: "text-TextLow",
-                              title: "text-TextColor",
-                              content: "text-TextLow",
-                            }}
-                            indicator={({ isOpen }) =>
-                              isOpen ? <Minus className="rotate-90" /> : <Plus />
-                            }
-                          >
-                            {faq.body}
-                          </AccordionItem>
-                        </Accordion>
-                      ))}
-                    </div>
-                </RevealEffect>
+            <h2 className="mb-6 mt-12 text-2xl font-bold text-gray-800 dark:text-gray-100">
+              سوالات متداول درباره {category?.name}
+            </h2>
+            <RevealEffect mode="customFadeUp" options={{ triggerOnce: true }}>
+              <div className="mx-5 grid grid-cols-1 gap-4 md:grid-cols-1">
+                {category?.faqs?.map((faq, index) => (
+                  <Accordion key={index} variant="splitted">
+                    <AccordionItem
+                      aria-label={faq.subject}
+                      title={faq.subject}
+                      classNames={{
+                        base: "rounded-[5px] shadow-none border-1 border-border bg-boxBg250",
+                        indicator: "text-TextLow",
+                        title: "text-TextColor",
+                        content: "text-TextLow",
+                      }}
+                      indicator={({ isOpen }) =>
+                        isOpen ? <Minus className="rotate-90" /> : <Plus />
+                      }
+                    >
+                      {faq.body}
+                    </AccordionItem>
+                  </Accordion>
+                ))}
+              </div>
+            </RevealEffect>
           </div>
         )}
-
       </div>
     </>
   );

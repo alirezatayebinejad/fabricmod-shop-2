@@ -52,7 +52,7 @@ function HeaderComponent() {
   const handleSearch = () => {
     const term = searchTerm.trim();
     if (term) {
-      if (pathname.startsWith("/shop")) {
+      if (pathname.endsWith("/shop")) {
         changeFilters("search=" + term);
       } else {
         router.push(`/shop?search=${encodeURIComponent(term)}&page=1`);
@@ -138,50 +138,55 @@ function HeaderComponent() {
                                   .map((category) => (
                                     <Fragment key={category.slug}>
                                       <li
-                                        onClick={() => {
-                                          if (!(category.childs?.length > 0)) {
-                                            router.push(
-                                              `/shop/category/${category.slug}`,
-                                            );
-                                          }
-                                        }}
                                         onMouseEnter={() => {
                                           setShowCatId(category.id);
                                         }}
                                         className="flex cursor-pointer justify-between border-b-1 py-2 text-TextColor transition-colors last:border-0 hover:text-primary"
                                         style={{ position: "relative" }}
                                       >
-                                        <p>{category.name}</p>
-                                        {category.childs?.length > 0 && (
-                                          <ChevronLeft className="w-4 text-TextColor" />
-                                        )}
-                                        {category.childs?.length ? (
-                                          <ul
-                                            className={`scrollbar absolute right-full top-0 max-h-[calc(100vh_-_150px)] w-[250px] overflow-y-auto bg-boxBg100 p-3 shadow-md ${
-                                              showCatId === category.id
-                                                ? "inline-block"
-                                                : "hidden"
-                                            }`}
+                                        {category.childs?.length > 0 ? (
+                                          <>
+                                            <p>{category.name}</p>
+                                            <ChevronLeft className="w-4 text-TextColor" />
+                                            <ul
+                                              className={`scrollbar absolute right-full top-0 max-h-[calc(100vh_-_150px)] w-[250px] overflow-y-auto bg-boxBg100 p-3 shadow-md ${
+                                                showCatId === category.id
+                                                  ? "inline-block"
+                                                  : "hidden"
+                                              }`}
+                                              style={{
+                                                marginRight: "12px",
+                                                marginLeft: "0px",
+                                              }}
+                                            >
+                                              {category.childs.map((subCat) => (
+                                                <Link
+                                                  prefetch={false}
+                                                  href={`/shop/category/${subCat.slug}`}
+                                                  key={subCat.id + "child"}
+                                                >
+                                                  <li className="border-b-1 border-border py-2">
+                                                    <p className="hover:text-primary">
+                                                      {subCat.name}
+                                                    </p>
+                                                  </li>
+                                                </Link>
+                                              ))}
+                                            </ul>
+                                          </>
+                                        ) : (
+                                          <Link
+                                            prefetch={false}
+                                            href={`/shop/category/${category.slug}`}
+                                            className="flex-1"
                                             style={{
-                                              marginRight: "12px",
-                                              marginLeft: "0px",
+                                              display: "flex",
+                                              alignItems: "center",
                                             }}
                                           >
-                                            {category.childs.map((subCat) => (
-                                              <Link
-                                                prefetch={false}
-                                                href={`/shop/category/${subCat.slug}`}
-                                                key={subCat.id + "child"}
-                                              >
-                                                <li className="border-b-1 border-border py-2">
-                                                  <p className="hover:text-primary">
-                                                    {subCat.name}
-                                                  </p>
-                                                </li>
-                                              </Link>
-                                            ))}
-                                          </ul>
-                                        ) : null}
+                                            <p>{category.name}</p>
+                                          </Link>
+                                        )}
                                       </li>
                                     </Fragment>
                                   ))}

@@ -50,56 +50,37 @@ export default function FormProductPics({
         images: undefined as undefined | string[],
       },
       async (formValues) => {
-        const requests = [];
         let mutateneeded = false;
-        // if (formValues.primary_image || formValues.back_image) {
-        //   requests.push(
-        //     apiCRUD({
-        //       urlSuffix: `admin-panel/products/${`${productId}`}`,
-        //       method: "POST",
-        //       data: {
-        //         back_image: formValues.back_image || undefined,
-        //         primary_image: formValues.primary_image || undefined,
-        //         _method: "put",
-        //       },
-        //     }).then((res) => {
-        //       if (res?.status === "success") {
-        //         setValues((prev) => ({
-        //           ...prev,
-        //           primary_image: undefined,
-        //           back_image: undefined,
-        //         }));
-        //         mutateneeded = true;
-        //       } else setErrors((prev) => ({ ...prev, images: res.message }));
-        //     }),
-        //   );
-        // }
 
-        if (formValues.images) {
-          requests.push(
-            apiCRUD({
-              urlSuffix: `admin-panel/product/${`${productId}`}/images`,
-              method: "POST",
-              data: { 
-                images: formValues.images,
-                back_image: formValues.back_image || undefined,
-                primary_image: formValues.primary_image || undefined,
-               },
-            }).then((res) => {
-              if (res?.status === "success") {
-                setValues((prev) => ({ 
-                  ...prev,
-                   images: undefined,
-                  primary_image: undefined,
-                  back_image: undefined,
-                 }));
-                mutateneeded = true;
-              } else setErrors((prev) => ({ ...prev, images: res.message }));
-            }),
-          );
+        if (
+          formValues.images ||
+          formValues.back_image ||
+          formValues.primary_image
+        ) {
+          const res = await apiCRUD({
+            urlSuffix: `admin-panel/product/${productId}/images`,
+            method: "POST",
+            data: {
+              images:
+                formValues.images && formValues.images.length > 0
+                  ? formValues.images
+                  : undefined,
+              back_image: formValues.back_image || undefined,
+              primary_image: formValues.primary_image || undefined,
+            },
+          });
+          if (res?.status === "success") {
+            setValues((prev) => ({
+              ...prev,
+              images: undefined,
+              primary_image: undefined,
+              back_image: undefined,
+            }));
+            mutateneeded = true;
+          } else {
+            setErrors((prev) => ({ ...prev, images: res.message }));
+          }
         }
-
-        await Promise.all(requests);
 
         cacheUpdator(`product-${productSlug}`);
 

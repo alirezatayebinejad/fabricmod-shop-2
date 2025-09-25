@@ -29,7 +29,7 @@ export default function AddressTab(props: AddressTabProps) {
         urlSuffix: url,
       }),
   );
-  const addresses: Address[] = data?.data?.addresses;
+  const addresses: Address[] = data?.data?.addresses || data?.data;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;

@@ -98,7 +98,7 @@ export default function TableBanners() {
                     ? process.env.NEXT_PUBLIC_IMG_BASE + banner.image
                     : "/images/imageplaceholder.png"
                 }
-                alt={banner.title}
+                alt={banner.title || "بنر"}
                 width={82}
                 height={64}
                 className="rounded-[8px]"

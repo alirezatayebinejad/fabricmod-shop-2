@@ -25,6 +25,8 @@ export default function FormCategPrice({
       {
         price: "",
         sale_price: "",
+        whole_old_price: "",
+        whole_new_price: "",
       },
       async (formValues) => {
         const res = await apiCRUD({
@@ -70,6 +72,32 @@ export default function FormCategPrice({
               }))
             }
             errorMessage={errors.sale_price}
+          />
+          <InputBasic
+            name="whole_old_price"
+            label="قیمت قبل عمده"
+            type="number"
+            value={values.whole_old_price}
+            onChange={(e) =>
+              setValues((prev) => ({
+                ...prev,
+                whole_old_price: e.target.value,
+              }))
+            }
+            errorMessage={errors.whole_old_price}
+          />
+          <InputBasic
+            name="whole_new_price"
+            label="قیمت جدید عمده"
+            type="number"
+            value={values.whole_new_price}
+            onChange={(e) =>
+              setValues((prev) => ({
+                ...prev,
+                whole_new_price: e.target.value,
+              }))
+            }
+            errorMessage={errors.whole_new_price}
           />
         </div>
         <div className="mb-3 mt-3 flex justify-end gap-2">
