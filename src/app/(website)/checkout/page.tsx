@@ -43,6 +43,8 @@ export default function CheckoutPage() {
   const [payLoading, setPayLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [gatewayName, setGatewayName] = useState("sep");
+  const [productsOpen, setProductsOpen] = useState(true);
+
 
   const router = useRouter();
   const {
@@ -169,6 +171,12 @@ export default function CheckoutPage() {
     }
   }, [error, router]);
 
+    useEffect(() => {
+    if (typeof window !== "undefined") {
+      // اگر کوچکتر از 1100 باشه، collapse پیش‌فرض بسته باشه
+      setProductsOpen(window.innerWidth > 1100);
+    }
+  }, []);
   useEffect(() => {
     // Wait for basket context to be mounted before checking basket
     if (!isMounted) return;
@@ -224,64 +232,138 @@ export default function CheckoutPage() {
             />
           </div>
         ) : (
-          <div className="flex gap-8 max-[1100px]:flex-col-reverse">
-            <div className="flex-[0.7]">
-              <h2 className="mb-5 font-bold">سفارش شما</h2>
-              <TableGenerate
-                data={{
-                  headers: [
-                    { content: "عکس" },
-                    { content: "محصول" },
-                    { content: "نوع" },
-                    { content: "تعداد" },
-                    { content: "قیمت کل" },
-                  ],
-                  body: checkout?.items?.map((item) => ({
-                    cells: [
-                      {
-                        data: (
-                          <Image
-                            src={
-                              item.product?.primary_image
-                                ? process.env.NEXT_PUBLIC_IMG_BASE +
-                                  item.product?.primary_image
-                                : "/images/imageplaceholder.png"
-                            }
-                            alt={item.product?.name}
-                            height={100}
-                            width={100}
-                            className={
-                              "z-0 object-cover transition-transform duration-400 group-hover:scale-110"
-                            }
-                          />
-                        ),
-                      },
-                      { data: item.product.name },
-                      {
-                        data: (
-                          <p>
-                            {item.variation.attribute.name +
-                              ": " +
-                              item.variation.value}
-                          </p>
-                        ),
-                      },
-                      { data: <p>{item.quantity}</p> },
-                      { data: <p>{formatPrice(item.price)}</p> },
+           <div className="flex gap-8 max-[1100px]:flex-col">
+            {/* PRODUCTS COLUMN */}
+            <div className="flex-[0.7] max-[1100px]:w-full">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="mb-5 font-bold">سفارش شما</h2>
+
+                {/* Toggle button: only visible on small screens */}
+                <button
+                  onClick={() => setProductsOpen((s) => !s)}
+                  className="hidden items-center gap-2 rounded-md border px-3 py-2 text-sm max-[1100px]:flex"
+                  aria-expanded={productsOpen}
+                  aria-controls="products-collapse"
+                >
+                  <span>{productsOpen ? "بستن محصولات" : `مشاهده محصولات (${checkout?.items?.length || 0})`}</span>
+                  <svg
+                    className={`h-4 w-4 transform transition-transform ${productsOpen ? "rotate-180" : "rotate-0"}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Desktop: always visible */}
+              <div className="block max-[1100px]:hidden">
+                <TableGenerate
+                  data={{
+                    headers: [
+                      { content: "عکس" },
+                      { content: "محصول" },
+                      { content: "نوع" },
+                      { content: "تعداد" },
+                      { content: "قیمت کل" },
                     ],
-                    className: "",
-                  })),
+                    body: checkout?.items?.map((item) => ({
+                      cells: [
+                        {
+                          data: (
+                            <Image
+                              src={
+                                item.product?.primary_image
+                                  ? process.env.NEXT_PUBLIC_IMG_BASE + item.product?.primary_image
+                                  : "/images/imageplaceholder.png"
+                              }
+                              alt={item.product?.name}
+                              height={100}
+                              width={100}
+                              className={"z-0 object-cover transition-transform duration-400 group-hover:scale-110"}
+                            />
+                          ),
+                        },
+                        { data: item.product.name },
+                        {
+                          data: (
+                            <p>
+                              {item.variation.attribute.name + ": " + item.variation.value}
+                            </p>
+                          ),
+                        },
+                        { data: <p>{item.quantity}</p> },
+                        { data: <p>{formatPrice(item.price)}</p> },
+                      ],
+                      className: "",
+                    })) || [],
+                  }}
+                  styles={{
+                    theads: "!bg-boxBg300 font-[400]",
+                    container: "shadow-none border-1 rounded-none",
+                  }}
+                />
+              </div>
+
+              {/* Mobile: collapsible wrapper (visible on small screens) */}
+              <div
+                id="products-collapse"
+                className={`hidden max-[1100px]:block overflow-hidden transition-all duration-300`}
+                style={{
+                  maxHeight: productsOpen ? "2000px" : "0px", // adjust if necessary
                 }}
-                styles={{
-                  theads: "!bg-boxBg300 font-[400]",
-                  container: "shadow-none border-1 rounded-none",
-                }}
-              />
-              {paymentFieldErrors.products && (
-                <p className="mt-2 text-sm text-danger-600" data-payment-error>
-                  {paymentFieldErrors.products}
-                </p>
-              )}
+                aria-hidden={!productsOpen}
+              >
+                <TableGenerate
+                  data={{
+                    headers: [
+                      { content: "عکس" },
+                      { content: "محصول" },
+                      { content: "نوع" },
+                      { content: "تعداد" },
+                      { content: "قیمت کل" },
+                    ],
+                    body: checkout?.items?.map((item) => ({
+                      cells: [
+                        {
+                          data: (
+                            <Image
+                              src={
+                                item.product?.primary_image
+                                  ? process.env.NEXT_PUBLIC_IMG_BASE + item.product?.primary_image
+                                  : "/images/imageplaceholder.png"
+                              }
+                              alt={item.product?.name}
+                              height={100}
+                              width={100}
+                              className={"z-0 object-cover transition-transform duration-400 group-hover:scale-110"}
+                            />
+                          ),
+                        },
+                        { data: item.product.name },
+                        {
+                          data: (
+                            <p>
+                              {item.variation.attribute.name + ": " + item.variation.value}
+                            </p>
+                          ),
+                        },
+                        { data: <p>{item.quantity}</p> },
+                        { data: <p>{formatPrice(item.price)}</p> },
+                      ],
+                      className: "",
+                    })) || [],
+                  }}
+                  styles={{
+                    theads: "!bg-boxBg300 font-[400]",
+                    container: "shadow-none border-1 rounded-none",
+                  }}
+                />
+              </div>
+
+              {/* ادامه محتوای محصولات (آدرس، کد تخفیف، روش ارسال و ...) */}
               <div className="mt-5 flex flex-col gap-5">
                 <h2 className="font-bold">آدرس شما:</h2>
                 <div className="flex gap-1 focus-within:border-b-TextColor max-sm:flex-col">
@@ -316,20 +398,13 @@ export default function CheckoutPage() {
                         isSearchDisable
                         showNoOneOption={false}
                         onChange={(val) => {
-                          if (val?.[0]) {
+                          if (val?.[0])
                             checkoutHandler(
                               true,
                               undefined,
                               undefined,
                               parseInt(val[0].id.toString()),
                             );
-                            if (paymentFieldErrors.address_id) {
-                              setPaymentFieldErrors((prev) => ({
-                                ...prev,
-                                address_id: "",
-                              }));
-                            }
-                          }
                         }}
                       />
                     )
@@ -344,14 +419,7 @@ export default function CheckoutPage() {
                     </Button>
                   </div>
                 </div>
-                {paymentFieldErrors.address_id && (
-                  <p
-                    className="mt-2 text-sm text-danger-600"
-                    data-payment-error
-                  >
-                    {paymentFieldErrors.address_id}
-                  </p>
-                )}
+
                 <ModalWrapper
                   disclosures={{
                     isOpen: isFormModalOpen,
@@ -372,6 +440,7 @@ export default function CheckoutPage() {
                     />
                   }
                 />
+
                 <div className="flex gap-1 focus-within:border-b-TextColor">
                   <InputBasic
                     name="coupon"
@@ -394,14 +463,7 @@ export default function CheckoutPage() {
                     کد تخفیف اعمال شده: {couponRes.name}
                   </p>
                 )}
-                {paymentFieldErrors.coupon && (
-                  <p
-                    className="mt-2 text-sm text-danger-600"
-                    data-payment-error
-                  >
-                    {paymentFieldErrors.coupon}
-                  </p>
-                )}
+
                 <h3 className="mb-2 mt-5 font-bold">روش ارسال:</h3>
 
                 {shippingsLoading ? (
@@ -419,28 +481,13 @@ export default function CheckoutPage() {
                 ) : (
                   <PayMethods
                     data={shippings}
-                    selectedMethodCode={
-                      checkout?.selected_shipping_method?.code
-                    }
+                    selectedMethodCode={checkout?.selected_shipping_method?.code}
                     onChange={(name) => {
                       checkoutHandler(true, name);
-                      if (paymentFieldErrors.shipping_method) {
-                        setPaymentFieldErrors((prev) => ({
-                          ...prev,
-                          shipping_method: "",
-                        }));
-                      }
                     }}
                   />
                 )}
-                {paymentFieldErrors.shipping_method && (
-                  <p
-                    className="mt-2 text-sm text-danger-600"
-                    data-payment-error
-                  >
-                    {paymentFieldErrors.shipping_method}
-                  </p>
-                )}
+
                 <div className="flex flex-wrap gap-20">
                   <div>
                     <h3 className="mb-5 mt-5 font-bold">روش پرداخت:</h3>
@@ -452,27 +499,11 @@ export default function CheckoutPage() {
                             ? { backgroundColor: "var(--boxBg500)" }
                             : { backgroundColor: "var(--boxBg200)" }
                         }
-                        onPress={() => {
-                          setPaymentMethod("online");
-                          if (paymentFieldErrors.payment_method) {
-                            setPaymentFieldErrors((prev) => ({
-                              ...prev,
-                              payment_method: "",
-                            }));
-                          }
-                        }}
+                        onPress={() => setPaymentMethod("online")}
                       >
                         آنلاین
                       </Button>
                     </div>
-                    {paymentFieldErrors.payment_method && (
-                      <p
-                        className="mt-2 text-sm text-danger-600"
-                        data-payment-error
-                      >
-                        {paymentFieldErrors.payment_method}
-                      </p>
-                    )}
                   </div>
                   <div>
                     <h3 className="mb-5 mt-5 font-bold">درگاه پرداخت:</h3>
@@ -484,31 +515,16 @@ export default function CheckoutPage() {
                             ? { backgroundColor: "var(--boxBg500)" }
                             : { backgroundColor: "var(--boxBg200)" }
                         }
-                        onPress={() => {
-                          setGatewayName("sep");
-                          if (paymentFieldErrors.gateway_name) {
-                            setPaymentFieldErrors((prev) => ({
-                              ...prev,
-                              gateway_name: "",
-                            }));
-                          }
-                        }}
+                        onPress={() => setGatewayName("sep")}
                       >
                         سامان (سپ)
                       </Button>
                     </div>
-                    {paymentFieldErrors.gateway_name && (
-                      <p
-                        className="mt-2 text-sm text-danger-600"
-                        data-payment-error
-                      >
-                        {paymentFieldErrors.gateway_name}
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
             </div>
+
             <div className="flex-[0.3]">
               <TableGenerate
                 data={{
