@@ -1383,6 +1383,16 @@ export interface Initials {
       childs: any[];
     }[];
   }[];
+  carousel_categories:{
+    name: string;
+    slug: string;
+    type: string;
+    icon: null | string;
+    priority: number;
+    primary_image: null | string;
+    products_count: number;
+  }[];
+
   setting: Setting;
   brands: {
     id: number;
