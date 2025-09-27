@@ -157,7 +157,7 @@ export default async function AboutPage() {
         {data?.body && (
           <div
             dangerouslySetInnerHTML={{ __html: data.body }}
-            className="pages_content md:mx-[45px]"
+            className="pages_content editor_display md:mx-[45px]"
           ></div>
         )}
       </div>

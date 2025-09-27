@@ -2,6 +2,7 @@ import BlogCard from "@/app/(website)/_components/cards/BlogCard";
 import EditPostButton from "@/app/(website)/blog/_components/EditPostButton";
 import PostCommentSection from "@/app/(website)/blog/_components/PostCommentSection";
 import PostWidgets from "@/app/(website)/blog/_components/PostWidgets";
+import FaqsList from "@/app/(website)/faqs/_components/FaqsList";
 import Carousel from "@/components/datadisplay/Carousel";
 import { serverCacheDynamic } from "@/constants/cacheNames";
 import {
@@ -141,8 +142,14 @@ export default async function PostPage({
           </p>
           <div
             dangerouslySetInnerHTML={{ __html: data?.body }}
-            className="pages_content text-TextSize500 leading-8 text-TextColor"
+            className="pages_content editor_display text-TextSize500 leading-8 text-TextColor"
           ></div>
+          {data?.faqs && data.faqs.length > 0 && (
+            <div className="mt-10">
+              <h2 className="mb-4 text-2xl font-bold">سوالات متداول</h2>
+              <FaqsList faqslist={data.faqs} />
+            </div>
+          )}
           <div>
             <PostWidgets data={data} />
           </div>

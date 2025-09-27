@@ -1,20 +1,38 @@
 "use client";
 import { faqJsonLd } from "@/constants/jsonlds";
 import { useGlobalData } from "@/contexts/GlobalData";
+import {
+  PostShowSite,
+  ProductCategoryShowSite,
+  ProductShowSite,
+} from "@/types/apiTypes";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Minus, Plus } from "lucide-react";
 
-export default function FaqsList() {
-  const globalData = useGlobalData();
-  const faqs = globalData?.initials?.setting?.faqs;
+export default function FaqsList({
+  mode = "others",
+  faqslist,
+}: {
+  mode?: "faqsPage" | "others";
+  faqslist?:
+    | PostShowSite["faqs"]
+    | ProductShowSite["faqs"]
+    | ProductCategoryShowSite["faqs"];
+}) {
+  const gd = useGlobalData();
+  const faqs = mode === "faqsPage" ? gd?.initials?.setting?.faqs : faqslist;
 
   return (
     <section className="my-12">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(faqs)) }}
-        className="editor_display"
-      />
+      {mode === "faqsPage" && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd(gd?.initials?.setting?.faqs)),
+          }}
+          className="editor_display"
+        />
+      )}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {faqs?.map((faq, index) => (
           <Accordion key={index} variant="splitted">

@@ -80,7 +80,7 @@ export default async function RulesPage() {
             />
           }
         />
-        <div className="mx-auto my-9 max-w-[800px]">
+        <div className="editor_display mx-auto my-9 max-w-[800px]">
           <Title
             title={data?.title}
             styles={{ container: "items-center my-16" }}

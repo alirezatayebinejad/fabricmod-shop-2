@@ -15,7 +15,7 @@ export default function FaqsPage() {
             />
           }
         />
-        <FaqsList />
+        <FaqsList mode={"others"} />
       </div>
     </main>
   );

@@ -230,3 +230,349 @@ a.ck.ck-button.ck-on {
   max-height: 60dvh;
   overflow: auto;
 }
+
+/* Rich post content (CKEditor output) */
+.editor_display {
+  color: var(--TextColor);
+  line-height: 1.9;
+}
+
+.editor_display > * + * {
+  margin-top: 1rem;
+}
+
+.editor_display h1,
+.editor_display h2,
+.editor_display h3,
+.editor_display h4,
+.editor_display h5,
+.editor_display h6 {
+  color: var(--TextColor);
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 1.25em 0 0.5em 0;
+}
+
+.editor_display h1 {
+  font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.375rem);
+}
+.editor_display h2 {
+  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
+}
+.editor_display h3 {
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+}
+.editor_display h4 {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+}
+.editor_display h5 {
+  font-size: 1.0625rem;
+}
+.editor_display h6 {
+  font-size: 1rem;
+  color: var(--TextLow);
+}
+
+/* Heading right-side accent bar */
+.editor_display h1,
+.editor_display h2,
+.editor_display h3,
+.editor_display h4,
+.editor_display h5,
+.editor_display h6 {
+  position: relative;
+  padding-inline-start: 0.75rem;
+}
+.editor_display h1::before,
+.editor_display h2::before,
+.editor_display h3::before,
+.editor_display h4::before,
+.editor_display h5::before,
+.editor_display h6::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0px;
+  inset-block-start: 0.2em;
+  width: 6px;
+  height: calc(100% - 0.2em);
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--primary) 85%, transparent),
+    color-mix(in oklab, var(--primary) 45%, transparent)
+  );
+  opacity: 0.9;
+}
+
+.editor_display p {
+  font-size: 1rem;
+  color: var(--TextColor);
+}
+
+.editor_display a {
+  color: var(--primary);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition:
+    background-size 200ms ease,
+    color 200ms ease;
+}
+.editor_display a:hover {
+  background-size: 100% 2px;
+}
+
+/* Lists */
+.editor_display ul,
+.editor_display ol {
+  margin: 0.75rem 0;
+  padding-right: 50px;
+}
+.editor_display ul li,
+.editor_display ol li {
+  padding-right: 0px !important;
+  padding-inline-start: 0.25rem;
+  margin: 0.35rem 0;
+}
+.editor_display li::marker {
+  color: color-mix(in oklab, var(--primary) 70%, var(--TextLow));
+}
+.editor_display ul {
+  list-style: disc;
+}
+.editor_display ol {
+  list-style: decimal;
+}
+.editor_display ul ul {
+  list-style: circle;
+}
+.editor_display ul ul ul {
+  list-style: square;
+}
+
+/* Blockquote */
+.editor_display blockquote {
+  position: relative;
+  background: color-mix(in oklab, var(--boxBg200) 70%, transparent);
+  border-inline-start: 3px solid
+    color-mix(in oklab, var(--primary) 55%, var(--border2));
+  padding: 1rem 1.25rem 1rem 1.25rem;
+  margin: 1.25rem 0;
+  border-radius: 12px;
+  color: var(--TextColor);
+  box-shadow: 0 1px 0 0 color-mix(in oklab, var(--border2) 60%, transparent)
+    inset;
+}
+.editor_display blockquote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: 12px;
+  inset-block-start: -8px;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: color-mix(in oklab, var(--primary) 20%, var(--TextLow));
+  opacity: 0.35;
+}
+.editor_display blockquote cite {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--TextLow);
+  font-style: normal;
+}
+
+/* Horizontal rule */
+.editor_display hr {
+  height: 1px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--border2) 70%, transparent),
+    transparent
+  );
+  margin: 2rem 0;
+}
+
+/* Code and preformatted */
+.editor_display code {
+  background-color: color-mix(in oklab, var(--boxBg250) 85%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border2) 70%, transparent);
+  border-radius: 8px;
+  padding: 0.15rem 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9375rem;
+}
+.editor_display pre {
+  background-color: color-mix(in oklab, var(--boxBg250) 85%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border2) 70%, transparent);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.15);
+}
+.editor_display pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Tables */
+.editor_display table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid color-mix(in oklab, var(--border2) 70%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--boxBg100);
+  border: 1px;
+  box-shadow: 0 0px 2px var(--border2);
+}
+.editor_display thead {
+  background-color: color-mix(in oklab, var(--boxBg250) 70%, transparent);
+}
+.editor_display th,
+.editor_display td {
+  padding: 0.75rem 0.875rem;
+  text-align: start;
+  border-bottom: 1px solid color-mix(in oklab, var(--border2) 70%, transparent);
+}
+.editor_display tbody tr:nth-child(odd) {
+  background-color: color-mix(in oklab, var(--boxBg200) 60%, transparent);
+}
+.editor_display tbody tr:hover {
+  background-color: color-mix(in oklab, var(--boxBg250) 55%, transparent);
+}
+
+/* Enhanced table styling */
+.editor_display caption {
+  caption-side: top;
+  text-align: start;
+  color: var(--TextLow);
+  font-size: 0.95rem;
+  padding: 0.5rem 0.25rem 0.75rem 0.25rem;
+}
+.editor_display thead th {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--boxBg250) 80%, transparent),
+    color-mix(in oklab, var(--boxBg200) 40%, transparent)
+  );
+  color: var(--TextColor);
+}
+
+.editor_display th,
+.editor_display td {
+  border-inline-end: 1px solid
+    color-mix(in oklab, var(--border2) 55%, transparent);
+}
+.editor_display tr > :last-child {
+  border-inline-end: none;
+}
+.editor_display tbody tr {
+  transition: background-color 160ms ease;
+}
+
+@media (max-width: 640px) {
+  .editor_display table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Images, figures and media */
+.editor_display img,
+.editor_display video,
+.editor_display iframe {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+.editor_display img {
+  border: 1px solid color-mix(in oklab, var(--border2) 60%, transparent);
+  box-shadow: 0 12px 28px -16px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+.editor_display img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.28);
+}
+.editor_display iframe,
+.editor_display video {
+  aspect-ratio: 16 / 9;
+}
+.editor_display figure {
+  margin: 1.25rem auto;
+  text-align: center;
+}
+.editor_display figcaption {
+  color: var(--TextLow);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Captions and small text */
+.editor_display small {
+  color: var(--TextLow);
+  font-size: 0.875rem;
+}
+
+/* Alignment helpers (from editors) */
+.editor_display .align-center,
+.editor_display [style*="text-align:center"] {
+  text-align: center;
+}
+.editor_display .align-right,
+.editor_display [style*="text-align:right"] {
+  text-align: right;
+}
+.editor_display .align-left,
+.editor_display [style*="text-align:left"] {
+  text-align: left;
+}
+
+/* Better list padding for RTL/LTR */
+.editor_display ul li {
+  padding-inline-start: 1.5rem;
+}
+
+/* Dividers within content sections that editors may output */
+.editor_display .divider,
+.editor_display .horizontal-rule {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--border2) 70%, transparent),
+    transparent
+  );
+  margin: 2rem 0;
+}
+
+/* Callout boxes (optional classes authors may use) */
+.editor_display .callout {
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in oklab, var(--border2) 70%, transparent);
+  background-color: color-mix(in oklab, var(--boxBg200) 70%, transparent);
+}
+.editor_display .callout.info {
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--border2));
+}
+.editor_display .callout.warn {
+  border-color: color-mix(in oklab, #f0ad4e 35%, var(--border2));
+  background-color: color-mix(in oklab, #f0ad4e 10%, transparent);
+}
+.editor_display .callout.danger {
+  border-color: color-mix(in oklab, #dc3545 35%, var(--border2));
+  background-color: color-mix(in oklab, #dc3545 10%, transparent);
+}

@@ -2,14 +2,13 @@
 import CommentsForm from "@/app/(website)/blog/_components/CommentsForm";
 import CommentsList from "@/app/(website)/blog/_components/CommentsList";
 import RateIt from "@/app/(website)/blog/_components/RateIt";
+import FaqsList from "@/app/(website)/faqs/_components/FaqsList";
 import { ParseHTML } from "@/components/datadisplay/ParseHtml";
 import RevealEffect from "@/components/wrappers/RevealEffect";
 import { currency, weight } from "@/constants/staticValues";
 import apiCRUD from "@/services/apiCRUD";
 import { ProductShowSite } from "@/types/apiTypes";
-import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Button } from "@heroui/button";
-import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
@@ -78,7 +77,7 @@ export default function ProductTabsContent({
               mode="customFadeUp"
               options={{ triggerOnce: true }}
             >
-              <div className="overflow-hidden">
+              <div className="editor_display overflow-hidden">
                 <ParseHTML htmlContent={product.content} />
               </div>
             </RevealEffect>
@@ -164,35 +163,7 @@ export default function ProductTabsContent({
               </div>
             </RevealEffect>
           ) : (
-            <RevealEffect
-              key={"4"}
-              mode="customFadeUp"
-              options={{ triggerOnce: true }}
-            >
-              <section className="my-12">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {product?.faqs?.map((faq, index) => (
-                    <Accordion key={index} variant="splitted">
-                      <AccordionItem
-                        aria-label={faq.subject}
-                        title={faq.subject}
-                        classNames={{
-                          base: "rounded-[5px] shadow-none border-1 border-border bg-boxBg250",
-                          indicator: "text-TextLow",
-                          title: "text-TextColor",
-                          content: "text-TextLow",
-                        }}
-                        indicator={({ isOpen }) =>
-                          isOpen ? <Minus className="rotate-90" /> : <Plus />
-                        }
-                      >
-                        {faq.body}
-                      </AccordionItem>
-                    </Accordion>
-                  ))}
-                </div>
-              </section>
-            </RevealEffect>
+            <FaqsList faqslist={product?.faqs} />
           )}
         </div>
       </div>

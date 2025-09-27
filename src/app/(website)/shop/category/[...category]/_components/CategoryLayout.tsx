@@ -12,9 +12,7 @@ import RetryError from "@/components/datadisplay/RetryError";
 import Breadcrumb from "@/components/datadisplay/Breadcrumb";
 import PageHeader from "@/app/(website)/_components/layout/PageHeader";
 import { ParseHTML } from "@/components/datadisplay/ParseHtml";
-import RevealEffect from "@/components/wrappers/RevealEffect";
-import { Accordion, AccordionItem } from "@heroui/accordion";
-import { Minus, Plus } from "lucide-react";
+import FaqsList from "@/app/(website)/faqs/_components/FaqsList";
 
 export default function CategoryLayout({
   categorySlug,
@@ -102,41 +100,23 @@ export default function CategoryLayout({
       </div>
 
       <div className="mt-16 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-        <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
-          درباره {category?.name}
-        </h2>
-        <div className="prose prose-lg prose-headings:mb-4 prose-headings:mt-8 prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-p:mb-4 prose-li:marker:text-primary dark:prose-invert max-w-none leading-8 text-gray-700">
-          <ParseHTML htmlContent={category?.content} />
-        </div>
+        {category?.content && (
+          <>
+            <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+              درباره {category?.name}
+            </h2>
+            <div className="prose editor_display prose-lg prose-headings:mb-4 prose-headings:mt-8 prose-headings:font-semibold prose-h2:text-xl prose-h3:text-lg prose-p:mb-4 prose-li:marker:text-primary dark:prose-invert max-w-none leading-8 text-gray-700">
+              <ParseHTML htmlContent={category?.content} />
+            </div>
+          </>
+        )}
 
         {category?.faqs && category?.faqs.length > 0 && (
           <div className="mt-12">
             <h2 className="mb-6 mt-12 text-2xl font-bold text-gray-800 dark:text-gray-100">
               سوالات متداول درباره {category?.name}
             </h2>
-            <RevealEffect mode="customFadeUp" options={{ triggerOnce: true }}>
-              <div className="mx-5 grid grid-cols-1 gap-4 md:grid-cols-1">
-                {category?.faqs?.map((faq, index) => (
-                  <Accordion key={index} variant="splitted">
-                    <AccordionItem
-                      aria-label={faq.subject}
-                      title={faq.subject}
-                      classNames={{
-                        base: "rounded-[5px] shadow-none border-1 border-border bg-boxBg250",
-                        indicator: "text-TextLow",
-                        title: "text-TextColor",
-                        content: "text-TextLow",
-                      }}
-                      indicator={({ isOpen }) =>
-                        isOpen ? <Minus className="rotate-90" /> : <Plus />
-                      }
-                    >
-                      {faq.body}
-                    </AccordionItem>
-                  </Accordion>
-                ))}
-              </div>
-            </RevealEffect>
+            <FaqsList faqslist={category.faqs} />
           </div>
         )}
       </div>

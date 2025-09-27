@@ -22,8 +22,8 @@ export default function ProductCard({
   product,
   fullSize = false,
 }: {
-  product:
-    | ProductIndexSite["products"][number]
+  product: /* TODO: back_image is not here */
+  | ProductIndexSite["products"][number]
     | ProductCategoryShowSite["data"]["products"][number]
     | ProductShowSite["related_products"][number]
     | Index["latest_products"][number]
@@ -53,6 +53,7 @@ export default function ProductCard({
     }
     setLoading(false);
   };
+  console.log(product);
 
   return (
     <div
@@ -65,26 +66,13 @@ export default function ProductCard({
       <div className="relative aspect-square !overflow-hidden !rounded-[10px]">
         <Link prefetch={false} href={`/shop/product/${product?.slug}`}>
           <div className="absolute inset-0 flex h-full items-center justify-center overflow-hidden !rounded-[10px]">
-            <Image
-              src={
-                product?.primary_image
-                  ? (process.env.NEXT_PUBLIC_IMG_BASE || "") +
-                    product.primary_image
-                  : "/images/imageplaceholder.png"
-              }
-              alt={product?.name || "product image"}
-              height={345}
-              width={270}
-              className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] ? "group-hover:opacity-0" : ""}`}
-              style={{ objectPosition: "center" }}
-            />
             {"back_image" in product && product?.back_image ? (
               <Image
                 src={process.env.NEXT_PUBLIC_IMG_BASE! + product.back_image}
                 alt={product?.name || "product image"}
                 height={285}
                 width={270}
-                className="absolute left-0 top-0 h-full w-full object-cover object-center"
+                className="absolute left-0 top-0 h-full w-full object-cover object-center opacity-0 transition-opacity group-hover:opacity-100"
                 style={{ objectPosition: "center" }}
               />
             ) : (
@@ -96,11 +84,24 @@ export default function ProductCard({
                   alt="banner"
                   height={285}
                   width={270}
-                  className="absolute left-0 top-0 h-full w-full object-cover object-center"
+                  className={`absolute left-0 top-0 h-full w-full object-cover object-center opacity-0 transition-opacity group-hover:opacity-100`}
                   style={{ objectPosition: "center" }}
                 />
               )
             )}
+            <Image
+              src={
+                product?.primary_image
+                  ? (process.env.NEXT_PUBLIC_IMG_BASE || "") +
+                    product.primary_image
+                  : "/images/imageplaceholder.png"
+              }
+              alt={product?.name || "product image"}
+              height={345}
+              width={270}
+              className={`h-full w-full object-cover object-center transition-opacity ${product?.images?.[0] || ("back_image" in product && product?.back_image) ? "group-hover:opacity-0" : ""}`}
+              style={{ objectPosition: "center" }}
+            />
           </div>
           {product?.sale_check && (
             <p className="absolute right-5 top-5 rounded-full bg-primary px-1.5 text-TextSize300 text-primary-foreground md:px-3 md:py-1">
