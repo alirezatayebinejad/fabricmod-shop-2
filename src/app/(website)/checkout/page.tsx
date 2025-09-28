@@ -24,6 +24,7 @@ import useMyForm from "@/hooks/useMyForm";
 import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
 import ModalWrapper from "@/components/datadisplay/ModalWrapper";
 import AddressForm from "@/app/(website)/dashboard/_components/Tabs/AddressForm";
+import { getScreenWidth } from "@/utils/getScreen";
 
 export default function CheckoutPage() {
   const { basket, isMounted } = useBasket();
@@ -183,6 +184,11 @@ export default function CheckoutPage() {
   }, [isMounted, basket]);
 
   useEffect(() => {
+    if (getScreenWidth() > 768) {
+      setShowProductsTable(true);
+    }
+  }, []);
+  useEffect(() => {
     if (scrollToError) {
       // Find the first error element and scroll to it
       const errorElements = document.querySelectorAll("[data-payment-error]");
@@ -238,8 +244,9 @@ export default function CheckoutPage() {
                 </Button>
               </div>
               <div
-                className="md:block"
-                style={{ display: showProductsTable ? "block" : "none" }}
+                style={{
+                  display: showProductsTable ? "block" : "none",
+                }}
               >
                 <TableGenerate
                   data={{

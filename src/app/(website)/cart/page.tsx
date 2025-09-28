@@ -81,7 +81,7 @@ export default function CartPage() {
                           prefetch={false}
                           href={"/shop/product/" + item.slug}
                         >
-                          <div className="h-[90px] w-[90px]">
+                          <div className="h-[90px] w-[90px] overflow-hidden">
                             <Image
                               src={
                                 item.primary_image
@@ -92,7 +92,7 @@ export default function CartPage() {
                               alt={item.name}
                               width={90}
                               height={90}
-                              className="w-full object-cover"
+                              className="h-auto w-full object-cover"
                             />
                           </div>
                         </Link>
