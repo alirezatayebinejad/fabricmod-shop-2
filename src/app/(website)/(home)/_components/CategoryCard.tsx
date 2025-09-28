@@ -7,10 +7,7 @@ import Link from "next/link";
 export default function CategoryCard({
   categ,
 }: {
-  categ:
-    | Index["categories"][number]
-    | Initials["categories"][number]["childs"][number]
-    | Initials["categories"][number];
+  categ: Index["categories"][number] | Initials["carousel_categories"][number];
 }) {
   return (
     <Link

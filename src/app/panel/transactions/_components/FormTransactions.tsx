@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@heroui/button";
 import { useSWRConfig } from "swr";
 import useSWR from "swr";
+import Image from "next/image";
 import apiCRUD from "@/services/apiCRUD";
 import useMyForm from "@/hooks/useMyForm";
 import InputBasic from "@/components/inputs/InputBasic";
@@ -232,6 +233,7 @@ export default function FormTransactions({
                       { id: "cash", title: "نقدی" },
                       { id: "card", title: "کارت" },
                       { id: "admin", title: "ادمین" },
+                      { id: "check", title: "چک" },
                     ].find((opt) => opt.id === values.gateway_name) || {
                       id: values.gateway_name,
                       title: values.gateway_name,
@@ -277,6 +279,29 @@ export default function FormTransactions({
                 }
               />
             </>
+          )}
+          {isShowMode && selectedData?.image && (
+            <div className="col-span-full">
+              <label className="mb-2 block text-sm font-medium text-TextColor">
+                تصویر تراکنش
+              </label>
+              <div className="relative inline-block">
+                <Image
+                  src={process.env.NEXT_PUBLIC_IMG_BASE + selectedData.image}
+                  alt="تصویر تراکنش"
+                  width={128}
+                  height={128}
+                  className="h-32 w-32 cursor-pointer rounded-lg border border-border object-cover transition-transform hover:scale-105"
+                  onClick={() =>
+                    selectedData.image &&
+                    window.open(
+                      process.env.NEXT_PUBLIC_IMG_BASE + selectedData.image,
+                      "_blank",
+                    )
+                  }
+                />
+              </div>
+            </div>
           )}
           <SelectSearchCustom
             title="وضعیت"

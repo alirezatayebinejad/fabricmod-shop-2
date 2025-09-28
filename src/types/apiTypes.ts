@@ -1257,7 +1257,7 @@ export interface Transactions {
   ref_id: null;
   token: string;
   description: null;
-  gateway_name: "cash" | "card" | "admin";
+  gateway_name: "cash" | "card" | "admin" | "check";
   status: "pending" | "success";
   pay_again: string;
   image: string | null;
@@ -1383,7 +1383,7 @@ export interface Initials {
       childs: any[];
     }[];
   }[];
-  carousel_categories:{
+  carousel_categories: {
     name: string;
     slug: string;
     type: string;

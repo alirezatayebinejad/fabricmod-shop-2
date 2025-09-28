@@ -35,6 +35,7 @@ export default async function RootLayout({
     requiresToken: false,
     ...serverCache.theme,
   });
+  console.log("initialsRes", initialsRes);
 
   metadata.title = initialsRes?.setting?.title;
   metadata.description = initialsRes?.setting?.description;
