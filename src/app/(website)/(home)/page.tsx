@@ -74,6 +74,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
+  console.log("Rendering HomePage");
   const initialsRes = (await apiCRUD({
     urlSuffix: "next/initials",
     requiresToken: false,
