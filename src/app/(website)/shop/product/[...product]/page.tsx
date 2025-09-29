@@ -74,8 +74,8 @@ export async function generateMetadata({
         `خرید آنلاین ${data?.name} از فابریک مد`,
     },
     other: {
-      product_id: data.id.toString(),
-      product_name: data.name,
+      product_id: data?.id?.toString(),
+      product_name: data?.name,
       product_price: finalPrice?.toString() || "",
       product_old_price: oldPrice?.toString() || "",
       availability: data.quantity_check ? "instock" : "outofstock",

@@ -161,7 +161,6 @@ export default function FormProducts({
       tags: prod?.tags?.map((t) => t.name) || undefined,
     },
     async (formValues) => {
-      console.log(formValues.set_ids);
       const payload = {
         ...formValues,
         slug: formValues?.slug === prod?.slug ? undefined : formValues.slug,
@@ -191,7 +190,6 @@ export default function FormProducts({
       }
     },
   );
-  console.log("values.set_ids", values.variations);
 
   // Update var_ids arrays when selectedSetProducts changes
   useEffect(() => {

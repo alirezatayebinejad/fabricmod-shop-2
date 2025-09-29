@@ -37,7 +37,7 @@ export default function CategoryLayout({
   };
 
   const category: ProductCategoryShowSite = data?.data || initialCategoryData;
-  console.log(category);
+
   if (isLoading && !category)
     return (
       <div className="grid h-[200px] w-full place-content-center">

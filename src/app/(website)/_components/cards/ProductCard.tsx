@@ -53,7 +53,6 @@ export default function ProductCard({
     }
     setLoading(false);
   };
-  console.log(product);
 
   return (
     <div

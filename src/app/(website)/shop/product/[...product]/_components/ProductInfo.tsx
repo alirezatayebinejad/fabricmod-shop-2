@@ -11,8 +11,8 @@ import { ProductShowSite } from "@/types/apiTypes";
 import formatPrice from "@/utils/formatPrice";
 import isSaleActive from "@/utils/isSaleActive";
 import { Button } from "@heroui/button";
-import { useDisclosure } from "@heroui/modal";
 import { DollarSign, Eye, Pencil } from "lucide-react";
+import { useDisclosure } from "@heroui/modal";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -155,9 +155,14 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
               {selectedVariation?.sku}
             </p>
           </div>
-          <div className="flex flex-wrap gap-7 max-md:gap-3">        
+          <div className="flex flex-wrap gap-7 max-md:gap-3">
             <h5 className="text-TextSize400 text-TextLow">دسته‌بندی‌</h5>
-            <Link href={`/shop/category/${data?.category?.slug}`} className="text-TextSize400 text-TextLow">{data?.category.name}</Link>
+            <Link
+              href={`/shop/category/${data?.category?.slug}`}
+              className="text-TextSize400 text-TextLow"
+            >
+              {data?.category?.name}
+            </Link>
           </div>
           <div className="flex flex-wrap gap-7 max-md:gap-3">
             <h5 className="text-TextSize400 text-TextLow">برچسب‌ها</h5>
