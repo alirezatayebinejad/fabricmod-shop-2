@@ -1,138 +1,64 @@
-name: Build image and safe-deploy (no registry)
+name: Next.js Fabricmod CI/CD - Build on GitHub and Transfer to Server
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-transfer:
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.set-tag.outputs.IMAGE_TAG }}
+    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set IMAGE_TAG (short sha)
-        id: set-tag
-        run: |
-          echo "IMAGE_TAG=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          cache: "npm"
 
-      - name: Build docker image (use build args from secrets)
-        run: |
-          IMAGE_TAG=${{ steps.set-tag.outputs.IMAGE_TAG }}
-          IMAGE_NAME=fabricmod_image
-          docker build --pull \
-            -t ${IMAGE_NAME}:${IMAGE_TAG} \
-            --build-arg NEXT_PUBLIC_CRYPTO_KEY="${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }}" \
-            --build-arg NEXT_PUBLIC_BACKEND_BASE="${{ secrets.NEXT_PUBLIC_BACKEND_BASE }}" \
-            --build-arg NEXT_PUBLIC_BACKEND_API="${{ secrets.NEXT_PUBLIC_BACKEND_API }}" \
-            --build-arg NEXT_PUBLIC_IMG_BASE="${{ secrets.NEXT_PUBLIC_IMG_BASE }}" \
-            --build-arg NEXT_PUBLIC_BASE_PATH="${{ secrets.NEXT_PUBLIC_BASE_PATH }}" \
-            .
-          # save and compress image for transfer
-          docker save ${IMAGE_NAME}:${IMAGE_TAG} -o image_${IMAGE_TAG}.tar
-          gzip -f image_${IMAGE_TAG}.tar
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Prepare SSH (private key) for upload
+      - name: Build the app
+        run: npm run build || { echo "Build failed"; exit 1; }
+        env:
+          NEXT_PUBLIC_CRYPTO_KEY: ${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }}
+          NEXT_PUBLIC_BACKEND_BASE: ${{ secrets.NEXT_PUBLIC_BACKEND_BASE }}
+          NEXT_PUBLIC_BACKEND_API: ${{ secrets.NEXT_PUBLIC_BACKEND_API }}
+          NEXT_PUBLIC_IMG_BASE: ${{ secrets.NEXT_PUBLIC_IMG_BASE }}
+          NEXT_PUBLIC_BASE_PATH: ${{ secrets.NEXT_PUBLIC_BASE_PATH }}
+
+      - name: Zip build output
+        run: zip -r build-output.zip .next node_modules package.json package-lock.json || { echo "Zip failed"; exit 1; }
+
+      - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 9011 -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
-
-      - name: Copy image tar.gz to server
-        run: |
-          IMAGE_TAG=${{ steps.set-tag.outputs.IMAGE_TAG }}
-          scp -P 9011 image_${IMAGE_TAG}.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}/
-
-      - name: Remote safe deploy (load, test, swap, cleanup)
         env:
-          IMAGE_TAG: ${{ steps.set-tag.outputs.IMAGE_TAG }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          KEEP_COUNT: "3"
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Transfer build to server and deploy
         run: |
-          # PASS the runner vars into remote env by prefixing them to ssh command.
-          # Use bash -s and a single-quoted heredoc so variables are evaluated on the REMOTE host.
-          ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
-            "IMAGE_TAG='${IMAGE_TAG}' DEPLOY_PATH='${DEPLOY_PATH}' KEEP_COUNT='${KEEP_COUNT}' bash -s" <<'EOF'
-            set -euo pipefail
-            cd "$DEPLOY_PATH"
-
-            IMAGE_NAME=fabricmod_image
-            TARFILE="image_${IMAGE_TAG}.tar.gz"
-            TEMP_NAME="fabricmod_tmp_${IMAGE_TAG}"
-            MAIN_NAME="fabricmod_container"
-            PREV_TAGS_FILE=".image_tags"
-
-            echo "Loading image from ${TARFILE}..."
-            docker load -i "${TARFILE}"
-
-            # Run new container on temporary port 3001
-            docker rm -f "${TEMP_NAME}" >/dev/null 2>&1 || true
-            docker run -d --name "${TEMP_NAME}" --env-file .env -p 3001:3000 --restart=no "${IMAGE_NAME}:${IMAGE_TAG}"
-
-            # Wait for health / http
-            echo "Waiting for new container health (up to ~60s)..."
-            OK=0
-            for i in $(seq 1 12); do
-              sleep 5
-              HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-health{{end}}' "${TEMP_NAME}" 2>/dev/null || echo "no")
-              if [ "$HEALTH" = "healthy" ]; then
-                echo "Container healthy via Docker HEALTHCHECK."
-                OK=1
-                break
-              fi
-              if curl -f --silent --max-time 3 http://localhost:3001/ >/dev/null 2>&1; then
-                echo "HTTP check passed on port 3001."
-                OK=1
-                break
-              fi
-              echo "Not ready yet ($i)..."
-            done
-
-            if [ "$OK" -ne 1 ]; then
-              echo "New container failed health checks. Cleaning up and aborting deploy."
-              docker rm -f "${TEMP_NAME}" || true
-              exit 1
-            fi
-
-            # Swap: stop/remove old and run new on main port
-            if docker ps --filter "name=${MAIN_NAME}" --format '{{.Names}}' | grep -q "${MAIN_NAME}"; then
-              echo "Stopping old container..."
-              docker stop "${MAIN_NAME}" || true
-              docker rm "${MAIN_NAME}" || true
-            fi
-
-            # remove temp container and re-run with main name on port 3000
-            docker rm -f "${TEMP_NAME}" || true
-            docker run -d --name "${MAIN_NAME}" --env-file .env -p 3000:3000 --restart=always "${IMAGE_NAME}:${IMAGE_TAG}"
-
-            # Save tag history
-            touch "${PREV_TAGS_FILE}"
-            { echo "${IMAGE_TAG}"; cat "${PREV_TAGS_FILE}"; } | awk '!seen[$0]++' > "${PREV_TAGS_FILE}.new"
-            mv "${PREV_TAGS_FILE}.new" "${PREV_TAGS_FILE}"
-
-            # Trim to KEEP_COUNT (keep most recent)
-            KEEP=${KEEP_COUNT:-3}
-            head -n "${KEEP}" "${PREV_TAGS_FILE}" > "${PREV_TAGS_FILE}.tmp" || true
-            mv "${PREV_TAGS_FILE}.tmp" "${PREV_TAGS_FILE}"
-
-            # Remove image tar to save space
-            rm -f "${TARFILE}" || true
-
-            # Cleanup older images not in list
-            echo "Cleaning up old images (keeping ${KEEP}):"
-            KEEP_LIST=$(awk '{print}' "${PREV_TAGS_FILE}" | xargs || true)
-            for img in $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^'${IMAGE_NAME}':' | awk '{print $1" "$2}' || true); do
-              TAG=$(echo "$img" | awk '{print $1}' | sed 's/^.*://')
-              ID=$(echo "$img" | awk '{print $2}')
-              if ! echo "${KEEP_LIST}" | grep -q "$TAG"; then
-                echo "Removing image tag=$TAG id=$ID"
-                docker rmi -f "$ID" || true
-              fi
-            done
-
-            echo "Deploy finished successfully."
-            docker ps --filter "name=${MAIN_NAME}"
+          scp -i ~/.ssh/id_rsa -P 9011 build-output.zip ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}/build-output.zip || { echo "Transfer failed"; exit 1; }
+          ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            cd ${{ secrets.DEPLOY_PATH }}
+            unzip -o build-output.zip || { echo "Unzip failed"; exit 1; }
+            rm build-output.zip
+            echo "Building and deploying with Docker"
+            docker compose down || true
+            docker compose build --no-cache || { echo "Docker build failed"; exit 1; }
+            docker compose up -d || { echo "Docker up failed"; exit 1; }
+            echo "Cleaning up old Docker images"
+            docker images -a | grep "fabricmod" | awk '{print $3}' | sort | uniq | tail -n +2 | xargs -r docker rmi -f || true
+            echo "Deployment completed successfully"
           EOF
+          
