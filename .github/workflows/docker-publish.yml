@@ -1,4 +1,4 @@
-name: Next.js Fabricmod CI/CD - Build on GitHub and Transfer to Server
+name: Next.js Fabricmod CI/CD
 
 on:
   push:
@@ -9,24 +9,20 @@ on:
       - main
 
 jobs:
-  build-and-transfer:
+  build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Build the app
-        run: npm run build || { echo "Build failed"; exit 1; }
+        run: npm run build
         env:
           NEXT_PUBLIC_CRYPTO_KEY: ${{ secrets.NEXT_PUBLIC_CRYPTO_KEY }}
           NEXT_PUBLIC_BACKEND_BASE: ${{ secrets.NEXT_PUBLIC_BACKEND_BASE }}
@@ -34,8 +30,13 @@ jobs:
           NEXT_PUBLIC_IMG_BASE: ${{ secrets.NEXT_PUBLIC_IMG_BASE }}
           NEXT_PUBLIC_BASE_PATH: ${{ secrets.NEXT_PUBLIC_BASE_PATH }}
 
-      - name: Zip build output
-        run: zip -r build-output.zip .next node_modules package.json package-lock.json || { echo "Zip failed"; exit 1; }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up SSH key
         run: |
@@ -46,19 +47,16 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Transfer build to server and deploy
+      - name: Deploy with Docker
         run: |
-          scp -i ~/.ssh/id_rsa -P 9011 build-output.zip ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}/build-output.zip || { echo "Transfer failed"; exit 1; }
           ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ${{ secrets.DEPLOY_PATH }}
-            unzip -o build-output.zip || { echo "Unzip failed"; exit 1; }
-            rm build-output.zip
+            git fetch origin
+            git reset --hard origin/main
+            git pull origin main || { echo "Git pull failed"; exit 1; }
             echo "Building and deploying with Docker"
-            docker compose down || true
             docker compose build --no-cache || { echo "Docker build failed"; exit 1; }
+            docker compose down || true
             docker compose up -d || { echo "Docker up failed"; exit 1; }
-            echo "Cleaning up old Docker images"
-            docker images -a | grep "fabricmod" | awk '{print $3}' | sort | uniq | tail -n +2 | xargs -r docker rmi -f || true
             echo "Deployment completed successfully"
           EOF
-          
