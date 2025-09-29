@@ -58,7 +58,6 @@ jobs:
             docker compose build --no-cache || { echo "Docker build failed"; exit 1; }
             docker compose down || true
             docker compose -f docker-compose.yml down || true
-            docker rm -f fabricmod_container || true
             docker compose up -d || { echo "Docker up failed"; exit 1; }
             echo "Cleaning up old Docker images"
             docker images -a | grep "fabricmod" | awk '{print $3}' | sort | uniq | tail -n +2 | xargs -r docker rmi -f || true

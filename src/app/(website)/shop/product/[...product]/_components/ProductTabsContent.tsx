@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import CommentsForm from "@/app/(website)/blog/_components/CommentsForm";
 import CommentsList from "@/app/(website)/blog/_components/CommentsList";
 import RateIt from "@/app/(website)/blog/_components/RateIt";
