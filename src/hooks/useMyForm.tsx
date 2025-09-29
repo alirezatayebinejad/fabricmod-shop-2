@@ -54,7 +54,7 @@ const useMyForm = <T extends Record<string, any>>(
       prevInitialValues.current = initialValues;
     }
   }, [initialValues]);
-
+  console.log(values);
   const handleChange = useCallback(
     (name: keyof ValuesType) =>
       (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | string) => {
