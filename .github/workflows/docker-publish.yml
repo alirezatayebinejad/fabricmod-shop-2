@@ -60,6 +60,6 @@ jobs:
             docker compose -f docker-compose.yml down || true
             docker compose up -d || { echo "Docker up failed"; exit 1; }
             echo "Cleaning up old Docker images"
-            docker images -a | grep "fabricmod" | awk '{print $3}' | sort | uniq | tail -n +2 | xargs -r docker rmi -f || true
+            docker images -a | grep -E "front|<none>" | awk '{print $3}' | sort | uniq | xargs -r docker rmi -f || true
             echo "Deployment completed successfully"
           EOF

@@ -1,7 +1,7 @@
 services:
   next-app:
-    container_name: fabricmod_container
-    image: fabricmod_image
+    container_name: fabric-next
+    image: fabric-front:latest
     build:
       context: .
       dockerfile: Dockerfile
