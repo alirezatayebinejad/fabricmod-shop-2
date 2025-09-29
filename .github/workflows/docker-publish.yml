@@ -50,12 +50,14 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.set-tag.outputs.IMAGE_TAG }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          KEEP_COUNT: "3"   # تعداد بیلدهای اخیر که نگه داشته میشه
+          KEEP_COUNT: "3"
         run: |
-          IMAGE_TAG=${IMAGE_TAG}
-          ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} /bin/bash <<EOF
+          # PASS the runner vars into remote env by prefixing them to ssh command.
+          # Use bash -s and a single-quoted heredoc so variables are evaluated on the REMOTE host.
+          ssh -i ~/.ssh/id_rsa -p 9011 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "IMAGE_TAG='${IMAGE_TAG}' DEPLOY_PATH='${DEPLOY_PATH}' KEEP_COUNT='${KEEP_COUNT}' bash -s" <<'EOF'
             set -euo pipefail
-            cd "${DEPLOY_PATH}"
+            cd "$DEPLOY_PATH"
 
             IMAGE_NAME=fabricmod_image
             TARFILE="image_${IMAGE_TAG}.tar.gz"
@@ -64,19 +66,19 @@ jobs:
             PREV_TAGS_FILE=".image_tags"
 
             echo "Loading image from ${TARFILE}..."
-            docker load -i "\${TARFILE}"
+            docker load -i "${TARFILE}"
 
             # Run new container on temporary port 3001
-            docker rm -f "\${TEMP_NAME}" >/dev/null 2>&1 || true
-            docker run -d --name "\${TEMP_NAME}" --env-file .env -p 3001:3000 --restart=no "\${IMAGE_NAME}:\${IMAGE_TAG}"
+            docker rm -f "${TEMP_NAME}" >/dev/null 2>&1 || true
+            docker run -d --name "${TEMP_NAME}" --env-file .env -p 3001:3000 --restart=no "${IMAGE_NAME}:${IMAGE_TAG}"
 
             # Wait for health / http
             echo "Waiting for new container health (up to ~60s)..."
             OK=0
-            for i in \$(seq 1 12); do
+            for i in $(seq 1 12); do
               sleep 5
-              HEALTH=\$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-health{{end}}' "\${TEMP_NAME}" 2>/dev/null || echo "no")
-              if [ "\$HEALTH" = "healthy" ]; then
+              HEALTH=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-health{{end}}' "${TEMP_NAME}" 2>/dev/null || echo "no")
+              if [ "$HEALTH" = "healthy" ]; then
                 echo "Container healthy via Docker HEALTHCHECK."
                 OK=1
                 break
@@ -86,54 +88,51 @@ jobs:
                 OK=1
                 break
               fi
-              echo "Not ready yet (\$i)..."
+              echo "Not ready yet ($i)..."
             done
 
-            if [ "\$OK" -ne 1 ]; then
+            if [ "$OK" -ne 1 ]; then
               echo "New container failed health checks. Cleaning up and aborting deploy."
-              docker rm -f "\${TEMP_NAME}" || true
-              # optionally remove loaded image to avoid storage growth? (keep it for debugging)
+              docker rm -f "${TEMP_NAME}" || true
               exit 1
             fi
 
             # Swap: stop/remove old and run new on main port
-            if docker ps --filter "name=\${MAIN_NAME}" --format '{{.Names}}' | grep -q "\${MAIN_NAME}"; then
+            if docker ps --filter "name=${MAIN_NAME}" --format '{{.Names}}' | grep -q "${MAIN_NAME}"; then
               echo "Stopping old container..."
-              docker stop "\${MAIN_NAME}" || true
-              docker rm "\${MAIN_NAME}" || true
+              docker stop "${MAIN_NAME}" || true
+              docker rm "${MAIN_NAME}" || true
             fi
 
             # remove temp container and re-run with main name on port 3000
-            docker rm -f "\${TEMP_NAME}" || true
-            docker run -d --name "\${MAIN_NAME}" --env-file .env -p 3000:3000 --restart=always "\${IMAGE_NAME}:\${IMAGE_TAG}"
+            docker rm -f "${TEMP_NAME}" || true
+            docker run -d --name "${MAIN_NAME}" --env-file .env -p 3000:3000 --restart=always "${IMAGE_NAME}:${IMAGE_TAG}"
 
             # Save tag history
-            touch "\${PREV_TAGS_FILE}"
-            # prepend NEW tag and keep unique lines
-            { echo "\${IMAGE_TAG}"; cat "\${PREV_TAGS_FILE}"; } | awk '!seen[\$0]++' > "\${PREV_TAGS_FILE}.new"
-            mv "\${PREV_TAGS_FILE}.new" "\${PREV_TAGS_FILE}"
+            touch "${PREV_TAGS_FILE}"
+            { echo "${IMAGE_TAG}"; cat "${PREV_TAGS_FILE}"; } | awk '!seen[$0]++' > "${PREV_TAGS_FILE}.new"
+            mv "${PREV_TAGS_FILE}.new" "${PREV_TAGS_FILE}"
 
             # Trim to KEEP_COUNT (keep most recent)
-            KEEP=\${KEEP_COUNT:-3}
-            head -n "\${KEEP}" "\${PREV_TAGS_FILE}" > "\${PREV_TAGS_FILE}.tmp" || true
-            mv "\${PREV_TAGS_FILE}.tmp" "\${PREV_TAGS_FILE}"
+            KEEP=${KEEP_COUNT:-3}
+            head -n "${KEEP}" "${PREV_TAGS_FILE}" > "${PREV_TAGS_FILE}.tmp" || true
+            mv "${PREV_TAGS_FILE}.tmp" "${PREV_TAGS_FILE}"
 
             # Remove image tar to save space
-            rm -f "\${TARFILE}" || true
+            rm -f "${TARFILE}" || true
 
             # Cleanup older images not in list
-            echo "Cleaning up old images (keeping \${KEEP}):"
-            KEEP_LIST=\$(awk '{print}' "\${PREV_TAGS_FILE}" | xargs)
-            for img in \$(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^'"\${IMAGE_NAME}"':' | awk '{print \$1" " \$2}'); do
-              TAG=\$(echo "\$img" | awk '{print \$1}' | sed 's/^.*://')
-              ID=\$(echo "\$img" | awk '{print \$2}')
-              # if tag not in keep list, remove
-              if ! echo "\${KEEP_LIST}" | grep -q "\$TAG"; then
-                echo "Removing image tag=\$TAG id=\$ID"
-                docker rmi -f "\$ID" || true
+            echo "Cleaning up old images (keeping ${KEEP}):"
+            KEEP_LIST=$(awk '{print}' "${PREV_TAGS_FILE}" | xargs || true)
+            for img in $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^'${IMAGE_NAME}':' | awk '{print $1" "$2}' || true); do
+              TAG=$(echo "$img" | awk '{print $1}' | sed 's/^.*://')
+              ID=$(echo "$img" | awk '{print $2}')
+              if ! echo "${KEEP_LIST}" | grep -q "$TAG"; then
+                echo "Removing image tag=$TAG id=$ID"
+                docker rmi -f "$ID" || true
               fi
             done
 
             echo "Deploy finished successfully."
-            docker ps --filter "name=fabricmod"
+            docker ps --filter "name=${MAIN_NAME}"
           EOF
