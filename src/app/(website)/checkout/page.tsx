@@ -277,11 +277,11 @@ export default function CheckoutPage() {
                             />
                           ),
                         },
-                        { data: item.product.name },
+                        { data: item.product?.name },
                         {
                           data: (
                             <p>
-                              {item.variation.attribute.name +
+                              {item.variation.attribute?.name +
                                 ": " +
                                 item.variation.value}
                             </p>
@@ -413,7 +413,7 @@ export default function CheckoutPage() {
                 </div>
                 {couponRes && (
                   <p className="mt-2 text-success-foreground">
-                    کد تخفیف اعمال شده: {couponRes.name}
+                    کد تخفیف اعمال شده: {couponRes?.name}
                   </p>
                 )}
                 {paymentFieldErrors.coupon && (
