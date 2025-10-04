@@ -8,7 +8,6 @@ import { Button } from "@heroui/button";
 import { useEffect, useState } from "react";
 import { login } from "@/services/auth";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import toast from "react-hot-toast";
 import useCountdownTimer from "@/hooks/useCountDownTimer";
 import useMyForm from "@/hooks/useMyForm";
@@ -190,14 +189,6 @@ export default function OtpStep({ changeStep }: Props) {
           </p>
         </div>
       </form>
-
-      <div className="mt-[24px] text-center">
-        <Link
-          prefetch={false}
-          href="/auth/login"
-          className="text-TextSize300 text-TextColor"
-        ></Link>
-      </div>
     </>
   );
 }
