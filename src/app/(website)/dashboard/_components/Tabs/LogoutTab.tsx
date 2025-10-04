@@ -11,7 +11,7 @@ export default function LogoutTab() {
         <h2>از حساب کاربری خود خارج شوید ؟</h2>
         <Button
           className="w-full max-w-[256px] bg-failure text-destructive-foreground"
-          onClick={() => logout(router)}
+          onPress={() => logout(router)}
         >
           خروج
         </Button>

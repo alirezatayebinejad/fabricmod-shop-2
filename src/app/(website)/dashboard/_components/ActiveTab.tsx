@@ -60,6 +60,19 @@ export default function ActiveTab() {
               <h4 className="text-nowrap text-TextSize300">{item.title}</h4>
             </li>
           ))}
+          <li
+            className={`flex cursor-pointer items-center gap-[5px] px-4 py-3 transition-colors hover:border-primary ${activeTab === "logout" ? "border-b-3 border-b-primary" : ""}`}
+            onClick={() => handleSearch("logout")}
+          >
+            <DashboardTabsIcons
+              name={"logout"}
+              width={15}
+              color="var(--TextLow)"
+            />
+            <h4 className="text-nowrap text-TextSize300">
+              خروج از حساب کاربری
+            </h4>
+          </li>
         </ul>
       </div>
       {/* tabs content */}
