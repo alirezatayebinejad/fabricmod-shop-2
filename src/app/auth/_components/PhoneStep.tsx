@@ -10,6 +10,7 @@ import useMyForm from "@/hooks/useMyForm";
 import apiCRUD from "@/services/apiCRUD";
 import { setCookie } from "@/utils/cookieCRUD";
 import { cookiesNames } from "@/constants/cacheNames";
+import Link from "next/link";
 
 type Props = {
   changeStep: (step: AuthSteps) => void;
@@ -218,13 +219,22 @@ export default function PhoneStep({ changeStep, isForgotPass = false }: Props) {
             </div>
           </>
         )}
-        <div className="flex justify-center">
+        <div className="mt-[24px] flex items-center justify-center gap-2">
           <Button
             type="submit"
             isLoading={loading}
-            className="mt-[24px] rounded-[10px] bg-primary px-10 text-center text-[16px] font-[700] text-primary-foreground"
+            className="rounded-[10px] bg-primary px-10 text-center text-[16px] font-[700] text-primary-foreground"
           >
             ارسال
+          </Button>
+          <Button
+            as={Link}
+            href={"/"}
+            className="text-TextSize300"
+            variant="ghost"
+            prefetch={false}
+          >
+            <p>برگشت به خانه</p>
           </Button>
         </div>
         {isWithPass ? (

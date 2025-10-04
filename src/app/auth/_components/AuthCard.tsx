@@ -3,7 +3,6 @@ import OtpStep from "@/app/auth/_components/OtpStep";
 import PhoneStep from "@/app/auth/_components/PhoneStep";
 import { useGlobalData } from "@/contexts/GlobalData";
 import { AuthSteps } from "@/types/generalTypes";
-import { Button } from "@heroui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -47,18 +46,6 @@ export default function AuthCard() {
         </Link>
       </div>
       {renderStep()}
-      <div className="flex justify-center">
-        <Button
-          as={Link}
-          href={"/"}
-          size="sm"
-          className="mt-5 text-TextSize300 max-md:mt-10"
-          variant="light"
-          prefetch={false}
-        >
-          <p>برگشت به خانه</p>
-        </Button>
-      </div>
     </div>
   );
 }
