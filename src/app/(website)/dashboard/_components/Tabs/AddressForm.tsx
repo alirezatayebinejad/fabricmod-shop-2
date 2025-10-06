@@ -3,9 +3,7 @@ import { useSWRConfig } from "swr";
 import apiCRUD from "@/services/apiCRUD";
 import useMyForm from "@/hooks/useMyForm";
 import InputBasic from "@/components/inputs/InputBasic";
-import SwitchWrapper from "@/components/inputs/SwitchWrapper";
 import SelectSearchCustom from "@/components/inputs/SelectSearchCustom";
-import MapCustom from "@/components/inputs/MapCustom";
 import { Address, City } from "@/types/apiTypes";
 import provinces from "@/constants/provinces.json";
 import TextAreaCustom from "@/components/inputs/TextAreaCustom";
@@ -21,7 +19,7 @@ type Props = {
   isEditMode?: boolean;
   isShowMode?: boolean;
   selectedData?: Address;
-  onSuccess?: () => void;
+  onSuccess?: (addressId: number) => void;
   forOthers?: ForOthersProps;
 };
 
@@ -47,23 +45,20 @@ export default function AddressForm({
     setErrors,
   } = useMyForm(
     {
-      title: selectedData?.title,
+      /* title: selectedData?.title, */
       province_id: selectedData?.province_id || undefined,
       city_id: selectedData?.city_id || undefined,
       address: selectedData?.address || undefined,
-      longitude: selectedData?.longitude || undefined,
-      latitude: selectedData?.latitude || undefined,
-      is_me: 1,
+      /*     longitude: selectedData?.longitude || undefined,
+      latitude: selectedData?.latitude || undefined, */
+      /* is_me: 1, */
       receiver_name: selectedData?.receiver_name || undefined,
       cellphone: selectedData?.cellphone || undefined,
-      postal_code: selectedData?.postal_code || undefined,
+      /*  postal_code: selectedData?.postal_code || undefined, */
     },
     async (formValues) => {
       const payload = {
         ...formValues,
-        ...(values.is_me
-          ? { receiver_name: undefined, cellphone: undefined }
-          : {}),
       };
 
       // Determine URL and mutate key based on forOthers
@@ -91,7 +86,7 @@ export default function AddressForm({
       });
       if (res?.message) setErrors(res.message);
       if (res?.status === "success") {
-        onSuccess?.();
+        onSuccess?.(res.data?.id);
         onClose?.();
         mutate?.(mutateKey);
       }
@@ -118,14 +113,14 @@ export default function AddressForm({
   return (
     <form noValidate onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <InputBasic
+        {/*  <InputBasic
           name="title"
           label="عنوان"
           value={values.title}
           onChange={handleChange("title")}
           errorMessage={errors.title}
           isDisabled={isShowMode}
-        />
+        /> */}
         <SelectSearchCustom
           title="استان"
           options={provinces?.provinces?.map((p) => ({
@@ -199,28 +194,25 @@ export default function AddressForm({
             !values.province_id ? "لطفا استان را انتخاب کنید" : "انتخاب"
           }
         />
-        {!values.is_me && (
-          <>
-            <InputBasic
-              name="receiver_name"
-              label="نام گیرنده"
-              value={values.receiver_name}
-              onChange={handleChange("receiver_name")}
-              errorMessage={errors.receiver_name}
-              isDisabled={isShowMode}
-            />
-            <InputBasic
-              name="cellphone"
-              type="number"
-              label="شماره تماس"
-              value={values.cellphone}
-              onChange={handleChange("cellphone")}
-              errorMessage={errors.cellphone}
-              isDisabled={isShowMode}
-            />
-          </>
-        )}
+
         <InputBasic
+          name="receiver_name"
+          label="نام گیرنده"
+          value={values.receiver_name}
+          onChange={handleChange("receiver_name")}
+          errorMessage={errors.receiver_name}
+          isDisabled={isShowMode}
+        />
+        <InputBasic
+          name="cellphone"
+          type="number"
+          label="شماره تماس"
+          value={values.cellphone}
+          onChange={handleChange("cellphone")}
+          errorMessage={errors.cellphone}
+          isDisabled={isShowMode}
+        />
+        {/*    <InputBasic
           name="postal_code"
           label="کد پستی"
           type="number"
@@ -228,8 +220,8 @@ export default function AddressForm({
           onChange={handleChange("postal_code")}
           errorMessage={errors.postal_code}
           isDisabled={isShowMode}
-        />
-        <div className="flex items-center">
+        /> */}
+        {/*  <div className="flex items-center">
           <SwitchWrapper
             label="آیا این آدرس برای خودتان است؟"
             onChange={(val) => {
@@ -239,7 +231,7 @@ export default function AddressForm({
             errorMessage={errors?.is_me}
             isDisabled={isShowMode}
           />
-        </div>
+        </div> */}
         <div className="col-span-full">
           <TextAreaCustom
             name="address"
@@ -250,7 +242,7 @@ export default function AddressForm({
             errorMessage={errors.address}
             isDisabled={isShowMode}
           />
-          <p className="my-5">روی نقشه:</p>
+          {/* <p className="my-5">روی نقشه:</p>
           <MapCustom
             selectMode={true}
             onChange={(location) => {
@@ -269,7 +261,7 @@ export default function AddressForm({
             }
             error={!!errors.latitude || !!errors.longitude}
             errorRetryFunction={() => {}}
-          />
+          /> */}
         </div>
       </div>
       <div className="mb-3 mt-3 flex justify-end gap-2">

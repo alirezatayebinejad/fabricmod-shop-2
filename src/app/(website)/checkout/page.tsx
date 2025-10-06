@@ -46,6 +46,9 @@ export default function CheckoutPage() {
   const [gatewayName, setGatewayName] = useState("sep");
   const [showProductsTable, setShowProductsTable] = useState(false);
 
+  // Track the last created address id
+  const [createdAddressId, setCreatedAddressId] = useState<number | null>(null);
+
   const router = useRouter();
   const {
     data: shippingsRes,
@@ -111,9 +114,12 @@ export default function CheckoutPage() {
     setPaymentError(undefined);
     setPaymentFieldErrors({});
 
+    // Use createdAddressId if available, otherwise fallback to checkout.selected_address?.id
+    const addressIdToUse = createdAddressId || checkout.selected_address?.id;
+
     const paymentData = {
       shipping_method: checkout.selected_shipping_method?.code,
-      address_id: checkout.selected_address?.id,
+      address_id: addressIdToUse,
       coupon: couponRes?.code,
       products: basket?.map((p) => ({
         product_id: p.id,
@@ -201,6 +207,21 @@ export default function CheckoutPage() {
       setScrollToError(false);
     }
   }, [scrollToError, paymentFieldErrors, paymentError]);
+
+  // When addresses change, if createdAddressId is set, check if it's in the list and select it
+  useEffect(() => {
+    if (
+      createdAddressId &&
+      addresses &&
+      addresses.some((a) => a.id === createdAddressId)
+    ) {
+      // If the created address is not the selected one, update checkout
+      if (checkout?.selected_address?.id !== createdAddressId) {
+        checkoutHandler(true, undefined, undefined, createdAddressId);
+      }
+    }
+    // eslint-disable-next-line
+  }, [addresses, createdAddressId]);
 
   return (
     <main className="relative">
@@ -320,19 +341,23 @@ export default function CheckoutPage() {
                       />
                     </div>
                   ) : (
-                    checkout?.selected_address &&
-                    addresses && (
+                    (checkout?.selected_address ||
+                      (addresses && addresses?.[0]?.address)) && (
                       <SelectSearchCustom
                         options={addresses.map((a) => ({
                           id: a.id,
-                          title: a.title,
-                          description: a.address,
+                          title: a.address,
+                          description: `گیرنده: ${checkout?.selected_address?.receiver_name || addresses?.[0]?.receiver_name} - ${checkout?.selected_address?.cellphone || addresses?.[0]?.cellphone}`,
                         }))}
-                        defaultValue={[
+                        value={[
                           {
-                            id: checkout.selected_address.id,
-                            title: checkout.selected_address.title,
-                            description: checkout.selected_address.address,
+                            id:
+                              checkout?.selected_address?.id ||
+                              addresses?.[0]?.id,
+                            title:
+                              checkout?.selected_address?.address ||
+                              addresses?.[0]?.address,
+                            description: `گیرنده: ${checkout?.selected_address?.receiver_name || addresses?.[0]?.receiver_name} - ${checkout?.selected_address?.cellphone || addresses?.[0]?.cellphone}`,
                           },
                         ]}
                         isSearchDisable
@@ -343,7 +368,7 @@ export default function CheckoutPage() {
                               true,
                               undefined,
                               undefined,
-                              parseInt(val[0].id.toString()),
+                              parseInt(val[0]?.id.toString()),
                             );
                             if (paymentFieldErrors.address_id) {
                               setPaymentFieldErrors((prev) => ({
@@ -351,6 +376,8 @@ export default function CheckoutPage() {
                                 address_id: "",
                               }));
                             }
+                            // If user selects a different address, clear createdAddressId
+                            setCreatedAddressId(null);
                           }
                         }}
                       />
@@ -388,8 +415,9 @@ export default function CheckoutPage() {
                     <AddressForm
                       onClose={() => setIsFormModalOpen(false)}
                       isEditMode={false}
-                      onSuccess={() => {
+                      onSuccess={(addressId) => {
                         addressMutate();
+                        setCreatedAddressId(addressId); // Save the created address id
                       }}
                     />
                   }
