@@ -58,6 +58,7 @@ export default async function RulesPage() {
     ...serverCache.rules,
   });
   const data: PageShowSite = dataRes?.data;
+  console.log(dataRes);
 
   return (
     <main>
@@ -70,7 +71,7 @@ export default async function RulesPage() {
       <div>
         <PageHeader
           img={process.env.NEXT_PUBLIC_IMG_BASE + data?.primary_image}
-          title="قوانین و مقررات"
+          title="قوانین"
           breadCrumb={
             <Breadcrumb
               items={[
@@ -83,7 +84,7 @@ export default async function RulesPage() {
         <div className="editor_display mx-auto my-9 max-w-[800px]">
           <Title
             title={data?.title}
-            styles={{ container: "items-center my-16" }}
+            styles={{ container: "items-center mt-16 mb-8" }}
           />
           <ParseHTML htmlContent={data?.body} />
         </div>

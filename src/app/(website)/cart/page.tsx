@@ -52,7 +52,7 @@ export default function CartPage() {
           سبد خرید
         </h1>
 
-        <div className="flex gap-8 max-[1100px]:flex-col">
+        <div className="flex gap-8 max-[1100px]:flex-col-reverse">
           <div className="flex-1">
             {errors && (
               <InfoBox

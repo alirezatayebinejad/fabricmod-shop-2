@@ -3,7 +3,7 @@ export const ParseHTML: React.FC<{ htmlContent: string }> = ({
 }) => {
   return (
     <div
-      dangerouslySetInnerHTML={{ __html: htmlContent }}
+      dangerouslySetInnerHTML={{ __html: htmlContent || "" }}
       className="font-dana"
     />
   );
