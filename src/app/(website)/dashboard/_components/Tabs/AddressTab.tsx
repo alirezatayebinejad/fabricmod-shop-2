@@ -112,9 +112,6 @@ export default function AddressTab(props: AddressTabProps) {
                 className="gap-1 bg-destructive text-destructive-foreground"
                 size="sm"
                 startContent={<X className="w-4" />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
                 onPress={() => {
                   setDeleteId(address.id);
                   setIsConfirmModalOpen(true);
@@ -122,8 +119,7 @@ export default function AddressTab(props: AddressTabProps) {
               >
                 حذف
               </Button>
-              <Button
-                variant="solid"
+              <button
                 className="gap-1 bg-primary text-primary-foreground"
                 size="sm"
                 onClick={(e) => {
@@ -134,7 +130,7 @@ export default function AddressTab(props: AddressTabProps) {
                 }}
               >
                 ویرایش
-              </Button>
+              </button>
             </div>
           )}
           <h3 className="text-lg font-semibold">{address.title}</h3>
