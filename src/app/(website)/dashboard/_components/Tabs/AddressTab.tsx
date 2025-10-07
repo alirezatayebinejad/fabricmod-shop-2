@@ -121,11 +121,8 @@ export default function AddressTab(props: AddressTabProps) {
               </Button>
               <button
                 className="gap-1 bg-primary text-primary-foreground"
-                size="sm"
                 onClick={(e) => {
                   e.stopPropagation();
-                }}
-                onPress={() => {
                   handleEdit(address);
                 }}
               >
