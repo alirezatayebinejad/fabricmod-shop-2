@@ -14,7 +14,7 @@ export default function RetryError({ onRetry, classNames }: Props) {
     <div className="flex h-full flex-col items-center justify-center">
       <div>
         <Button
-          onClick={() => onRetry()}
+          onPress={() => onRetry()}
           variant="bordered"
           className={cn(
             "border-1 border-destructive text-[13px] text-TextColor",

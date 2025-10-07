@@ -114,6 +114,8 @@ export default function AddressTab(props: AddressTabProps) {
                 startContent={<X className="w-4" />}
                 onClick={(e) => {
                   e.stopPropagation();
+                }}
+                onPress={() => {
                   setDeleteId(address.id);
                   setIsConfirmModalOpen(true);
                 }}
@@ -126,6 +128,8 @@ export default function AddressTab(props: AddressTabProps) {
                 size="sm"
                 onClick={(e) => {
                   e.stopPropagation();
+                }}
+                onPress={() => {
                   handleEdit(address);
                 }}
               >
@@ -145,6 +149,8 @@ export default function AddressTab(props: AddressTabProps) {
               size="sm"
               onClick={(e) => {
                 e.stopPropagation();
+              }}
+              onPress={() => {
                 setSelectedLocation({
                   lat: parseFloat(address.latitude || "0"),
                   long: parseFloat(address.longitude || "0"),
@@ -162,6 +168,8 @@ export default function AddressTab(props: AddressTabProps) {
               size="sm"
               onClick={(e) => {
                 e.stopPropagation();
+              }}
+              onPress={() => {
                 if (onSelect) onSelect(address);
               }}
             >

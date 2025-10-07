@@ -110,7 +110,7 @@ export default function TableTransactions() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(transaction);
                   seeModal.onOpen();
                 }}
@@ -124,7 +124,7 @@ export default function TableTransactions() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(transaction);
                       editModal.onOpen();
                     }}

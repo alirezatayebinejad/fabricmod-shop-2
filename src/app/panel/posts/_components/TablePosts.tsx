@@ -194,7 +194,7 @@ export default function TablePosts() {
                     isIconOnly
                     size="sm"
                     className="group bg-boxBg300 hover:bg-destructive"
-                    onClick={() => {
+                    onPress={() => {
                       setPostToDelete(post);
                       setDeleteModalOpen(true);
                     }}

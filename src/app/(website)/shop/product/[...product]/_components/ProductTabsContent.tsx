@@ -47,25 +47,25 @@ export default function ProductTabsContent({
         <div className="my-8 flex flex-wrap justify-center gap-2">
           <Button
             className={`rounded-none bg-boxBg300 !text-TextSize500 text-TextColor ${activeTab === "description" ? "border-b-2 border-TextColor" : ""}`}
-            onClick={() => setActiveTab("description")}
+            onPress={() => setActiveTab("description")}
           >
             توضیحات
           </Button>
           <Button
             className={`rounded-none bg-boxBg300 !text-TextSize500 text-TextColor ${activeTab === "features" ? "border-b-2 border-TextColor" : ""}`}
-            onClick={() => setActiveTab("features")}
+            onPress={() => setActiveTab("features")}
           >
             ویژگی ها
           </Button>
           <Button
             className={`rounded-none bg-boxBg300 !text-TextSize500 text-TextColor ${activeTab === "reviews" ? "border-b-2 border-TextColor" : ""}`}
-            onClick={() => setActiveTab("reviews")}
+            onPress={() => setActiveTab("reviews")}
           >
             نظرات
           </Button>
           <Button
             className={`rounded-none bg-boxBg300 !text-TextSize500 text-TextColor ${activeTab === "faqs" ? "border-b-2 border-TextColor" : ""}`}
-            onClick={() => setActiveTab("faqs")}
+            onPress={() => setActiveTab("faqs")}
           >
             سوالات متداول
           </Button>

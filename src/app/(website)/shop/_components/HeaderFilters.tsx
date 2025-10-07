@@ -31,7 +31,7 @@ export default function HeaderFilters({
           size="sm"
           variant="bordered"
           className="max-md rounded-full border-1 border-primary text-TextColor min-[1247px]:hidden"
-          onClick={() => setBurgerOpen((prev) => !prev)}
+          onPress={() => setBurgerOpen((prev) => !prev)}
         >
           <Filter className="w-3" />
           فیلتر ها

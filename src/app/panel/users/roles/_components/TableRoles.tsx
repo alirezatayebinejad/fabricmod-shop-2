@@ -71,7 +71,7 @@ export default function TableRoles() {
                 <Button
                   isIconOnly
                   size="sm"
-                  onClick={() => {
+                  onPress={() => {
                     setSelectedData(role);
                     seeModal.onOpen();
                   }}
@@ -82,7 +82,7 @@ export default function TableRoles() {
                 <Button
                   isIconOnly
                   size="sm"
-                  onClick={() => {
+                  onPress={() => {
                     setSelectedData(role);
                     editModal.onOpen();
                   }}

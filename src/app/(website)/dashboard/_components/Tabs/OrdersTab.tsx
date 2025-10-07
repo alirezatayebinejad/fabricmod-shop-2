@@ -159,7 +159,7 @@ export default function OrdersTab() {
                     <Button
                       isIconOnly
                       size="sm"
-                      onClick={() => {
+                      onPress={() => {
                         setSelectedData(order);
                         seeModal.onOpen();
                       }}

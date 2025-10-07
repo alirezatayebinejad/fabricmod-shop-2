@@ -151,7 +151,7 @@ export default function ContactsTab({ setting }: { setting: Setting }) {
                     )}
                     <Button
                       type="button"
-                      onClick={() =>
+                      onPress={() =>
                         handleRemoveField(
                           field as "addresses" | "telephones" | "socials",
                           index,
@@ -196,7 +196,7 @@ export default function ContactsTab({ setting }: { setting: Setting }) {
               ))}
             <Button
               type="button"
-              onClick={() =>
+              onPress={() =>
                 handleAddField(field as "addresses" | "telephones" | "socials")
               }
               className="mt-2"

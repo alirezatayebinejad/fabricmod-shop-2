@@ -120,7 +120,7 @@ export default function TableBrands() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(brand);
                   seeModal.onOpen();
                 }}
@@ -134,7 +134,7 @@ export default function TableBrands() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(brand);
                       editModal.onOpen();
                     }}

@@ -34,7 +34,7 @@ export default function HeaderFilters({
         <Button
           variant="bordered"
           className="max-md rounded-full border-1 border-primary text-TextColor min-[1247px]:hidden"
-          onClick={() => setBurgerOpen((prev) => !prev)}
+          onPress={() => setBurgerOpen((prev) => !prev)}
         >
           <Filter className="w-3" />
           دسته بندی ها و جستجو
@@ -100,7 +100,7 @@ export default function HeaderFilters({
             <Button
               isIconOnly
               variant="bordered"
-              onClick={() => changeViewMode("vert")}
+              onPress={() => changeViewMode("vert")}
               className={`${viewMode === "vert" ? "border-primary bg-primary" : ""} rounded-full border-1 border-border`}
             >
               <LayoutGrid
@@ -110,7 +110,7 @@ export default function HeaderFilters({
             <Button
               isIconOnly
               variant="bordered"
-              onClick={() => changeViewMode("horiz")}
+              onPress={() => changeViewMode("horiz")}
               className={`${viewMode === "horiz" ? "border-primary bg-primary" : ""} rounded-full border-1 border-border`}
             >
               <LayoutList

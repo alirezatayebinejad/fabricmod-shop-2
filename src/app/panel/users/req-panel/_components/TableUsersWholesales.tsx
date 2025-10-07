@@ -77,7 +77,7 @@ export default function TableUsersWholesales() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => changeAccess("2", user.id)}
+                    onPress={() => changeAccess("2", user.id)}
                     className="bg-success"
                     isLoading={loading}
                     isDisabled={loading}
@@ -87,7 +87,7 @@ export default function TableUsersWholesales() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => changeAccess("0", user.id)}
+                    onPress={() => changeAccess("0", user.id)}
                     className="bg-destructive"
                     isLoading={loading}
                     isDisabled={loading}
@@ -105,7 +105,7 @@ export default function TableUsersWholesales() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(user);
                   seeModal.onOpen();
                 }}

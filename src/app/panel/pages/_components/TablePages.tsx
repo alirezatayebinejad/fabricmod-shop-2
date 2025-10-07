@@ -126,7 +126,7 @@ export default function TablePages() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(page);
                   seeModal.onOpen();
                 }}
@@ -140,7 +140,7 @@ export default function TablePages() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(page);
                       editModal.onOpen();
                     }}
@@ -157,7 +157,7 @@ export default function TablePages() {
                     isIconOnly
                     size="sm"
                     className="group bg-boxBg300 hover:bg-destructive"
-                    onClick={() => {
+                    onPress={() => {
                       setPageToDelete(page);
                       deleteModal.onOpen();
                     }}

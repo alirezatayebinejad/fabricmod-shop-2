@@ -17,8 +17,7 @@ const FeaturesSelect = ({
 
   return (
     <div>
-      {product?.variations.length>1&&
-      
+      {product?.variations.length > 1 && (
         <div>
           <h4 className="mb-3">{product?.variations?.[0]?.attribute?.name}</h4>
           <div className="flex flex-wrap gap-3">
@@ -29,7 +28,7 @@ const FeaturesSelect = ({
                   key={v.id}
                   size="sm"
                   className={`flex h-7 cursor-pointer rounded-[2px] px-1 ${isSelected ? "bg-primary" : "bg-boxBg300"}`}
-                  onClick={() => handleSelect(v)}
+                  onPress={() => handleSelect(v)}
                 >
                   <p
                     className={`text-TextSize500 ${isSelected ? `text-primary-foreground` : "text-TextColor"}`}
@@ -41,7 +40,7 @@ const FeaturesSelect = ({
             })}
           </div>
         </div>
-      }
+      )}
       {product?.attributes_value?.map((a) => (
         <div className="mt-5" key={a.id}>
           <h4 className="mb-3">

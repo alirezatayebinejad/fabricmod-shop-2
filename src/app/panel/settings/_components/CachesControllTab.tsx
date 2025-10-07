@@ -31,7 +31,7 @@ export default function CachesControllTab() {
     <div className="space-y-4 md:p-4">
       <h2 className="text-lg font-bold">کنترل حافظه پنهان</h2>
       <Button
-        onClick={() => openConfirmModal("all")}
+        onPress={() => openConfirmModal("all")}
         color="primary"
         disabled={loading === "all"}
         isLoading={loading === "all"}
@@ -40,7 +40,7 @@ export default function CachesControllTab() {
       </Button>
       <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
         <Button
-          onClick={() => openConfirmModal("initials")}
+          onPress={() => openConfirmModal("initials")}
           color="secondary"
           disabled={loading === "initials"}
           isLoading={loading === "initials"}
@@ -48,7 +48,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان اطلاعات اولیه"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("theme")}
+          onPress={() => openConfirmModal("theme")}
           color="secondary"
           disabled={loading === "theme"}
           isLoading={loading === "theme"}
@@ -56,7 +56,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان تم"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("index")}
+          onPress={() => openConfirmModal("index")}
           color="secondary"
           disabled={loading === "index"}
           isLoading={loading === "index"}
@@ -64,7 +64,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان صفحه خانه"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("about")}
+          onPress={() => openConfirmModal("about")}
           color="secondary"
           disabled={loading === "about"}
           isLoading={loading === "about"}
@@ -72,7 +72,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان درباره ما"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("contact")}
+          onPress={() => openConfirmModal("contact")}
           color="secondary"
           disabled={loading === "contact"}
           isLoading={loading === "contact"}
@@ -80,7 +80,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان تماس با ما"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("rules")}
+          onPress={() => openConfirmModal("rules")}
           color="secondary"
           disabled={loading === "rules"}
           isLoading={loading === "rules"}
@@ -88,7 +88,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان قوانین ما"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("allPosts")}
+          onPress={() => openConfirmModal("allPosts")}
           color="secondary"
           disabled={loading === "allPosts"}
           isLoading={loading === "allPosts"}
@@ -96,7 +96,7 @@ export default function CachesControllTab() {
           {"حذف حافظه پنهان همه پست ها"}
         </Button>
         <Button
-          onClick={() => openConfirmModal("allProducts")}
+          onPress={() => openConfirmModal("allProducts")}
           color="secondary"
           disabled={loading === "allProducts"}
           isLoading={loading === "allProducts"}

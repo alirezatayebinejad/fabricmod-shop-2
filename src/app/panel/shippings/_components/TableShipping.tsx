@@ -114,7 +114,7 @@ export default function TableShipping() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(method);
                   seeModal.onOpen();
                 }}
@@ -128,7 +128,7 @@ export default function TableShipping() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(method);
                       editModal.onOpen();
                     }}

@@ -174,7 +174,7 @@ export default function FormTransactions({
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setModalSelectedData(transaction);
                   seeModal.onOpen();
                 }}
@@ -188,7 +188,7 @@ export default function FormTransactions({
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setModalSelectedData(transaction);
                       editModal.onOpen();
                     }}

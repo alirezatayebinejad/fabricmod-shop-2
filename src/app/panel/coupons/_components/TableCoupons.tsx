@@ -81,7 +81,7 @@ export default function TableCoupons() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(coupon);
                   seeModal.onOpen();
                 }}
@@ -95,7 +95,7 @@ export default function TableCoupons() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(coupon);
                       editModal.onOpen();
                     }}

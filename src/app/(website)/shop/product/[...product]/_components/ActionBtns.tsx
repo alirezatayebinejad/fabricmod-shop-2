@@ -121,7 +121,7 @@ export default function ActionBtns({
           </button>
         </div>
         <Button
-          onClick={() => {
+          onPress={() => {
             if (product) basketHandler(product);
           }}
           className={`h-[45px] rounded-[5px] bg-primary px-7 text-primary-foreground hover:bg-TextColor`}
@@ -143,7 +143,7 @@ export default function ActionBtns({
         <Button
           variant="light"
           className={`mt-4 rounded-[5px] ${isCompareAdded ? "bg-boxBg300" : ""}`}
-          onClick={() => {
+          onPress={() => {
             if (product) compareHandler(product?.slug);
           }}
         >

@@ -89,7 +89,7 @@ export default function TableUsers() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(user);
                   seeModal.onOpen();
                 }}
@@ -103,7 +103,7 @@ export default function TableUsers() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(user);
                       editModal.onOpen();
                     }}

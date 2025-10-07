@@ -38,7 +38,7 @@ export default function ComparePage() {
               variant="light"
               isIconOnly
               className="absolute -left-10 top-0"
-              onClick={() => removeCompare(product.slug)}
+              onPress={() => removeCompare(product.slug)}
             >
               <X className="w-5 text-TextLow" />
             </Button>

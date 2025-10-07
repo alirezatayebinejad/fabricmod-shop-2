@@ -167,7 +167,7 @@ export default function TableCategories() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(categ);
                   seeModal.onOpen();
                 }}
@@ -181,7 +181,7 @@ export default function TableCategories() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(categ);
                       editModal.onOpen();
                     }}

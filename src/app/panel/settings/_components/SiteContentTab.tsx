@@ -351,7 +351,7 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
                           <div className="flex justify-center">
                             <Button
                               type="button"
-                              onClick={() => handleRemoveField("faqs", index)}
+                              onPress={() => handleRemoveField("faqs", index)}
                               variant="light"
                               size="sm"
                               className="gap-1 font-[500] text-destructive-foreground hover:!bg-destructive"
@@ -369,7 +369,7 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
                   component={
                     <Button
                       type="button"
-                      onClick={() => handleAddField("faqs")}
+                      onPress={() => handleAddField("faqs")}
                       className="mt-2"
                     >
                       افزودن سوال
@@ -424,7 +424,7 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
                 </div>
                 <Button
                   type="button"
-                  onClick={() => handleRemoveField("benefits", index)}
+                  onPress={() => handleRemoveField("benefits", index)}
                   variant="light"
                   size="sm"
                   className="gap-1 font-[500] text-destructive-foreground hover:!bg-destructive"
@@ -436,7 +436,7 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
             ))}
           <Button
             type="button"
-            onClick={() => handleAddField("benefits")}
+            onPress={() => handleAddField("benefits")}
             className="mt-2"
           >
             افزودن مزیت

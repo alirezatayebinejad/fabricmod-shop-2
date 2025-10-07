@@ -99,7 +99,7 @@ export default function TableAttributes() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(attr);
                   seeModal.onOpen();
                 }}
@@ -113,7 +113,7 @@ export default function TableAttributes() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(attr);
                       editModal.onOpen();
                     }}

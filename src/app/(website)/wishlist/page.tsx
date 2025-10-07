@@ -162,7 +162,7 @@ export default function WhishlistPage() {
                               isIconOnly
                               size="sm"
                               isDisabled={loading}
-                              onClick={() => {
+                              onPress={() => {
                                 favHandler(item.product.id);
                               }}
                             >

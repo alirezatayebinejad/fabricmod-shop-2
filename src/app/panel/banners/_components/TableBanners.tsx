@@ -180,7 +180,7 @@ export default function TableBanners() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(banner);
                   seeModal.onOpen();
                 }}
@@ -194,7 +194,7 @@ export default function TableBanners() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(banner);
                       editModal.onOpen();
                     }}

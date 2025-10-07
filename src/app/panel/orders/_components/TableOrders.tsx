@@ -132,7 +132,7 @@ export default function TableOrders() {
                 component={
                   <Button
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(order);
                       transactionsModal.onOpen();
                     }}
@@ -145,7 +145,7 @@ export default function TableOrders() {
               <Button
                 isIconOnly
                 size="sm"
-                onClick={() => {
+                onPress={() => {
                   setSelectedData(order);
                   seeModal.onOpen();
                 }}
@@ -159,7 +159,7 @@ export default function TableOrders() {
                   <Button
                     isIconOnly
                     size="sm"
-                    onClick={() => {
+                    onPress={() => {
                       setSelectedData(order);
                       editModal.onOpen();
                     }}
