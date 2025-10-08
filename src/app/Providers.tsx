@@ -33,7 +33,10 @@ export default function Providers({
         >
           <Toaster
             position="top-right"
-            toastOptions={{ duration: 6000 }}
+            toastOptions={{
+              duration: 6000,
+            }}
+            containerStyle={{ marginTop: "60px" }}
             reverseOrder={false}
           />
           <GlobalDataContext.Provider value={globalData}>

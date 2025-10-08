@@ -119,15 +119,16 @@ export default function AddressTab(props: AddressTabProps) {
               >
                 حذف
               </Button>
-              <button
+              <Button
+                variant="solid"
                 className="gap-1 bg-primary text-primary-foreground"
-                onClick={(e) => {
-                  e.stopPropagation();
+                size="sm"
+                onPress={() => {
                   handleEdit(address);
                 }}
               >
                 ویرایش
-              </button>
+              </Button>
             </div>
           )}
           <h3 className="text-lg font-semibold">{address.title}</h3>

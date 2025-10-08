@@ -17,7 +17,9 @@ type ForOthersProps = {
 type Props = {
   onClose?: () => void;
   isEditMode?: boolean;
+  isInModal?: boolean;
   isShowMode?: boolean;
+  confirmText?: string;
   selectedData?: Address;
   onSuccess?: (addressId: number) => void;
   forOthers?: ForOthersProps;
@@ -26,7 +28,9 @@ type Props = {
 export default function AddressForm({
   onClose,
   isEditMode = false,
+  isInModal = true,
   isShowMode = false,
+  confirmText = "ذخیره",
   selectedData,
   onSuccess,
   forOthers,
@@ -265,14 +269,16 @@ export default function AddressForm({
         </div>
       </div>
       <div className="mb-3 mt-3 flex justify-end gap-2">
-        <Button
-          type="button"
-          className="rounded-[8px] border-1 border-border bg-transparent px-6 text-[14px] font-[500] text-TextColor"
-          variant="light"
-          onPress={onClose}
-        >
-          {isShowMode ? "بستن" : "لغو"}
-        </Button>
+        {isInModal && (
+          <Button
+            type="button"
+            className="rounded-[8px] border-1 border-border bg-transparent px-6 text-[14px] font-[500] text-TextColor"
+            variant="light"
+            onPress={onClose}
+          >
+            {isShowMode ? "بستن" : "لغو"}
+          </Button>
+        )}
         {!isShowMode && (
           <Button
             type="submit"
@@ -280,7 +286,7 @@ export default function AddressForm({
             color="primary"
             className="rounded-[8px] px-10 text-[14px] font-[500] text-primary-foreground"
           >
-            ذخیره
+            {confirmText}
           </Button>
         )}
       </div>

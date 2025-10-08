@@ -17,15 +17,18 @@ export default function CategoriesCarousel() {
   );
 
   return (
-    <Carousel
-      title="دسته بندي ها"
-      cards={
-        categsMinusParentWithChild
-          ? categsMinusParentWithChild?.map((child) => (
-              <CategoryCard key={child.slug} categ={child} />
-            ))
-          : []
-      }
-    />
+    <div className="mt-6">
+      <Carousel
+        title="دسته بندي ها"
+        styles={{ list: "md:gap-[8px]" }}
+        cards={
+          categsMinusParentWithChild
+            ? categsMinusParentWithChild?.map((child) => (
+                <CategoryCard key={child.slug} categ={child} />
+              ))
+            : []
+        }
+      />
+    </div>
   );
 }

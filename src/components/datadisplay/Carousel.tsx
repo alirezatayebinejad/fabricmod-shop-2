@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@heroui/button";
 import RevealEffect from "@/components/wrappers/RevealEffect";
 import Link from "next/link";
+import { cn } from "@/utils/twMerge";
 
 type Props = {
   cards: React.ReactNode[];
@@ -15,6 +16,7 @@ type Props = {
   ButtonLink?: string;
   autoplay?: boolean;
   loop?: boolean;
+  styles?: { list: string };
 };
 
 export default function Carousel({
@@ -24,6 +26,7 @@ export default function Carousel({
   ButtonLink = "#",
   autoplay = false,
   loop = false,
+  styles,
 }: Props) {
   const options: EmblaOptionsType = {
     align: "center",
@@ -98,7 +101,12 @@ export default function Carousel({
           className="embla__viewport relative overflow-hidden py-10"
           ref={emblaRef}
         >
-          <div className="embla__container flex gap-1.5 md:mr-5 md:gap-[15px]">
+          <div
+            className={cn(
+              "embla__container flex gap-1.5 md:mr-5 md:gap-[15px]",
+              styles?.list,
+            )}
+          >
             {isEmpty ? (
               <div className="w-full py-8 text-center text-lg text-TextLow">
                 موردي نيست

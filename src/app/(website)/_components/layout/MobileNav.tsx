@@ -29,7 +29,7 @@ export default function MobileNav() {
   };
 
   return (
-    <section className="fixed bottom-0 left-0 right-0 z-20 h-[60px] rounded-tl-[35px] rounded-tr-[35px] border-1 border-border bg-boxBg100 shadow-[0_0_25px_#00000015] sm:hidden">
+    <section className="fixed bottom-0 left-0 right-0 z-40 h-[60px] rounded-tl-[35px] rounded-tr-[35px] border-1 border-border bg-boxBg100 shadow-[0_0_25px_#00000015] sm:hidden">
       <nav className="flex h-full items-center justify-around">
         <Button
           as={Link}
