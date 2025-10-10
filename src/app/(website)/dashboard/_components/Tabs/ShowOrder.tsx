@@ -34,9 +34,6 @@ export default function ShowOrder({ onClose, selectedData }: Props) {
             <strong>شناسه سفارش:</strong> {order.id}
           </p>
           <p>
-            <strong>نام کاربر:</strong> {order.user_id}
-          </p>
-          <p>
             <strong>وضعیت پرداخت:</strong>{" "}
             {order.payment_status === "success"
               ? "موفق"
@@ -129,9 +126,9 @@ export default function ShowOrder({ onClose, selectedData }: Props) {
               { data: item.product?.name || "-" },
               {
                 data:
-                  item.variation.attribute.name + ": " + item.variation.value,
+                  item.variation?.attribute.name + ": " + item.variation?.value,
               },
-              { data: item.price.toLocaleString() },
+              { data: item.price?.toLocaleString() },
               { data: item.quantity },
               { data: (item.price * item.quantity).toLocaleString() },
             ],

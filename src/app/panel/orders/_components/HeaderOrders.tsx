@@ -57,7 +57,7 @@ export default function HeaderOrders() {
             isOpen: createModal.isOpen,
           }}
           size="5xl"
-          modalHeader={<h2>ویرایش سفارش</h2>}
+          modalHeader={<h2>ساخت سفارش</h2>}
           modalBody={<FormOrders onClose={() => createModal.onClose()} />}
         />
       </div>

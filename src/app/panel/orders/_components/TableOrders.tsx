@@ -51,7 +51,7 @@ export default function TableOrders() {
 
   const tableData: TableGenerateData = {
     headers: [
-      { content: "کاربر" },
+      { content: "دریافت کننده" },
       { content: "مبلغ پرداختی" },
       { content: "ایجاد" },
       { content: "آپدیت" },
@@ -61,7 +61,15 @@ export default function TableOrders() {
     ],
     body: orders?.map((order) => ({
       cells: [
-        { data: <p>{order.user?.name}</p> },
+        {
+          data: (
+            <p>
+              {order.user.cellphone}
+              <br />
+              {order.user?.name ?? ""}
+            </p>
+          ),
+        },
         { data: <p>{formatPrice(+order.paying_amount) + " " + currency}</p> },
         {
           data: (
@@ -186,7 +194,7 @@ export default function TableOrders() {
           setPage(page);
           changeFilters(`page=${page}`);
         }}
-        loading={isLoading ? { columns: 5, rows: 5 } : undefined}
+        loading={isLoading ? { columns: 7, rows: 5 } : undefined}
         error={error}
         onRetry={() => mutate()}
       />
@@ -234,10 +242,10 @@ export default function TableOrders() {
         modalHeader={
           <h2>
             ساخت و مشاهده تراکنش های سفارش{" "}
-            {selectedData?.uuid +
-              "- کاربر: " +
-              selectedData?.user.name +
-              " - " +
+            {"کاربر: " +
+              (selectedData?.user.name
+                ? selectedData?.user.name + " - "
+                : " ") +
               selectedData?.user.cellphone}
           </h2>
         }

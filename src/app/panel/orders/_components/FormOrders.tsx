@@ -36,6 +36,23 @@ interface ProductWithQty {
   qty: string;
 }
 
+// Helper to safely render variation description
+function getVariationDescription(
+  variation?:
+    | ProductsWithVariationIndex["variations"][number]
+    | OrderShow["items"][number]["variation"]
+    | null,
+) {
+  if (!variation) return "";
+  const attr =
+    typeof variation.attribute?.name === "string"
+      ? variation.attribute.name
+      : "";
+  const val = typeof variation.value === "string" ? variation.value : "";
+  if (!attr && !val) return "";
+  return attr && val ? `${attr}: ${val}` : attr || val;
+}
+
 export default function FormOrders({
   onClose,
   selectedData,
@@ -93,8 +110,7 @@ export default function FormOrders({
           order.items.map((p: OrderShow["items"][number]) => ({
             id: p.variation_id,
             title: p.product.name,
-            description:
-              p.variation.attribute.name + ": " + p.variation.value || "",
+            description: getVariationDescription(p.variation),
           })),
         );
       }
@@ -250,7 +266,7 @@ export default function FormOrders({
               return (
                 res?.data?.users?.map((u: UserIndex) => ({
                   id: u.id,
-                  title: u.name + " - " + u.cellphone,
+                  title: (u.name ? u.name + " - " : "") + u.cellphone,
                 })) || []
               );
             }}
@@ -355,19 +371,55 @@ export default function FormOrders({
       <div className="mb-4">
         <div className="mb-2">
           <b>کاربر:</b>
-          {selectedUser?.title ||
-            (selectedData?.user
-              ? order?.user?.name + " - " + order?.user?.cellphone
-              : "")}
+          {selectedUser?.title
+            ? selectedData?.user
+              ? (order?.user?.name ? order.user.name + " - " : "") +
+                order?.user?.cellphone
+              : ""
+            : ""}
         </div>
         <div className="mb-2 flex items-center gap-2">
           <b>آدرس:</b>
 
           {selectedAddress || order?.address ? (
             <div className="flex flex-wrap gap-1">
+              {(selectedAddress?.receiver_name ||
+                order?.address?.receiver_name) && (
+                <span>
+                  گیرنده:
+                  {selectedAddress?.receiver_name ||
+                    order?.address?.receiver_name ||
+                    "-"}
+                </span>
+              )}
+              {(selectedAddress?.cellphone || order?.address?.cellphone) && (
+                <span>
+                  تلفن:
+                  {selectedAddress?.cellphone ||
+                    order?.address?.cellphone ||
+                    "-"}
+                </span>
+              )}
               <span>
                 {selectedAddress?.title || order?.address?.title || ""}
               </span>
+              {(selectedAddress?.province?.name ||
+                order?.address?.province?.name) && (
+                <span>
+                  {" - " +
+                    (selectedAddress?.province.name ||
+                      order?.address.province.name ||
+                      "")}
+                </span>
+              )}
+              {(selectedAddress?.city.name || order?.address?.city.name) && (
+                <span>
+                  {" - " +
+                    (selectedAddress?.city.name ||
+                      order?.address?.city.name ||
+                      "")}
+                </span>
+              )}
               {(selectedAddress?.address || order?.address?.address) && (
                 <span>
                   {" - " +
@@ -383,15 +435,7 @@ export default function FormOrders({
                     "-"}
                 </span>
               )}
-              {(selectedAddress?.receiver_name ||
-                order?.address?.receiver_name) && (
-                <span>
-                  گیرنده:
-                  {selectedAddress?.receiver_name ||
-                    order?.address?.receiver_name ||
-                    "-"}
-                </span>
-              )}
+
               {(selectedAddress?.city?.name || order?.address?.city?.name) && (
                 <span>
                   شهر:
@@ -541,14 +585,23 @@ export default function FormOrders({
                       {item.product?.name}
                     </span>
                   </div>
-                  {item.variation && (
+                  {item.variation ? (
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-sm font-semibold text-gray-700">
-                        تنوع: ({item.variation.attribute?.name})
+                        تنوع: ({item.variation?.attribute?.name || "-"})
                       </span>
                       <span className="text-base text-TextColor">
-                        {item.variation.value}
+                        {typeof item.variation.value === "string"
+                          ? item.variation.value
+                          : "-"}
                       </span>
+                    </div>
+                  ) : (
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-700">
+                        تنوع:
+                      </span>
+                      <span className="text-base text-TextColor">-</span>
                     </div>
                   )}
                   <div className="mb-2 flex items-center gap-2">
@@ -610,10 +663,9 @@ export default function FormOrders({
                 ) {
                   product.variations.forEach((variation) => {
                     options.push({
-                      id: variation.id,
+                      id: variation?.id,
                       title: product.name,
-                      description:
-                        variation?.attribute?.name + ": " + variation.value,
+                      description: getVariationDescription(variation),
                     });
                   });
                 }
@@ -641,9 +693,7 @@ export default function FormOrders({
                   ? order.items?.map((p) => ({
                       id: p.variation_id,
                       title: p.product.name,
-                      description:
-                        p.variation.attribute.name + ": " + p.variation.value ||
-                        "",
+                      description: getVariationDescription(p.variation),
                     }))
                   : []
             }
@@ -664,9 +714,7 @@ export default function FormOrders({
                 ? order.items.map((p) => ({
                     id: p.variation_id,
                     title: p.product?.name,
-                    description:
-                      p.variation.attribute.name + ": " + p.variation.value ||
-                      "",
+                    description: getVariationDescription(p.variation),
                   }))
                 : []
             ).map((product, index) => (
