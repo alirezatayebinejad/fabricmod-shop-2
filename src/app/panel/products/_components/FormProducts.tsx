@@ -732,7 +732,7 @@ export default function FormProducts({
                     <h4 className="border-r-3 border-accent-4 pr-2 text-lg font-semibold">
                       متغیر {i + 1}
                     </h4>
-                    {!isShowMode && !isEditMode && (
+                    {!isShowMode && (!isEditMode || v.id === null) && (
                       <Button
                         type="button"
                         isIconOnly

@@ -32,7 +32,8 @@ export default function PaymentResultPage() {
 
   useEffect(() => {
     if (success) removeAllBasket();
-  }, [removeAllBasket, success]);
+    //eslint-disable-next-line
+  }, [success]);
 
   return (
     <main className="flex min-h-screen w-full items-center justify-center px-4 py-12">
