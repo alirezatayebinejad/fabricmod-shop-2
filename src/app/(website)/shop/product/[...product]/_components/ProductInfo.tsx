@@ -25,6 +25,7 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
   const isAdmin = user?.roles.some(
     (r) => r.name === "admin" || r.name === "super_admin",
   );
+  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -76,7 +77,6 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
         <div className="text-[32px]">
           {selectedVariation
             ? (() => {
-                // Import isSaleActive at the top if not already: import isSaleActive from "@/utils/isSaleActive";
                 const saleActive = isSaleActive(
                   selectedVariation.date_sale_from ?? null,
                   selectedVariation.date_sale_to ?? null,

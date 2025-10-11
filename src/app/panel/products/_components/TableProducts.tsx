@@ -129,7 +129,7 @@ export default function TableProducts() {
         },
         { data: <p>{prod.name}</p> },
         {
-          data: <p>{prod.quantity_check ? prod.quantity_check : "ناموجود"}</p>,
+          data: <p>{prod.quantity_check ? "موجود" : "ناموجود"}</p>,
         },
         {
           data: (

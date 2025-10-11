@@ -120,15 +120,29 @@ export default function ActionBtns({
             <Plus className="w-3.5 text-TextColor" />
           </button>
         </div>
-        <Button
-          onPress={() => {
-            if (product) basketHandler(product);
-          }}
-          className={`h-[45px] rounded-[5px] bg-primary px-7 text-primary-foreground hover:bg-TextColor`}
-          startContent={isBasketAdded ? <Check className="w-4" /> : null}
-        >
-          {isBasketAdded ? "حذف از سبد خرید" : "افزودن به سبد خرید"}
-        </Button>
+        {product?.is_active?.toString() === "0" ? (
+          <Button
+            disabled
+            className="h-[45px] rounded-[5px] bg-boxBg400 px-7 text-TextColor hover:bg-boxBg400"
+          >
+            محصول غیرفعال
+          </Button>
+        ) : (
+          <Button
+            onPress={() => {
+              if (product) basketHandler(product);
+            }}
+            disabled={!selectedVariation?.quantity}
+            className={`h-[45px] rounded-[5px] px-7 ${!selectedVariation?.quantity ? "bg-boxBg400 text-TextColor hover:bg-boxBg400" : "bg-primary text-primary-foreground hover:bg-TextColor"}`}
+            startContent={isBasketAdded ? <Check className="w-4" /> : null}
+          >
+            {!!selectedVariation?.quantity
+              ? isBasketAdded
+                ? "حذف از سبد خرید"
+                : "افزودن به سبد خرید"
+              : "ناموجود"}
+          </Button>
+        )}
       </div>
       <div className="flex flex-wrap gap-1">
         <Button

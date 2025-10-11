@@ -12,7 +12,7 @@ const FeaturesSelect = ({
   selectedVariation: ProductShowSite["variations"][number] | undefined;
 }) => {
   const handleSelect = (variation: ProductShowSite["variations"][number]) => {
-    onVariationChange(variation);
+    if (variation.quantity) onVariationChange(variation);
   };
 
   return (
@@ -27,7 +27,7 @@ const FeaturesSelect = ({
                 <Button
                   key={v.id}
                   size="sm"
-                  className={`flex h-7 cursor-pointer rounded-[2px] px-1 ${isSelected ? "bg-primary" : "bg-boxBg300"}`}
+                  className={`flex h-7 rounded-[2px] px-1 ${isSelected ? "bg-primary" : "bg-boxBg300"} cursor-move ${selectedVariation?.quantity ? "cursor-pointer" : "cursor-move"}`}
                   onPress={() => handleSelect(v)}
                 >
                   <p
