@@ -230,7 +230,7 @@ export default function FormPost({
               { id: "draft", title: "پیش نویس" },
               { id: "pending", title: "در انتظار" },
             ]}
-            defaultValue={[
+            value={[
               {
                 id: values.status,
                 title:

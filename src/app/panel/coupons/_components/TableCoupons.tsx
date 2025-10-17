@@ -64,7 +64,7 @@ export default function TableCoupons() {
         {
           data:
             coupon.type === "amount"
-              ? "مقدرای"
+              ? "مقداری"
               : coupon.type === "percentage"
                 ? "درصدی"
                 : "نامشخص",

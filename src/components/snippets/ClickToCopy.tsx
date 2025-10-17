@@ -1,4 +1,5 @@
 "use client";
+import shortenString from "@/utils/shortenString";
 import { cn } from "@/utils/twMerge";
 import { ClipboardCheck, Copy } from "lucide-react";
 import { useState } from "react";
@@ -29,7 +30,7 @@ const ClickToCopy = ({ text, styles }: ClickToCopyProps) => {
         onClick={copyToClipboard}
         className={cn("cursor-pointer", styles?.text)}
       >
-        {text}
+        {shortenString(text, 30, "before")}
       </p>
       {!message ? (
         <Copy className={cn("w-4 text-TextLow", styles?.icon)} />

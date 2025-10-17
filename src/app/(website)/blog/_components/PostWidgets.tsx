@@ -2,7 +2,6 @@
 import RateIt from "@/app/(website)/blog/_components/RateIt";
 import ClickToCopy from "@/components/snippets/ClickToCopy";
 import { PostShowSite } from "@/types/apiTypes";
-import shortenString from "@/utils/shortenString";
 import { Button } from "@heroui/button";
 import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -62,7 +61,7 @@ export default function PostWidgets({ data }: { data?: PostShowSite }) {
           </div>
           <div>
             <div className="rounded-full border-1 border-TextColor px-2 py-1">
-              <ClickToCopy text={shortenString(url, 30, "before")} />
+              <ClickToCopy text={url} />
             </div>
           </div>
         </div>

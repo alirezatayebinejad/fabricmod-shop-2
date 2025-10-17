@@ -23,20 +23,22 @@ const FeaturesSelect = ({
           <div className="flex flex-wrap gap-3">
             {product?.variations?.map((v) => {
               const isSelected = selectedVariation?.id === v.id;
-              return (
-                <Button
-                  key={v.id}
-                  size="sm"
-                  className={`flex h-7 rounded-[2px] px-1 ${isSelected ? "bg-primary" : "bg-boxBg300"} cursor-move ${selectedVariation?.quantity ? "cursor-pointer" : "cursor-move"}`}
-                  onPress={() => handleSelect(v)}
-                >
-                  <p
-                    className={`text-TextSize500 ${isSelected ? `text-primary-foreground` : "text-TextColor"}`}
+              if (v.quantity > 0)
+                return (
+                  <Button
+                    key={v.id}
+                    size="sm"
+                    className={`flex h-7 rounded-[2px] px-1 ${isSelected ? "bg-primary" : "bg-boxBg300"} `}
+                    onPress={() => handleSelect(v)}
                   >
-                    {v.value}
-                  </p>
-                </Button>
-              );
+                    <p
+                      className={`text-TextSize500 ${isSelected ? `text-primary-foreground` : "text-TextColor"}`}
+                    >
+                      {v.value}
+                    </p>
+                  </Button>
+                );
+              else return null;
             })}
           </div>
         </div>
