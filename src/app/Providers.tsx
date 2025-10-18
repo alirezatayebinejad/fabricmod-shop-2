@@ -10,6 +10,7 @@ import { GlobalDataContext, GlobalDataType } from "@/contexts/GlobalData";
 import BasketProvider from "@/contexts/BasketContext";
 import CompareProvider from "@/contexts/compareContext";
 import UserProvider from "@/contexts/UserContext";
+import GoftinoWidget from "@/app/(website)/_components/snippets/GoftinoWidget";
 
 export default function Providers({
   children,
@@ -45,7 +46,10 @@ export default function Providers({
                 <CompareProvider>
                   <FiltersProvider>
                     <SidebarProvider>
-                      <HeroUIProvider>{children}</HeroUIProvider>
+                      <HeroUIProvider>
+                        <GoftinoWidget />
+                        {children}
+                      </HeroUIProvider>
                     </SidebarProvider>
                   </FiltersProvider>
                 </CompareProvider>

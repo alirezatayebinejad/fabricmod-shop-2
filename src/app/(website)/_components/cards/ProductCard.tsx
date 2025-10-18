@@ -22,8 +22,8 @@ export default function ProductCard({
   product,
   fullSize = false,
 }: {
-  product: /* TODO: back_image is not here */
-  | ProductIndexSite["products"][number]
+  product:
+    | ProductIndexSite["products"][number]
     | ProductCategoryShowSite["data"]["products"][number]
     | ProductShowSite["related_products"][number]
     | Index["latest_products"][number]
@@ -65,7 +65,7 @@ export default function ProductCard({
       <div className="relative aspect-square !overflow-hidden !rounded-[10px]">
         <Link prefetch={false} href={`/shop/product/${product?.slug}`}>
           <div className="absolute inset-0 flex h-full items-center justify-center overflow-hidden !rounded-[10px]">
-            {"back_image" in product && product?.back_image ? (
+            {product?.back_image ? (
               <Image
                 src={process.env.NEXT_PUBLIC_IMG_BASE! + product.back_image}
                 alt={product?.name || "product image"}

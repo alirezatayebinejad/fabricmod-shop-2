@@ -120,7 +120,7 @@ export default async function HomePage() {
                   headTitle={data.banners.three[1]?.pre_title}
                   title={data.banners.three[1].title}
                   description={data.banners.three[1].text}
-                  data={data.banners.three[0]}
+                  data={data.banners.three[1]}
                 />
               </div>
             ) : (
@@ -141,7 +141,7 @@ export default async function HomePage() {
                     headTitle={data.banners.three[1]?.pre_title}
                     title={data.banners.three[1].title}
                     description={data.banners.three[1].text}
-                    data={data.banners.three[0]}
+                    data={data.banners.three[1]}
                     containerStyle="max-md:max-h-[200px]"
                   />
                 </div>
@@ -156,7 +156,7 @@ export default async function HomePage() {
                   headTitle={data.banners.three[2]?.pre_title}
                   title={data.banners.three[2].title}
                   description={data.banners.three[2].text}
-                  data={data.banners.three[0]}
+                  data={data.banners.three[2]}
                   height={624}
                 />
               </div>
@@ -166,7 +166,7 @@ export default async function HomePage() {
                   headTitle={data.banners.three[2]?.pre_title}
                   title={data.banners.three[2].title}
                   description={data.banners.three[2].text}
-                  data={data.banners.three[0]}
+                  data={data.banners.three[2]}
                   height={300}
                 />
               </div>

@@ -1668,6 +1668,7 @@ export interface Index {
     name: string;
     slug: string;
     primary_image: null | string;
+    back_image: null | string;
     updated_at: string;
     category_id: number;
     brand_id: null | number;
@@ -1757,6 +1758,7 @@ export interface Index {
       name: string;
       slug: string;
       primary_image: string;
+      back_image: string;
       updated_at: string;
       category_id: number;
       quantity_check: boolean;
@@ -1819,6 +1821,7 @@ export interface ProductShowSite {
     name: string;
     slug: string;
     primary_image: null | string;
+    back_image: null | string;
     category_id: number;
     quantity_check: boolean | number;
     sale_check: boolean;
@@ -2041,6 +2044,7 @@ export interface ProductIndexSite {
     name: string;
     slug: string;
     primary_image: null | string;
+    back_image: null | string;
     category_id: number;
     brand_id: null | number;
     quantity_check: false | string | number;
@@ -2153,6 +2157,7 @@ export interface ProductCategoryShowSite {
       name: string;
       slug: string;
       primary_image: string;
+      back_image: string;
       category_id: number;
       brand_id: null;
       quantity_check: boolean;

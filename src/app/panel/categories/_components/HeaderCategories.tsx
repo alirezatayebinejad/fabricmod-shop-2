@@ -16,9 +16,9 @@ export default function HeaderCategories() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { changeFilters, getFilterValue, deleteFilter } = useFiltersContext();
   const [search, setSearch] = useState("");
-
   const isParentFilterValue = getFilterValue("is_parent");
   const typeFilterValue = getFilterValue("type");
+  const isActiveValue = getFilterValue("is_active");
 
   const handleSearch = () => {
     if (search) {
@@ -27,6 +27,7 @@ export default function HeaderCategories() {
       deleteFilter("search");
     }
   };
+
   return (
     <div>
       <ProtectComponent
@@ -92,10 +93,10 @@ export default function HeaderCategories() {
           />
         </div>
 
-        <div className="flex gap-2 max-md:flex-wrap lg:min-w-[300px]">
+        <div className="flex gap-2 max-md:flex-wrap lg:min-w-[420px]">
           <SelectSearchCustom
             options={[{ id: 1, title: "والد" }]}
-            placeholder="انتخاب نوع والد"
+            placeholder="نوع والد"
             isSearchDisable
             onChange={(selected) => {
               if (selected.length > 0 && selected[0].id !== undefined) {
@@ -115,7 +116,7 @@ export default function HeaderCategories() {
               { id: "post", title: "پست" },
               { id: "product", title: "محصول" },
             ]}
-            placeholder="انتخاب نوع"
+            placeholder="بخش دسته"
             isSearchDisable
             onChange={(selected) => {
               if (selected.length > 0 && selected[0].id !== undefined) {
@@ -138,6 +139,28 @@ export default function HeaderCategories() {
                     },
                   ]
                 : undefined
+            }
+          />
+          <SelectSearchCustom
+            options={[
+              { id: "1", title: "فعال" },
+              { id: "0", title: "غیرفعال" },
+            ]}
+            placeholder="وضعیت"
+            isSearchDisable
+            onChange={(selected) => {
+              if (selected.length > 0 && selected[0].id !== undefined) {
+                changeFilters("is_active=" + selected[0].id);
+              } else {
+                deleteFilter("is_active");
+              }
+            }}
+            defaultValue={
+              isActiveValue === "1"
+                ? [{ id: "1", title: "فعال" }]
+                : isActiveValue === "0"
+                  ? [{ id: "0", title: "غیرفعال" }]
+                  : undefined
             }
           />
         </div>

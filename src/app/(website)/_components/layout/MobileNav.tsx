@@ -57,15 +57,17 @@ export default function MobileNav() {
               <InputBasic
                 name="search"
                 type="search"
-                placeholder="جستجو..."
+                placeholder="بنويسيد..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
                 endContent={
-                  <Search
-                    className="cursor-pointer text-TextMute"
+                  <p
+                    className="cursor-pointer rounded-lg border-1 border-border2 p-1 text-TextLow hover:bg-boxBg400"
                     onClick={handleSearch}
-                  />
+                  >
+                    جستجو
+                  </p>
                 }
               />
             </div>

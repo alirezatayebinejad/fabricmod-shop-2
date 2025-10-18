@@ -202,12 +202,15 @@ function HeaderComponent() {
             </nav>
           </div>
           <div className="flex flex-wrap items-center justify-end">
-            <DarkSwitch type="button" />
             <div className="max-sm:hidden">
               <Popover placement="bottom" showArrow={true}>
                 <PopoverTrigger>
-                  <Button variant="light" isIconOnly>
-                    <Search className="w-[22px] text-TextColor" />
+                  <Button
+                    variant="light"
+                    endContent={<Search className="w-[20px] text-TextColor" />}
+                    className="px-0"
+                  >
+                    <p>جستجو</p>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent>
@@ -215,22 +218,25 @@ function HeaderComponent() {
                     <InputBasic
                       name="search"
                       type="search"
-                      placeholder="جستجو..."
-                      ariaLable="جستجو وبلاگ"
+                      placeholder="بنویسید..."
+                      ariaLable="جستجو محصول"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyDown={handleKeyDown}
                       endContent={
-                        <Search
-                          className="cursor-pointer text-TextMute"
+                        <p
+                          className="cursor-pointer rounded-lg border-1 border-border2 p-1 text-TextLow hover:bg-boxBg400"
                           onClick={handleSearch}
-                        />
+                        >
+                          جستجو
+                        </p>
                       }
                     />
                   </div>
                 </PopoverContent>
               </Popover>
             </div>
+            <DarkSwitch type="button" />
             <TooltipCustom content="مقایسه ها" key="comparisons">
               <Button
                 as={Link}
