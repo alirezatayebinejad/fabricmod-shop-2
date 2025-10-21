@@ -34,7 +34,6 @@ export default function CheckoutPage() {
   const [scrollToError, setScrollToError] = useState(false);
   const [couponRes, setCouponRes] = useState<CheckCoupon>();
   const [payLoading, setPayLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("online");
   const [gatewayName, setGatewayName] = useState("sep");
   const [showProductsTable, setShowProductsTable] = useState(false);
   const [createdAddressId, setCreatedAddressId] = useState<number | null>(null);
@@ -128,7 +127,7 @@ export default function CheckoutPage() {
         qty: p.countBasket,
         variation_id: p.selectedVariationId,
       })),
-      payment_method: paymentMethod,
+      payment_method: "online",
       gateway_name: gatewayName,
     };
 
@@ -275,8 +274,6 @@ export default function CheckoutPage() {
                 couponRes={couponRes}
                 setCouponRes={setCouponRes}
                 basket={basket}
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
                 gatewayName={gatewayName}
                 setGatewayName={setGatewayName}
                 selectedAddress={selectedAddress}

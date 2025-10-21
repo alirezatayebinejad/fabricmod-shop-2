@@ -21,9 +21,7 @@ export default function PaymentResultPage() {
   const gatewayParam = searchParams.get("gateway");
   const gatewayMap: Record<string, string> = {
     sep: "درگاه سپ",
-    zarinpal: "زرین‌پال",
-    melat: "بانک ملت",
-    meli: "بانک ملی",
+    torob: "ترب",
   };
   const gateway = gatewayParam
     ? gatewayMap[gatewayParam] || gatewayParam

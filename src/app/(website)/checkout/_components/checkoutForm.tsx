@@ -7,7 +7,6 @@ import {
 import CouponSection from "@/app/(website)/checkout/_components/CouponSection";
 import ShippingSection from "@/app/(website)/checkout/_components/ShippingSection";
 import PaymentSection from "@/app/(website)/checkout/_components/PaymentSection";
-import React from "react";
 
 interface CheckoutFormProps {
   checkout?: Checkout;
@@ -26,8 +25,6 @@ interface CheckoutFormProps {
   couponRes?: CheckCoupon;
   setCouponRes: (res?: CheckCoupon) => void;
   basket: any[];
-  paymentMethod: string;
-  setPaymentMethod: (method: string) => void;
   gatewayName: string;
   setGatewayName: (gateway: string) => void;
   selectedAddress: Address | null;
@@ -74,8 +71,6 @@ export default function CheckoutForm({
   couponRes,
   setCouponRes,
   basket,
-  paymentMethod,
-  setPaymentMethod,
   gatewayName,
   setGatewayName,
   selectedAddress,
@@ -118,12 +113,11 @@ export default function CheckoutForm({
       />
 
       <PaymentSection
-        paymentMethod={paymentMethod}
-        setPaymentMethod={setPaymentMethod}
         gatewayName={gatewayName}
         setGatewayName={setGatewayName}
         paymentFieldErrors={paymentFieldErrors}
         setPaymentFieldErrors={setPaymentFieldErrors}
+        installment={checkout?.installment}
       />
     </div>
   );

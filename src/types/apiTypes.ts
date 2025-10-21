@@ -2679,6 +2679,11 @@ export interface Checkout {
     type: string;
     couponTotalAmount: number;
   };
+  installment: {
+    eligible: boolean;
+    title_message: string;
+    description: string;
+  };
 }
 
 export interface ShippingmethodIndexSite {
