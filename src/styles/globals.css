@@ -576,3 +576,40 @@ a.ck.ck-button.ck-on {
   border-color: color-mix(in oklab, #dc3545 35%, var(--border2));
   background-color: color-mix(in oklab, #dc3545 10%, transparent);
 }
+
+.editor_display {
+  /* اجازه بده جدول خودش اسکرول بگیره */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* جدول باید قابل اسکرول باشه داخل .editor_display */
+.editor_display table {
+  width: 100%;
+  display: block;
+  border-collapse: collapse;
+  border-radius: 12px;
+  margin-block: 1rem;
+  overflow-x: auto;
+  min-width: 600px; /* باعث میشه اگر محتوای زیاد بود، اسکرول فعال بشه */
+}
+
+/* اسکرول‌بار فقط برای جدول */
+.editor_display::-webkit-scrollbar {
+  height: 8px;
+}
+.editor_display::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--border2) 80%, transparent);
+  border-radius: 999px;
+}
+
+/* استایل برای دستگاه‌های کوچک */
+@media (max-width: 640px) {
+  .editor_display table {
+    font-size: 0.95rem;
+  }
+  .editor_display th,
+  .editor_display td {
+    white-space: nowrap;
+  }
+}

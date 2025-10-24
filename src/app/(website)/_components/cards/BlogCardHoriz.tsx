@@ -68,14 +68,14 @@ export default function BlogCardHoriz({
       <div
         className={`absolute left-0 ${tinymode ? `bottom-[2px] text-TextLow` : "bottom-4 max-md:bottom-0"}`}
       >
-        <Link prefetch={false} href={"/blog/post/" + blog?.slug}>
-          <Button
-            className={`gap-1 rounded-full border-1 border-border bg-transparent text-TextColor group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground max-md:border-none ${tinymode ? "!min-w-auto max-h-[25px] border-none p-0 px-1 text-TextSize300" : "text-TextSize400"}`}
-          >
-            ادامه مطلب
-            <ArrowLeft className="w-3 text-TextLow group-hover:text-primary-foreground" />
-          </Button>
-        </Link>
+        <Button
+          as={Link}
+          href={"/blog/post/" + blog.slug}
+          className={`gap-1 rounded-full border-1 border-border bg-transparent text-TextColor group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground max-md:border-none ${tinymode ? "!min-w-auto max-h-[25px] border-none p-0 px-1 text-TextSize300" : "text-TextSize400"}`}
+        >
+          ادامه مطلب
+          <ArrowLeft className="w-3 text-TextLow group-hover:text-primary-foreground" />
+        </Button>
       </div>
     </div>
   );

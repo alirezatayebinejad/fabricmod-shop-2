@@ -61,12 +61,14 @@ export default function BlogCard({
           {blog?.description}
         </p>
         <div>
-          <Link prefetch={false} href={"/blog/post/" + blog.slug}>
-            <Button className="rounded-full border-1 border-border bg-transparent !text-TextSize400 text-TextColor group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-              ادامه مطلب
-              <ArrowLeft className="w-4 text-TextColor group-hover:text-primary-foreground" />
-            </Button>
-          </Link>
+          <Button
+            as={Link}
+            href={"/blog/post/" + blog.slug}
+            className="rounded-full border-1 border-border bg-transparent !text-TextSize400 text-TextColor group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
+          >
+            ادامه مطلب
+            <ArrowLeft className="w-4 text-TextColor group-hover:text-primary-foreground" />
+          </Button>
         </div>
       </div>
     </div>

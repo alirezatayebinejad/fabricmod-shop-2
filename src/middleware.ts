@@ -32,7 +32,12 @@ export const middleware = (request: NextRequest) => {
   }
   if (authRequiredPaths.some((authPath) => path.startsWith(authPath))) {
     if (!userSession?.token) {
-      return NextResponse.redirect(new URL("/auth/login", request.url));
+      return NextResponse.redirect(
+        new URL(
+          `/auth/login?fallback=` + path + "?" + request.nextUrl.searchParams,
+          request.url,
+        ),
+      );
     }
   }
 
