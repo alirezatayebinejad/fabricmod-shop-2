@@ -183,10 +183,27 @@ export default function FormProducts({
         onClose?.();
         if (isModal)
           mutate(`admin-panel/products${filters ? "?" + filters : filters}`);
-        else if (!isEditMode)
-          router.push(
-            `/panel/products/lists${filters ? "?" + filters : filters}`,
-          );
+        else if (!isEditMode && !isShowMode) {
+          // Try to get created product identifier (id or slug) from response; fallback to submitted slug
+          const createdId = res?.data?.product?.id || res?.data?.id;
+          const createdSlug =
+            res?.data?.product?.slug || res?.data?.slug || values.slug;
+
+          const basePath = "/panel/products/lists";
+          const url = new URL(window.location.origin + basePath);
+          // Preserve existing filters if any
+          if (filters) {
+            const query = new URLSearchParams(filters);
+            query.forEach((v, k) => url.searchParams.set(k, v));
+          }
+          // Flag the list to open wholesale modal for this product
+          if (createdId)
+            url.searchParams.set("openWholesaleFor", String(createdId));
+          else if (createdSlug)
+            url.searchParams.set("openWholesaleForSlug", String(createdSlug));
+
+          router.push(url.pathname + (url.search ? url.search : ""));
+        }
       }
     },
   );

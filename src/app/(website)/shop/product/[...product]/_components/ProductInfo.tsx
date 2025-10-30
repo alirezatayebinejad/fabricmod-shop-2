@@ -30,9 +30,9 @@ export default function ProductInfo({ data }: { data: ProductShowSite }) {
   useEffect(() => {
     if (data) {
       const defaultVariationBasedOnPriceCheck = data.variations?.find(
-        (v) =>
-          data.price_check && v.attribute_id === data.price_check?.attribute_id,
+        (v) => data.price_check && v.id === data.price_check?.id,
       );
+
       setSelectedVariation(defaultVariationBasedOnPriceCheck);
     }
   }, [data]);

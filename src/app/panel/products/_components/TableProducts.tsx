@@ -37,9 +37,12 @@ import FormProductPrices from "@/app/panel/products/_components/FormProductPrice
 import { currency } from "@/constants/staticValues";
 import FormProductWholesalePrices from "@/app/panel/products/_components/FormProductWholesalePrices";
 import isSaleActive from "@/utils/isSaleActive";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function TableProducts() {
   const { filters, changeFilters } = useFiltersContext();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { data, error, isLoading, mutate } = useSWR(
     `admin-panel/products${filters ? "?" + filters : ""}`,
     (url) =>
@@ -65,6 +68,29 @@ export default function TableProducts() {
       setProducts(data.data?.products);
     }
   }, [data]);
+
+  // Open wholesale modal if redirected after creating a product
+  useEffect(() => {
+    if (!products || products.length === 0) return;
+    const idParam = searchParams?.get("openWholesaleFor");
+    const slugParam = searchParams?.get("openWholesaleForSlug");
+    if (!idParam && !slugParam) return;
+
+    const found = products?.find((p) =>
+      idParam ? p.id?.toString() === idParam : p.slug === slugParam,
+    );
+    if (found) {
+      setSelectedData(found);
+      wholesalePriceModal.onOpen();
+      // Clean the param to avoid reopening on refresh/back
+      const url = new URL(window.location.href);
+      url.searchParams.delete("openWholesaleFor");
+      url.searchParams.delete("openWholesaleForSlug");
+      router.replace(url.pathname + (url.search ? url.search : ""));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products, searchParams]);
 
   const meta: PaginateMeta = data?.data?.meta;
   const pages = meta?.last_page;

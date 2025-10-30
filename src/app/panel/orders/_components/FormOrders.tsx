@@ -23,6 +23,7 @@ import RetryError from "@/components/datadisplay/RetryError";
 import { Spinner } from "@heroui/spinner";
 import { useFiltersContext } from "@/contexts/SearchFilters";
 import { dateConvert } from "@/utils/dateConvert";
+import { weight } from "@/constants/staticValues";
 
 type Props = {
   onClose: () => void;
@@ -520,7 +521,7 @@ export default function FormOrders({
         />
         <InputBasic
           name="total_weight"
-          label="مجموع وزن"
+          label={"مجموع وزن" + " " + weight}
           type="number"
           value={values.total_weight}
           onChange={isShowMode ? undefined : handleChange("total_weight")}
