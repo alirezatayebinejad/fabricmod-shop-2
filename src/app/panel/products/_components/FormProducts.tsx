@@ -197,11 +197,10 @@ export default function FormProducts({
             query.forEach((v, k) => url.searchParams.set(k, v));
           }
           // Flag the list to open wholesale modal for this product
-          if (createdId)
+          if (createdId && createdSlug) {
             url.searchParams.set("openWholesaleFor", String(createdId));
-          else if (createdSlug)
             url.searchParams.set("openWholesaleForSlug", String(createdSlug));
-
+          }
           router.push(url.pathname + (url.search ? url.search : ""));
         }
       }

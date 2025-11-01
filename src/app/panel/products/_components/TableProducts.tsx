@@ -59,6 +59,10 @@ export default function TableProducts() {
   const wholesalePriceModal = useDisclosure();
 
   const [selectedData, setSelectedData] = useState<ProductIndex>();
+  const [selectedWholesale, setSelectedWholesale] = useState<{
+    slug: ProductIndex["slug"];
+    id: ProductIndex["id"];
+  }>();
   const [switchLoading, setSwitchLoading] = useState<number | undefined>();
   const [products, setProducts] = useState<ProductIndex[]>();
 
@@ -71,24 +75,19 @@ export default function TableProducts() {
 
   // Open wholesale modal if redirected after creating a product
   useEffect(() => {
-    if (!products || products.length === 0) return;
-    const idParam = searchParams?.get("openWholesaleFor");
-    const slugParam = searchParams?.get("openWholesaleForSlug");
-    if (!idParam && !slugParam) return;
-
-    const found = products?.find((p) =>
-      idParam ? p.id?.toString() === idParam : p.slug === slugParam,
-    );
-    if (found) {
-      setSelectedData(found);
-      wholesalePriceModal.onOpen();
-      // Clean the param to avoid reopening on refresh/back
-      const url = new URL(window.location.href);
-      url.searchParams.delete("openWholesaleFor");
-      url.searchParams.delete("openWholesaleForSlug");
-      router.replace(url.pathname + (url.search ? url.search : ""));
-    }
-
+    (() => {
+      const idParam = searchParams?.get("openWholesaleFor");
+      const slugParam = searchParams?.get("openWholesaleForSlug");
+      if (idParam && slugParam) {
+        setSelectedWholesale({ id: +idParam, slug: slugParam });
+        wholesalePriceModal.onOpen();
+        // Clean the param to avoid reopening on refresh/back
+        const url = new URL(window.location.href);
+        url.searchParams.delete("openWholesaleFor");
+        url.searchParams.delete("openWholesaleForSlug");
+        router.replace(url.pathname + (url.search ? url.search : ""));
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, searchParams]);
 
@@ -422,15 +421,13 @@ export default function TableProducts() {
         }}
         size="5xl"
         isDismissable
-        modalHeader={
-          <h2>قیمت گزاری عمده {selectedData?.name ? selectedData.name : ""}</h2>
-        }
+        modalHeader={<h2>قیمت گزاری عمده </h2>}
         modalBody={
           <FormProductWholesalePrices
             onClose={() => wholesalePriceModal.onClose()}
             isModal
-            productSlug={selectedData?.slug}
-            productId={selectedData?.id}
+            productSlug={selectedWholesale?.slug || selectedData?.slug}
+            productId={selectedWholesale?.id || selectedData?.id}
           />
         }
       />

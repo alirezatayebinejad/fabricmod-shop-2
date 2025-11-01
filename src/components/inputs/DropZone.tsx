@@ -187,6 +187,8 @@ function DropZone({
             "image/png": [".png"],
             "image/jpg": [".jpg"],
             "image/jpeg": [".jpeg"],
+            "image/webp": [".webp"],
+            "image/webp-x": [".webp-x"],
           }
         : type === "video"
           ? {
@@ -329,7 +331,7 @@ function DropZone({
             {type === "video"
               ? "mp4, mkv"
               : type === "image"
-                ? "jpeg, jpg, png"
+                ? "jpeg, jpg, png, webp"
                 : type === "docs"
                   ? "jpeg, jpg, png, pdf"
                   : null}

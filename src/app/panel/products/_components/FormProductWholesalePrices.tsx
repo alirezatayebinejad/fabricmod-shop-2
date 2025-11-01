@@ -135,6 +135,7 @@ export default function FormProductWholesalePrices({
 
   return (
     <div>
+      <h2 className="mb-5">محصول {product?.name ? product.name : ""}</h2>
       <form noValidate onSubmit={handleSubmit}>
         {values.var && values.var.length ? (
           values.var.map((item: WholesaleVar, idx: number) => (

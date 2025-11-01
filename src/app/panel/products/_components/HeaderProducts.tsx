@@ -15,10 +15,11 @@ export default function HeaderProducts() {
   const { changeFilters, getFilterValue, deleteFilter } = useFiltersContext();
   const categFilterValue = getFilterValue("category_id");
   const sortByFilterValue = getFilterValue("sortBy");
+  const searchFilterValue = getFilterValue("search");
   const existFilterValue = getFilterValue("exist");
   const offerFilterValue = getFilterValue("offer");
   const [categs, setCategs] = useState<CategoryIndex[]>();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchFilterValue || "");
   const isactiveFilterValue = getFilterValue("is_active");
 
   const requestSelectOptions = async () => {
