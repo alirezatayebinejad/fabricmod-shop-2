@@ -58,18 +58,40 @@ const InputList: React.FC<InputListProps> = ({
     }
   }, [value]);
 
+  // This function splits the input by , or ، and returns trimmed non-empty segments
+  const splitInput = (input: string): string[] => {
+    return input
+      .split(/,|،/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  };
+
   const handleAddItem = () => {
     if (inputValue.trim()) {
-      const newItem = { id: Date.now().toString(), name: inputValue.trim() };
-      // Check for duplicates if not repeatable
-      if (isRepeatable || !items.some((item) => item.name === newItem.name)) {
-        const newItems = [...items, newItem];
+      // Split text on ',' or '،'
+      const segments = splitInput(inputValue);
+
+      const newItemsArr: { id: string; name: string }[] = [];
+      segments.forEach((segment) => {
+        // Check for duplicates if not repeatable
+        if (
+          isRepeatable ||
+          (!items.some((item) => item.name === segment) &&
+            !newItemsArr.some((item) => item.name === segment))
+        ) {
+          newItemsArr.push({
+            id: Date.now().toString() + Math.random(),
+            name: segment,
+          });
+        }
+      });
+
+      if (newItemsArr.length > 0) {
+        const newItems = [...items, ...newItemsArr];
         setItems(newItems);
         onChange?.(newItems);
-        setInputValue("");
-      } else {
-        setInputValue("");
       }
+      setInputValue("");
     }
   };
 

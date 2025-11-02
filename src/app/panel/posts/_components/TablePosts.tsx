@@ -106,17 +106,19 @@ export default function TablePosts() {
         {
           data: (
             <div className="flex justify-center">
-              <Image
-                src={
-                  post.primary_image
-                    ? process.env.NEXT_PUBLIC_IMG_BASE + post.primary_image
-                    : "/images/imageplaceholder.png"
-                }
-                alt={post.title}
-                width={82}
-                height={64}
-                className="rounded-[8px]"
-              />
+              <Link href={"/blog/post/" + post.slug}>
+                <Image
+                  src={
+                    post.primary_image
+                      ? process.env.NEXT_PUBLIC_IMG_BASE + post.primary_image
+                      : "/images/imageplaceholder.png"
+                  }
+                  alt={post.title}
+                  width={82}
+                  height={64}
+                  className="rounded-[8px]"
+                />
+              </Link>
             </div>
           ),
         },

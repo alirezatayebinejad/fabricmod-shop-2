@@ -69,7 +69,7 @@ export default function PostWidgets({ data }: { data?: PostShowSite }) {
           <p>برچسب ها:</p>
           {data?.tags?.map((t) => (
             <span
-              key={t.slug}
+              key={t.slug + Math.random()}
               className="rounded-md bg-boxBg300 px-2 py-2 text-TextSize400 text-TextLow transition-colors hover:bg-boxBg400"
             >
               {t.name}
