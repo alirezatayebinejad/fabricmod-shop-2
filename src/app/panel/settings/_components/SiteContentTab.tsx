@@ -53,10 +53,10 @@ const checkModOptions: SelectSearchItem[] = [
   { id: "order", title: "تعداد خرید" },
   { id: "payment", title: "مبلغ خرید" },
 ];
-const buyModOptions: SelectSearchItem[] = [
-  { id: "count", title: "حداقل تعداد خرید" },
-  { id: "payment", title: "حداقل مبلغ خرید" },
-];
+// const buyModOptions: SelectSearchItem[] = [
+//   { id: "count", title: "حداقل تعداد خرید" },
+//   { id: "payment", title: "حداقل مبلغ خرید" },
+// ];
 
 export default function SiteContentTab({ setting }: { setting: Setting }) {
   const { mutate } = useSWRConfig();
