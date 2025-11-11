@@ -17,12 +17,16 @@ function parseWholeSaleOptions(options: string | undefined): {
   have_count?: "0" | "1";
   check_mod?: "order" | "payment";
   check_mod_option?: string;
+  buy_mod?: "count" | "payment";
+  buy_mod_option?: string;
 } {
   if (!options) {
     return {
       have_count: undefined,
       check_mod: undefined,
       check_mod_option: undefined,
+      buy_mod: undefined,
+      buy_mod_option: undefined,
     };
   }
   try {
@@ -31,12 +35,16 @@ function parseWholeSaleOptions(options: string | undefined): {
       have_count: parsed.have_count || undefined,
       check_mod: parsed.check_mod || undefined,
       check_mod_option: parsed.check_mod_option || undefined,
+      // buy_mod: parsed.buy_mod || undefined,
+      buy_mod_option: parsed.buy_mod_option || undefined,
     };
   } catch {
     return {
       have_count: "0",
       check_mod: "order",
       check_mod_option: "",
+      // buy_mod: "payment",
+      buy_mod_option: "",
     };
   }
 }
@@ -45,6 +53,10 @@ const checkModOptions: SelectSearchItem[] = [
   { id: "order", title: "تعداد خرید" },
   { id: "payment", title: "مبلغ خرید" },
 ];
+// const buyModOptions: SelectSearchItem[] = [
+//   { id: "count", title: "حداقل تعداد خرید" },
+//   { id: "payment", title: "حداقل مبلغ خرید" },
+// ];
 
 export default function SiteContentTab({ setting }: { setting: Setting }) {
   const { mutate } = useSWRConfig();
@@ -138,12 +150,22 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
     return checkModOptions.filter((opt) => opt.id === val);
   };
 
+  // const getBuyModValue = () => {
+  //   const val = values.whole_sale?.buy_mod ?? "payment";
+  //   return buyModOptions.filter((opt) => opt.id === val);
+  // };
+
   // For SelectSearchCustom onChange
   const handleCheckModSelect = (selected: SelectSearchItem[]) => {
     if (selected && selected.length > 0) {
       handleWholeSaleChange("check_mod", selected[0].id);
     }
   };
+  // const handleBuyModSelect = (selected: SelectSearchItem[]) => {
+  //   if (selected && selected.length > 0) {
+  //     handleWholeSaleChange("buy_mod", selected[0].id);
+  //   }
+  // };
 
   // Error handling for whole_sale fields
   const getWholeSaleError = (field: string) => {
@@ -274,7 +296,7 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label className="font-medium">نوع:</label>
+              <label className="font-medium">نوع پرداخت چکی:</label>
               <div className="flex-1">
                 <SelectSearchCustom
                   showNoOneOption={false}
@@ -291,8 +313,8 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
             <div className="flex flex-col gap-4">
               <label className="font-medium">
                 {values.whole_sale?.check_mod === "order"
-                  ? "حداقل تعداد خرید:"
-                  : "حداقل مبلغ خرید:"}
+                  ? "حداقل تعداد خرید چکی:"
+                  : "حداقل مبلغ خرید چکی:"}
               </label>
 
               <InputBasic
@@ -305,6 +327,45 @@ export default function SiteContentTab({ setting }: { setting: Setting }) {
                 errorMessage={getWholeSaleError("check_mod_option")}
               />
             </div>
+
+            {/* <div className="flex flex-col gap-4">
+              <label className="font-medium">
+                نوع خرید عمده
+              </label>
+
+                <div className="flex-1">
+                <SelectSearchCustom
+                  showNoOneOption={false}
+                  isSearchDisable
+                  options={buyModOptions}
+                  value={getBuyModValue()}
+                  onChange={handleBuyModSelect}
+                  isMultiSelect={false}
+                  placeholder="انتخاب کنید"
+                  errorMessage={getWholeSaleError("buy_mod")}
+                />
+              </div>
+            </div> */}
+
+            <div className="flex flex-col gap-4">
+              <label className="font-medium">
+                {/* {values.whole_sale?.buy_mod === "count"
+                  ? "حداقل تعداد خرید :"
+                  : "حداقل مبلغ خرید :"} */}
+                  حداقل مبلغ خرید 
+              </label>
+
+              <InputBasic
+                name="whole_sale[buy_mod_option]"
+                type="number"
+                value={values.whole_sale?.buy_mod_option ?? ""}
+                onChange={(e) =>
+                  handleWholeSaleChange("buy_mod_option", e.target.value)
+                }
+                errorMessage={getWholeSaleError("buy_mod_option")}
+              />
+            </div>
+
           </div>
         </div>
         {/* --- End Whole Sale Section --- */}
